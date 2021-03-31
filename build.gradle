@@ -24,4 +24,10 @@ test {
     useJUnitPlatform()
 }
 
-mainClassName = 'org.amc.Main'
+task start(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'org.amc.Server'
+    standardInput = System.in
+}
+
+mainClassName = 'org.amc.Client'
