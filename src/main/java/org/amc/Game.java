@@ -4,20 +4,12 @@ import java.util.HashMap;
 
 public class Game {
 
-    // TODO We will eventually need to deal with the case where a player has no legal moves, for example a board where:
-    /*
-    11122--/
-    11122--/
-    22222--/
-    22222--/
-    -------/
-    -------/
-    -------/
-    and '1' to move
-     */
     private static HashMap<String, Game> games = new HashMap<>(); // Feel free to change the data type if desired
     private String id = null;
     private Player[] players = new Player[2];
+    private Board board;
+    private char winner = '-';
+
     // will want some sort of a list of spectators unless we really run out of time - with a method to add arbitrary amount, and a getter for the whole list
 
     // '1' -> player 1 piece
@@ -54,6 +46,7 @@ public class Game {
         // up to you if you track active player at the Game level or the Board level, but requests will be sent to getActivePlayer()
 
         this.id = id;
+        this.board = new Board();
         Game.games.put(id, this);
     }
 
@@ -126,17 +119,7 @@ public class Game {
     public String getBoard() {
         // please make sure there are no '\' in how the board is recorded. Up to you where the Board gets converted to String (here or in Board class)
         // just using the example board from the tests for now
-        return "1-----2/-------/-------/-------/-------/-------/2-----1";
-    }
-
-    /**
-     * Handles the case where the player indicated by the key resigns
-     *
-     * @param key '1' if player 1 resigns, '2' if player 2 resigns
-     */
-    public void handleResign(char key) {
-        // recommend to do this in a way where the board gets filled, eg. fill all empty squares with the opponent color
-
+        return board.getBoard();
     }
 
     /**
@@ -147,12 +130,37 @@ public class Game {
      * @param key The player requesting the move. '1' or '2'
      */
     public void applyMove(String move, char key) {
-        // you'll want to pass this on to board.applyMove, but it's up to you if you want to verify it at this stage
+        // you'll want to pass this on to board.applyMove, but it's up to you if you want to verify it at this stage (I'd just do it in board.applymove)
         // please explicitly check for '1' and '2', don't use else, in later iterations spectators might get '3' or something
         // also, activePlayer is '0' before game starts, more reason to not use else
+
+        // also need to call board.checkForWinner()
     }
 
+    /**
+     * Returns the list of Games
+     *
+     * @return the list of Games
+     */
     public static HashMap<String, Game> getGames() {
         return Game.games;
+    }
+
+    /**
+     * Returns the key of the winner of the Game, or '-' if the Game is ongoing.
+     *
+     * @return a char indicating the winner of the Game
+     */
+    public char getWinner() {
+        return this.winner;
+    }
+
+    /**
+     * Handles a resignation by the player with the associated key.
+     *
+     * @param key the key of the player resigning
+     */
+    public void handleResignation(char key) {
+        // update winner
     }
 }

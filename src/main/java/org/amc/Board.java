@@ -13,14 +13,17 @@ public class Board {
 
     public Board() {
         // needs to set board to initial state (see tests) and pick '1' or '2' at random
+        board = INITIAL_BOARD;
     }
 
+    // only used in tests
+    // TODO remove once testing is complete
     public Board(String board, char c) {
         this.board = board;
         this.activePlayer = c;
     }
 
-    public static boolean validateMove(String board, Pair<Integer, Integer> source, Pair<Integer, Integer> dest, char s) {
+    public static boolean validateMove(String board, Pair<Integer, Integer> source, Pair<Integer, Integer> dest, char key) {
         return true;
     }
 
@@ -58,5 +61,36 @@ public class Board {
 
     // needs to validate the move before applying it (use Board.validateMove)
     public void applyMove(Pair<Integer, Integer> source, Pair<Integer, Integer> dest, char key) {
+        if (!Board.validateMove(board, source, dest, key)) {
+            return;
+        }
+
+
+
+        // note: after applying the move, need to verify if the opponent has any legal moves
+        // if the opponent has no legal moves, all the rest of the board gets immediately filled with this player's pieces
+        char opponentKey = (key == '1' ? '2' : '1');
+        if (noLegalMoves(opponentKey)) {
+            // fill all empty spaces on board w/ "key"
+        }
+    }
+
+    /**
+     * Checks if the indicated player has any legal moves.
+     *
+     * @param key the key of the player to check
+     * @return false unless the player has no legal moves
+     */
+    private boolean noLegalMoves(char key) {
+        return false;
+    }
+
+    /**
+     * Checks if the board is full, and if so returns the key of the player with more squares filled. Otherwise returns
+     * '-'
+     * @return the key of the player who won, or '-'
+     */
+    public char checkForWinner() {
+        return '-';
     }
 }

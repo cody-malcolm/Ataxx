@@ -111,6 +111,11 @@ public class ClientListener extends Thread {
             controller.handleMove(args[1], args[2], args[3], activePlayer, key);
         }
         controller.updateBoard(args[3]);
+
+        char winner = args[6].charAt(0);
+        if (winner != '-') {
+            controller.winnerDetermined(key, winner);
+        }
     }
 
     public void sendRequest(String request) {

@@ -266,7 +266,7 @@ public class Player extends Thread {
     private void handleResignRequest() {
         if (null != gameID) {
             Game game = Game.getGame(gameID);
-            game.handleResign(this.key);
+            game.handleResignation(this.key);
         }
     }
 
@@ -288,12 +288,13 @@ public class Player extends Thread {
         String newBoard = game.getBoard();
         char activePlayer = game.getActivePlayer();
         Player opponent = game.getPlayer(this.key == '1' ? 1 : 0);
+        char winner = game.getWinner();
 
         // guard against null opponent (during Game setup)
         if (null != opponent) {
-            opponent.sendGameState(oldBoard, move, newBoard, activePlayer);
+            opponent.sendGameState(oldBoard, move, newBoard, activePlayer, winner);
         }
-        this.sendGameState(oldBoard, move, newBoard, activePlayer);
+        this.sendGameState(oldBoard, move, newBoard, activePlayer, winner);
     }
 
     /**
@@ -301,17 +302,19 @@ public class Player extends Thread {
      *
      * @param oldBoard the previous board state
      * @param move the move (format "0123") or "none" if no move was performed
-     * @param newBoard
-     * @param activePlayer
+     * @param newBoard the new board state
+     * @param activePlayer the key of the player to make the next move
+     * @param winner the key of the player who won, or '-' if the game is ongoing
      */
-    private void sendGameState(String oldBoard, String move, String newBoard, char activePlayer) {
+    private void sendGameState(String oldBoard, String move, String newBoard, char activePlayer, char winner) {
         StringBuilder response = new StringBuilder();
         response.append("GAME\\")
                 .append(oldBoard).append("\\")
                 .append(move).append("\\")
                 .append(newBoard).append("\\")
                 .append(activePlayer).append("\\")
-                .append(this.key);
+                .append(this.key).append("\\")
+                .append(winner);
 
         log("Sending response '" + response.toString() + " to " + this.username + this.clientIP);
         responseOutput.println(response.toString());

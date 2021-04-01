@@ -125,4 +125,5 @@ public class User {
     public String getBoard() {
         return this.board;
     }
+
 }

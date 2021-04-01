@@ -147,4 +147,12 @@ public class Views {
         // Note: The animation should be quite fast, probably between 200-400ms each but we can adjust it easily if needed.
         // TODO later addition: execute the animation in a separate thread to not block other parts of UI such as chat window
     }
+
+    /**
+     * Displays the Game Over information.
+     *
+     * @param key true if the player won, false otherwise
+     */
+    public static void displayGameover(boolean key) {
+    }
 }

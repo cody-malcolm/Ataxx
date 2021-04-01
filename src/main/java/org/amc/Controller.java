@@ -149,4 +149,14 @@ public class Controller {
     public void updateBoard(String board) {
         user.setBoard(board);
     }
+
+    /**
+     * Updates the view with the game over screen according to if the User won or lost
+     *
+     * @param key the associated user's key
+     * @param winner the winner of the game
+     */
+    public void winnerDetermined(char key, char winner) {
+        Views.displayGameover(key == winner);
+    }
 }
