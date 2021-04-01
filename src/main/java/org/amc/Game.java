@@ -37,7 +37,7 @@ public class Game {
     public Game() {
         String id = ""; // generate a random id
 
-        // verify id is unique - eg. use Game.games.get() and ensure it returns whatever the "not found" response is
+        // verify id is unique - eg. use Game.games.get(id) and ensure it returns whatever the "not found" response is
 
         // set up the board and any other internal stuff you need to do
         // up to you if you track active player at the Game level or the Board level, but requests will be sent to getActivePlayer()
@@ -89,9 +89,9 @@ public class Game {
      */
     public char getActivePlayer() {
         // up to you where you track the active player, here or in the Board class. Either way, Model should be able to
-        // confirm move is being requested by the active player before applying it. Also, active Player should be '0'
+        // confirm move is being requested by the active player before applying it. Also, active Player should be '-'
         // until the Game has two Players.
-        return '0';
+        return '-';
     }
 
     /**
@@ -114,7 +114,8 @@ public class Game {
 
     public String getBoard() {
         // please make sure there are no '\' in how the board is recorded. Up to you where the Board gets converted to String (here or in Board class)
-        return "";
+        // just using the example board from the tests for now
+        return "1-----2/-------/-------/-------/-------/-------/2-----1";
     }
 
     /**

@@ -41,7 +41,7 @@ public class Player extends Thread {
         responseOutput = new PrintWriter(socket.getOutputStream(), true);
 
         // log the establishment of the connection
-        log("Establishing connection with " + clientIP);
+        log("Establishing connection with " + clientIP.substring(1));
     }
 
     /**
@@ -92,6 +92,7 @@ public class Player extends Thread {
         // initialize variable for input
         String input = null;
 
+        // TODO put authentication and identification in helper methods
         while (!authenticated && attempts < 3) {
             // read in a line of input
             try {
@@ -188,7 +189,7 @@ public class Player extends Thread {
         }
 
         // log the request and client making the request
-        log(input + " request from " + username + clientIP);
+        log(input + " request from " + this.username + this.clientIP);
 
         String[] request = input.split("\\\\");
 
@@ -264,13 +265,24 @@ public class Player extends Thread {
         String newBoard = game.getBoard();
         char activePlayer = game.getActivePlayer();
         Player opponent = game.getPlayer(this.key == '1' ? 1 : 0);
-        opponent.sendGameState(old, move, newBoard, activePlayer);
+        if (null != opponent) {
+            opponent.sendGameState(old, move, newBoard, activePlayer);
+        }
         this.sendGameState(old, move, newBoard, activePlayer);
     }
 
     // move can be "0123" format or "none"
     private void sendGameState(String old, String move, String newBoard, char activePlayer) {
-        responseOutput.println("GAME\\" + old + "\\" + move + "\\" + newBoard + "\\" + activePlayer + "\\" + this.key);
+        StringBuilder response = new StringBuilder();
+        response.append("GAME\\")
+                .append(old).append("\\")
+                .append(move).append("\\")
+                .append(newBoard).append("\\")
+                .append(activePlayer).append("\\")
+                .append(this.key);
+
+        log("Sending response '" + response.toString() + " to " + this.username + this.clientIP);
+        responseOutput.println(response.toString());
     }
 
     private void handleGameRequest() {
