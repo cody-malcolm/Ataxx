@@ -19,8 +19,7 @@
     <top>
         <HBox>
             <Button GridPane.rowIndex="0" GridPane.columnIndex="0" onAction="#connect" styleClass="button">Connect</Button>
-            <Button GridPane.rowIndex="0" GridPane.columnIndex="1" onAction="#username" styleClass="button">Username</Button>
-            <Button GridPane.rowIndex="0" GridPane.columnIndex="2" onAction="#game" styleClass="button">Game</Button>
+            <Button GridPane.rowIndex="0" GridPane.columnIndex="2" onAction="#game" styleClass="button">Find Game</Button>
             <Button GridPane.rowIndex="0" GridPane.columnIndex="3" onAction="#resign" styleClass="button">Resign</Button>
             <Button GridPane.rowIndex="0" GridPane.columnIndex="4" onAction="#disconnect" styleClass="button">Disconnect</Button>
         </HBox>

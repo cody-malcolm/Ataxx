@@ -11,38 +11,77 @@ import org.javatuples.Pair;
 import java.util.ArrayList;
 
 public class Views {
+    /** The size of one square of the board, in pixels */
+    final private static int SIZE = 80;
+    /** The controller that manages communication with the rest of the Application */
     private static Controller controller;
+    /** The GraphicsContext associated with the Canvas */
+    private static GraphicsContext gc;
 
+    // TODO multiple Color themes - extra
+
+    /**
+     * Creates the Canvas that board will be rendered on
+     *
+     * @param borderPane the BorderPane to attach the Canvas to
+     */
     public static void createCanvas(BorderPane borderPane) {
         Canvas canvas = new Canvas();
-        canvas.setHeight(560);
-        canvas.setWidth(560);
+        canvas.setHeight(SIZE*7);
+        canvas.setWidth(SIZE*7);
         canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, Views.handleMouseClick());
+        gc = canvas.getGraphicsContext2D();
 
         borderPane.setCenter(canvas);
-
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        drawBoard(gc);
     }
 
-    public static void drawBoard(GraphicsContext gc) {
+    /**
+     * Draws the board.
+     */
+    public static void drawBoard() {
         Color[] colors = {Color.hsb(0, 0, 0.90), Color.hsb(0, 0, 0.80)};
         for (int j = 0; j < 7; j++) {
             gc.setFill(colors[1]);
             gc.setFill(colors[j%2]);
             for (int i = 0; i < 7; i++) {
-                gc.fillRect(80*i, j*80, 80, 80);
+                gc.fillRect(SIZE*i, SIZE*j, SIZE, SIZE);
                 gc.setFill(colors[(i+j+1)%2]);
             }
         }
     }
 
+    /**
+     * Renders the pieces on the board.
+     *
+     * @param board the String representation of the board indicating the location of the pieces
+     */
+    private static void renderPieces(String board) {
+
+    }
+
+    /**
+     * Renders the provided board
+     *
+     * @param board the String representation of the board to render
+     */
+    public static void renderBoard(String board) {
+        Views.drawBoard();
+        Views.renderPieces(board);
+
+        // take the given board and immediately render it, overwriting anything there already
+    }
+
+    /**
+     * Handles a MouseClick on the Canvas. Provides the controller with row/col index of the selected square.
+     *
+     * @return the EventHandler to attach to the Canvas
+     */
     public static EventHandler<MouseEvent> handleMouseClick() {
         return new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                Integer row = Integer.valueOf((int)Math.floor(event.getY()/80));
-                Integer col = Integer.valueOf((int)Math.floor(event.getX()/80));
+                Integer row = Integer.valueOf((int)Math.floor(event.getY()/SIZE));
+                Integer col = Integer.valueOf((int)Math.floor(event.getX()/SIZE));
 
                 Pair<Integer, Integer> square = new Pair<>(row, col);
                 controller.processMouseClick(square);
@@ -50,20 +89,37 @@ public class Views {
         };
     }
 
+    /**
+     * Setter for controller.
+     *
+     * @param controller the Controller to use to communicate with the rest of the Application.
+     */
     public static void setController(Controller controller) {
         Views.controller = controller;
     }
 
-    public static void renderBoard(String board) {
-        System.out.println("draw the board");
-        // take the given board and immediately render it, overwriting anything there already
-    }
-
+    /**
+     * Given a list of "steps" and "jumps", highlights the squares identified in each list according to if they are a
+     * step or a jump
+     *
+     * @param steps squares the selected piece can legally move to without jumping
+     * @param jumps squares the selected piece can legally move to by jumping
+     */
     public static void highlightDestinationSquares(ArrayList<Pair<Integer, Integer>> steps, ArrayList<Pair<Integer, Integer>> jumps) {
-        // render a small circle (maybe 15px?) on each step and jump, use somewhat darker colour for jumps
+        // render a small circle (probably SIZE/4) on each step and jump, use somewhat darker colour for jumps
     }
 
+    /**
+     * Animates the transition from the "old" board to the "new" board.
+     *
+     * @param oldBoard the previous state of the board
+     * @param newBoard the new state of the board
+     * @param move the move being performed to transition from old to new
+     */
     public static void animateMove(String oldBoard, String newBoard, String move) {
+        // ensure the currently rendered board is as expected
+        Views.renderBoard(oldBoard);
+
         // Two consecutive animations:
             // first, animate the piece stepping or jumping
 
@@ -89,5 +145,6 @@ public class Views {
         //                                     Color.hsb(180, 0.5, 0.5)
 
         // Note: The animation should be quite fast, probably between 200-400ms each but we can adjust it easily if needed.
+        // TODO later addition: execute the animation in a separate thread to not block other parts of UI such as chat window
     }
 }

@@ -4,6 +4,17 @@ import java.util.HashMap;
 
 public class Game {
 
+    // TODO We will eventually need to deal with the case where a player has no legal moves, for example a board where:
+    /*
+    11122--/
+    11122--/
+    22222--/
+    22222--/
+    -------/
+    -------/
+    -------/
+    and '1' to move
+     */
     private static HashMap<String, Game> games = new HashMap<>(); // Feel free to change the data type if desired
     private String id = null;
     private Player[] players = new Player[2];

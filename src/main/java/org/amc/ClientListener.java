@@ -107,10 +107,10 @@ public class ClientListener extends Thread {
 
         if (args[2].equals("none")) {
             controller.refreshBoard(args[3], activePlayer, key);
-            controller.highlightSquares(args[3]);
         } else {
-            controller.updateBoard(args[1], args[2], args[3], activePlayer, key);
+            controller.handleMove(args[1], args[2], args[3], activePlayer, key);
         }
+        controller.updateBoard(args[3]);
     }
 
     public void sendRequest(String request) {

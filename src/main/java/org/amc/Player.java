@@ -196,6 +196,12 @@ public class Player extends Thread {
         return processRequest(request);
     }
 
+    /**
+     * Sorts the request by type and calls the appropriate handler.
+     *
+     * @param request the request from the Client
+     * @return true if the Client requested to disconnect, false otherwise
+     */
     private boolean processRequest(String[] request) {
         String type = request[0];
         String arg = null;
@@ -237,6 +243,11 @@ public class Player extends Thread {
         return false;
     }
 
+    /**
+     * Handles a move request. Clients pre-validate moves, but Game will also verify it is legitimate.
+     *
+     * @param move the move to apply
+     */
     private void handleMoveRequest(String move) {
         if (null != gameID) {
             Game game = Game.getGame(gameID);
@@ -244,10 +255,14 @@ public class Player extends Thread {
         }
     }
 
+
     private void handleChatRequest(String message) {
         // TODO
     }
 
+    /**
+     * Handles a resign request
+     */
     private void handleResignRequest() {
         if (null != gameID) {
             Game game = Game.getGame(gameID);
@@ -261,21 +276,38 @@ public class Player extends Thread {
         }
     }
 
-    private void updateClients(String old, String move, Game game) {
+    /**
+     * Sends an updated game state to both players. TODO and spectators once implemented
+     *
+     * @param oldBoard the previous board state
+     * @param move the move to apply (or "none")
+     * @param game the Game to get the new board, activePlayer, and opponent from
+     */
+    private void updateClients(String oldBoard, String move, Game game) {
+        // get the board, activePlayer, and opponent
         String newBoard = game.getBoard();
         char activePlayer = game.getActivePlayer();
         Player opponent = game.getPlayer(this.key == '1' ? 1 : 0);
+
+        // guard against null opponent (during Game setup)
         if (null != opponent) {
-            opponent.sendGameState(old, move, newBoard, activePlayer);
+            opponent.sendGameState(oldBoard, move, newBoard, activePlayer);
         }
-        this.sendGameState(old, move, newBoard, activePlayer);
+        this.sendGameState(oldBoard, move, newBoard, activePlayer);
     }
 
-    // move can be "0123" format or "none"
-    private void sendGameState(String old, String move, String newBoard, char activePlayer) {
+    /**
+     * Sends an update of the game state to the client associated with "this".
+     *
+     * @param oldBoard the previous board state
+     * @param move the move (format "0123") or "none" if no move was performed
+     * @param newBoard
+     * @param activePlayer
+     */
+    private void sendGameState(String oldBoard, String move, String newBoard, char activePlayer) {
         StringBuilder response = new StringBuilder();
         response.append("GAME\\")
-                .append(old).append("\\")
+                .append(oldBoard).append("\\")
                 .append(move).append("\\")
                 .append(newBoard).append("\\")
                 .append(activePlayer).append("\\")
@@ -285,6 +317,9 @@ public class Player extends Thread {
         responseOutput.println(response.toString());
     }
 
+    /**
+     * Handles a Game request. Gets an open or new game, stores the ID, and adds the player.
+     */
     private void handleGameRequest() {
         // reject game requests if player is already playing
         if (null == this.gameID) {
@@ -301,6 +336,11 @@ public class Player extends Thread {
         responseOutput.println("404\\Command not found");
     }
 
+    /**
+     * Getter for username.
+     *
+     * @return the Username associated with this Player
+     */
     public String getUsername() {
         return this.username;
     }
