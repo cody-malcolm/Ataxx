@@ -112,9 +112,9 @@ public class ClientListener extends Thread {
         }
         controller.updateBoard(args[3]);
 
-        char winner = args[6].charAt(0);
-        if (winner != '-') {
-            controller.winnerDetermined(key, winner);
+        String winner = args[6];
+        if (!winner.equals("-")) {
+            controller.winnerDetermined(winner);
         }
     }
 

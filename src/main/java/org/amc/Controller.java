@@ -20,7 +20,7 @@ public class Controller {
      * Handles a click of the connect button.
      */
     public void connect() {
-        // TODO Needs to verify username
+        // TODO Needs to verify username - can't be "", "-", or contain a '\' - also should have a reasonable max characters
         // user.setUsername(username);
         this.listener = new ClientListener(this, user.getUsername());
         listener.start();
@@ -153,10 +153,9 @@ public class Controller {
     /**
      * Updates the view with the game over screen according to if the User won or lost
      *
-     * @param key the associated user's key
-     * @param winner the winner of the game
+     * @param username the username of the winner
      */
-    public void winnerDetermined(char key, char winner) {
-        Views.displayGameover(key == winner);
+    public void winnerDetermined(String username) {
+        Views.displayWinner(username);
     }
 }

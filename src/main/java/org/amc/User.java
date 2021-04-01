@@ -85,7 +85,7 @@ public class User {
      * @return true if the username was valid, false if it is deemed invalid
      */
     public boolean setUsername(String username) {
-        // TODO validate the user name is not an empty string and doesn't contain a '\' before setting it, return true if valid else false
+        // TODO validate the user name isn't ""/"-" and doesn't contain a '\' before setting it, return true if valid else false
         this.username = username;
         return true;
     }
