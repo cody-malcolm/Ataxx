@@ -149,10 +149,10 @@ public class Views {
     }
 
     /**
-     * Displays the Game Over information.
+     * Displays that the game is over and the username of the winner
      *
-     * @param key true if the player won, false otherwise
+     * @param winner the Username of the winning player
      */
-    public static void displayGameover(boolean key) {
+    public static void displayWinner(String winner) {
     }
 }

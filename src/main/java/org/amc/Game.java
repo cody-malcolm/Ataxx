@@ -1,5 +1,6 @@
 package org.amc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Game {
@@ -7,8 +8,9 @@ public class Game {
     private static HashMap<String, Game> games = new HashMap<>(); // Feel free to change the data type if desired
     private String id = null;
     private Player[] players = new Player[2];
+    private ArrayList<Player> spectators;
     private Board board;
-    private char winner = '-';
+    private String winner = "-";
 
     // will want some sort of a list of spectators unless we really run out of time - with a method to add arbitrary amount, and a getter for the whole list
 
@@ -47,6 +49,7 @@ public class Game {
 
         this.id = id;
         this.board = new Board();
+        this.spectators = new ArrayList<>();
         Game.games.put(id, this);
     }
 
@@ -134,7 +137,7 @@ public class Game {
         // please explicitly check for '1' and '2', don't use else, in later iterations spectators might get '3' or something
         // also, activePlayer is '0' before game starts, more reason to not use else
 
-        // also need to call board.checkForWinner()
+        // also need to call board.checkForWinner() and update "winner" with the corresponding player's username if there is one
     }
 
     /**
@@ -147,11 +150,11 @@ public class Game {
     }
 
     /**
-     * Returns the key of the winner of the Game, or '-' if the Game is ongoing.
+     * Returns the username of the winner of the Game, or '-' if the Game is ongoing.
      *
-     * @return a char indicating the winner of the Game
+     * @return the username of the winner
      */
-    public char getWinner() {
+    public String getWinner() {
         return this.winner;
     }
 
@@ -162,5 +165,34 @@ public class Game {
      */
     public void handleResignation(char key) {
         // update winner
+    }
+
+    /**
+     * Adds a spectator to the list of spectators.
+     *
+     * @param spectator the spectator to add
+     * @return the key for the spectator
+     */
+    public char addSpectator(Player spectator) {
+        spectators.add(spectator);
+        return '3';
+    }
+
+    /**
+     * Removes the given spectator from the ArrayList.
+     *
+     * @param spectator the spectator to remove
+     */
+    public void removeSpectator(Player spectator) {
+        spectators.remove(spectator);
+    }
+
+    /**
+     * Returns the list of spectators in the Game.
+     *
+     * @return the list of spectators
+     */
+    public ArrayList<Player> getSpectators() {
+        return this.spectators;
     }
 }

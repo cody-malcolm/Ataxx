@@ -2,6 +2,7 @@ package org.amc;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Player extends Thread {
@@ -272,7 +273,10 @@ public class Player extends Thread {
 
     private void handleSpectateRequest(String arg) {
         if (null == this.gameID) {
-            // TODO
+            Game game = Game.getGame(gameID);
+            if (null != game) {
+                this.key = game.addSpectator(this);
+            }
         }
     }
 
@@ -288,13 +292,19 @@ public class Player extends Thread {
         String newBoard = game.getBoard();
         char activePlayer = game.getActivePlayer();
         Player opponent = game.getPlayer(this.key == '1' ? 1 : 0);
-        char winner = game.getWinner();
+        String winner = game.getWinner();
 
         // guard against null opponent (during Game setup)
         if (null != opponent) {
             opponent.sendGameState(oldBoard, move, newBoard, activePlayer, winner);
         }
         this.sendGameState(oldBoard, move, newBoard, activePlayer, winner);
+
+        ArrayList<Player> spectators = game.getSpectators();
+
+        for (Player spectator : spectators) {
+            spectator.sendGameState(oldBoard, move, newBoard, activePlayer, winner);
+        }
     }
 
     /**
@@ -304,9 +314,9 @@ public class Player extends Thread {
      * @param move the move (format "0123") or "none" if no move was performed
      * @param newBoard the new board state
      * @param activePlayer the key of the player to make the next move
-     * @param winner the key of the player who won, or '-' if the game is ongoing
+     * @param winner the Username of the player who won, or '-' if the game is ongoing
      */
-    private void sendGameState(String oldBoard, String move, String newBoard, char activePlayer, char winner) {
+    private void sendGameState(String oldBoard, String move, String newBoard, char activePlayer, String winner) {
         StringBuilder response = new StringBuilder();
         response.append("GAME\\")
                 .append(oldBoard).append("\\")
