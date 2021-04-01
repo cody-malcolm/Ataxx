@@ -288,4 +288,8 @@ public class Player extends Thread {
     private void handleUnknown() {
         responseOutput.println("404\\Command not found");
     }
+
+    public String getUsername() {
+        return this.username;
+    }
 }

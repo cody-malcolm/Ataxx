@@ -139,4 +139,8 @@ public class Game {
         // please explicitly check for '1' and '2', don't use else, in later iterations spectators might get '3' or something
         // also, activePlayer is '0' before game starts, more reason to not use else
     }
+
+    public static HashMap<String, Game> getGames() {
+        return Game.games;
+    }
 }

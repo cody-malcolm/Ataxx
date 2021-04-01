@@ -1,9 +1,12 @@
 package org.amc;
 
+import java.util.Collection;
 import java.util.Scanner;
 
 /**
- * Handles the processing of Server admin instructions
+ * Handles the processing of Server admin instructions.
+ *
+ * Acknowledgment: Much of the code in this Class was reused from Assignment #2
  */
 public class Server {
     /** A flag to track whether the server is listening for requests or not */
@@ -45,7 +48,7 @@ public class Server {
                 stopListening(true);
             } else if (command.regionMatches(true, 0, "status", 0, 6)) {
                 printStatus();
-            } else if (command.regionMatches(true, 0, "games", 0, 6)) {
+            } else if (command.regionMatches(true, 0, "games", 0, 5)) {
                 printGames();
             } else if (command.regionMatches(true, 0, "help", 0, 4)) {
                 printCommands();
@@ -67,11 +70,30 @@ public class Server {
 
 
     /**
-     * Prints an appropriate message notifying the admin of the directory (if listening) and port being used.
+     * Prints a listing of the active games on the server, or an appropriate message if no games are being played.
      */
     private static void printGames() {
-        // TODO
-        System.out.println("Games will be printed here");
+        Collection<Game> games = Game.getGames().values();
+        if (games.size() != 0) {
+            System.out.println("The active games are:");
+            for (Game game : games) {
+                Player player1 = game.getPlayer(0);
+                Player player2 = game.getPlayer(1);
+                String username1 = "opponent";
+                String username2 = "opponent";
+
+                if (null != player1) {
+                    username1 = player1.getUsername();
+                }
+                if (null != player2) {
+                    username2 = player2.getUsername();
+                }
+                System.out.println(game.getID() + ": " + username1 + " vs. " + username2);
+            }
+        } else {
+            System.out.println("There are no active games.");
+        }
+
     }
 
     /**
@@ -132,11 +154,11 @@ public class Server {
     private static void printCommands() {
         System.out.println("          ------------\r\n          | Commands |\r\n          ------------");
         System.out.println(
-                "start [name] - starts listening for requests (name = shared folder to use, default='shared')\r\n" +
-                        "stop         - stops listening for requests\r\n" +
-                        "status       - prints the status of the server\r\n" +
-                        "games        - prints the games currently being played on the server\r\n" +
-                        "help         - prints a list of commands\r\n" +
-                        "quit         - shuts down the application");
+                        "start   - starts listening for requests\r\n" +
+                        "stop    - stops listening for requests\r\n" +
+                        "status  - prints the status of the server\r\n" +
+                        "games   - prints the games currently being played on the server\r\n" +
+                        "help    - prints a list of commands\r\n" +
+                        "quit    - shuts down the application");
     }
 }
