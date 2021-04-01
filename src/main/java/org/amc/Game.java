@@ -77,8 +77,8 @@ public class Game {
      */
     public char addPlayer(Player player) {
         // add player
-        // check if game has two players, and start game if so
-        // return the index the player got assigned (should be random, not first come first serve)
+        // check if game has two players, and set the active player (here or in Board) to '1' or '2' at random if so
+        // return the index the player got assigned this time
         return '0';
     }
 
@@ -89,7 +89,8 @@ public class Game {
      */
     public char getActivePlayer() {
         // up to you where you track the active player, here or in the Board class. Either way, Model should be able to
-        // confirm move is being requested by the active player before apply it
+        // confirm move is being requested by the active player before applying it. Also, active Player should be '0'
+        // until the Game has two Players.
         return '0';
     }
 
@@ -103,6 +104,7 @@ public class Game {
 
     /**
      * Returns the Player at the specified index in this.players
+     *
      * @param index The index of the Player
      * @return the Player at the specified index
      */
@@ -113,5 +115,28 @@ public class Game {
     public String getBoard() {
         // please make sure there are no '\' in how the board is recorded. Up to you where the Board gets converted to String (here or in Board class)
         return "";
+    }
+
+    /**
+     * Handles the case where the player indicated by the key resigns
+     *
+     * @param key '1' if player 1 resigns, '2' if player 2 resigns
+     */
+    public void handleResign(char key) {
+        // recommend to do this in a way where the board gets filled, eg. fill all empty squares with the opponent color
+
+    }
+
+    /**
+     * Applies the given move, if it is a legal move, it is the player's turn, and the player controls the piece at the
+     * source square.
+     *
+     * @param move The move to apply. Format is "0123", indicating row-col of source square, then row-col of dest square
+     * @param key The player requesting the move. '1' or '2'
+     */
+    public void applyMove(String move, char key) {
+        // you'll want to pass this on to board.applyMove, but it's up to you if you want to verify it at this stage
+        // please explicitly check for '1' and '2', don't use else, in later iterations spectators might get '3' or something
+        // also, activePlayer is '0' before game starts, more reason to not use else
     }
 }
