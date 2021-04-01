@@ -5,7 +5,9 @@ import org.javatuples.Pair;
 import java.util.ArrayList;
 
 public class Board {
-    final protected static String INITIAL_BOARD = ""; // depends on encoding you choose
+    // depends on encoding you choose, feel free to change, just a temp for testing controller
+    final protected static String INITIAL_BOARD = "1-----2/-------/-------/-------/-------/-------/2-----1";
+
     private String board;
     private char activePlayer;
 
@@ -30,11 +32,11 @@ public class Board {
         return new ArrayList<Pair<Integer, Integer>>();
     }
 
-    public static ArrayList<Pair<Integer, Integer>> getSteps(Pair<Integer, Integer> square) {
+    public static ArrayList<Pair<Integer, Integer>> getSteps(String board, Pair<Integer, Integer> square) {
         return new ArrayList<Pair<Integer, Integer>>();
     }
 
-    public static ArrayList<Pair<Integer, Integer>> getJumps(Pair<Integer, Integer> square) {
+    public static ArrayList<Pair<Integer, Integer>> getJumps(String board, Pair<Integer, Integer> square) {
         return new ArrayList<Pair<Integer, Integer>>();
     }
 
@@ -54,6 +56,7 @@ public class Board {
         return this.activePlayer;
     }
 
-    public void applyMove(Pair<Integer, Integer> source2, Pair<Integer, Integer> dest2, char c) {
+    // needs to validate the move before applying it (use Board.validateMove)
+    public void applyMove(Pair<Integer, Integer> source, Pair<Integer, Integer> dest, char key) {
     }
 }

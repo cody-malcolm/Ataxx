@@ -34,6 +34,8 @@ public class Server {
         // initialize the Scanner
         Scanner scanner = new Scanner(System.in);
 
+        // TODO add and implement command to force close all connections
+
         // initialize the exit flag
         boolean exit = false;
 

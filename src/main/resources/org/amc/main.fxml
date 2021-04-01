@@ -1,12 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.*?>
 <?import java.net.URL?>
-<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.amc.Controller" prefHeight="700.0" prefWidth="1200.0">
-    <!--    link stylesheet -->
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:id="borderPane"
+          fx:controller="org.amc.Controller" prefHeight="700.0" prefWidth="1200.0">
+<!--    padding-->
+    <padding>
+        <Insets top="10" bottom="10" left="10" right="10" />
+    </padding>
+<!--    link stylesheet -->
     <stylesheets>
         <URL value="@main.css" />
     </stylesheets>
-</AnchorPane>
+
+<!--    temp buttons-->
+    <top>
+        <HBox>
+            <Button GridPane.rowIndex="0" GridPane.columnIndex="0" onAction="#connect" styleClass="button">Connect</Button>
+            <Button GridPane.rowIndex="0" GridPane.columnIndex="1" onAction="#username" styleClass="button">Username</Button>
+            <Button GridPane.rowIndex="0" GridPane.columnIndex="2" onAction="#game" styleClass="button">Game</Button>
+            <Button GridPane.rowIndex="0" GridPane.columnIndex="3" onAction="#resign" styleClass="button">Resign</Button>
+            <Button GridPane.rowIndex="0" GridPane.columnIndex="4" onAction="#disconnect" styleClass="button">Disconnect</Button>
+        </HBox>
+
+    </top>
+</BorderPane>
