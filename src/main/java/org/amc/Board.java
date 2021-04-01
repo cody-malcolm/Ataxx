@@ -5,8 +5,9 @@ import org.javatuples.Pair;
 import java.util.ArrayList;
 
 public class Board {
-    String board;
-    char activePlayer;
+    final protected static String INITIAL_BOARD = ""; // depends on encoding you choose
+    private String board;
+    private char activePlayer;
 
     public Board() {
         // needs to set board to initial state (see tests) and pick '1' or '2' at random
