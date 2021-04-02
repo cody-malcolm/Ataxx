@@ -60,7 +60,7 @@ public class Views {
     }
 
     /**
-     * Renders the provided board
+     * Renders the provided board.
      *
      * @param board the String representation of the board to render
      */
@@ -154,5 +154,15 @@ public class Views {
      * @param winner the Username of the winning player
      */
     public static void displayWinner(String winner) {
+    }
+
+    /**
+     * Displays the provided message in the chat box. Applies styling based on the given char.
+     *
+     * @param message the message to display
+     * @param style 'i' for italics, 'b' for bold, 'd' for plaintext
+     */
+    public static void displayMessage(String message, char style) {
+        System.out.println(message);
     }
 }

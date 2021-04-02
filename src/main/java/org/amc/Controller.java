@@ -1,6 +1,9 @@
 package org.amc;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import org.javatuples.Pair;
 
@@ -10,6 +13,10 @@ public class Controller {
     // probably changed to 2nd view later
     @FXML
     private BorderPane borderPane;
+    @FXML
+    private Label messages;
+    @FXML
+    private TextField chat;
 
     /** The User associated with the controller */
     private User user;
@@ -157,5 +164,26 @@ public class Controller {
      */
     public void winnerDetermined(String username) {
         Views.displayWinner(username);
+    }
+
+    public void processMessage(String message, char style) {
+//        Views.displayMessage(message, style);
+        Platform.runLater(()-> {
+            if (messages.getText().equals("")) {
+                messages.setText(message);
+            } else {
+                messages.setText(messages.getText() + "\r\n" + message);
+            }
+        });
+
+    }
+
+    public void chat() {
+        String message = chat.getText();
+        if (!message.equals("")) {
+            sendRequest("CHAT\\" + message);
+        }
+
+        chat.setText("");
     }
 }

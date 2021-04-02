@@ -89,13 +89,33 @@ public class ClientListener extends Thread {
             return true;
         }
 
+        System.out.println(response);
+
         String type = response.substring(0, response.indexOf('\\'));
 
         if (type.regionMatches(true, 0, "GAME", 0, 4)) {
             handleGameResponse(response);
+        } else if (type.regionMatches(true, 0, "MSG", 0, 3)) {
+            handleNormalMessage(response.split("\\\\")[1]);
+        } else if (type.regionMatches(true, 0, "CHAT", 0, 4)) {
+            handleChatMessage(response.substring(response.indexOf('\\')+1));
+        } else if (type.regionMatches(true, 0, "ERR", 0, 3)) {
+            handleErrorMessage(response.split("\\\\")[1]);
         }
 
         return false;
+    }
+
+    private void handleChatMessage(String message) {
+        controller.processMessage(message, 'd');
+    }
+
+    private void handleErrorMessage(String message) {
+        controller.processMessage(message, 'b');
+    }
+
+    private void handleNormalMessage(String message) {
+        controller.processMessage(message, 'i');
     }
 
     private void handleGameResponse(String response) {

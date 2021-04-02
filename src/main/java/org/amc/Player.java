@@ -176,6 +176,8 @@ public class Player extends Thread {
      * Responsible for sorting the request type and calling the appropriate handler(s). The handler or handlers
      * process the request and return the response. Concatenates the response and sends the complete response to the
      * client.
+     *
+     * @return true if the connection is to be disconnected, false otherwise
      */
     private boolean handleRequest() {
         String input = null;
@@ -192,9 +194,7 @@ public class Player extends Thread {
         // log the request and client making the request
         log(input + " request from " + this.username + this.clientIP);
 
-        String[] request = input.split("\\\\");
-
-        return processRequest(request);
+        return processRequest(input);
     }
 
     /**
@@ -203,11 +203,15 @@ public class Player extends Thread {
      * @param request the request from the Client
      * @return true if the Client requested to disconnect, false otherwise
      */
-    private boolean processRequest(String[] request) {
-        String type = request[0];
+    private boolean processRequest(String request) {
+        int index = request.indexOf('\\');
+        String type;
         String arg = null;
-        if (request.length > 1) {
-            arg = request[1];
+        if (index != -1) {
+            type = request.substring(0, index);
+            arg = request.substring(index+1);
+        } else {
+            type = request;
         }
 
         String oldBoard = null;
@@ -224,8 +228,10 @@ public class Player extends Thread {
             move = arg;
         } else if (type.regionMatches(true, 0, "chat", 0, 4)) {
             handleChatRequest(arg);
+            return false;
         } else if (type.regionMatches(true, 0, "game", 0, 4)) {
             handleGameRequest();
+            System.out.println("testin");
         } else if (type.regionMatches(true, 0, "spec", 0, 4)) {
             handleSpectateRequest(arg);
             return false;
@@ -258,7 +264,39 @@ public class Player extends Thread {
 
 
     private void handleChatRequest(String message) {
-        // TODO
+        if (null == this.gameID) {
+            return;
+        }
+
+        Game game = Game.getGame(this.gameID);
+        Player[] players = game.getPlayers();
+        ArrayList<Player> spectators = game.getSpectators();
+        message = this.username + ": " + message;
+
+        log("Sending chat message '" + message + "' to the players of " + this.gameID);
+
+        for (Player player : players) {
+            if (null != player) {
+                player.sendChatMessage(message);
+            }
+        }
+
+        for (Player spectator : spectators) {
+            spectator.sendChatMessage(message);
+        }
+    }
+
+    private void sendChatMessage(String message) {
+        responseOutput.println("CHAT\\" + message);
+    }
+
+    public void sendSystemMessage(String message) {
+        responseOutput.println("MSG\\" + message);
+    }
+
+    // TODO limited cases this is useful right now
+    public void sendErrorMessage(String message) {
+        responseOutput.println("ERR\\" + message);
     }
 
     /**
@@ -273,7 +311,7 @@ public class Player extends Thread {
 
     private void handleSpectateRequest(String arg) {
         if (null == this.gameID) {
-            Game game = Game.getGame(gameID);
+            Game game = Game.getGame(arg);
             if (null != game) {
                 this.key = game.addSpectator(this);
             }

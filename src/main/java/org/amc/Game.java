@@ -40,7 +40,7 @@ public class Game {
 //    }
 
     public Game() {
-        String id = ""; // generate a random id
+        String id = "0000"; // generate a random id
 
         // verify id is unique - eg. use Game.games.get(id) and ensure it returns whatever the "not found" response is
 
@@ -83,10 +83,12 @@ public class Game {
      * @return '1' if the player is player 1, '2' otherwise
      */
     public char addPlayer(Player player) {
+        sendToAll(player.getUsername() + " has joined the game"); // this should get sent before the player is added
+        players[0] = player;
         // add player
         // check if game has two players, and set the active player (here or in Board) to '1' or '2' at random if so
         // return the index the player got assigned this time
-        return '0';
+        return '1';
     }
 
     /**
@@ -117,6 +119,10 @@ public class Game {
      */
     public Player getPlayer(int index) {
         return this.players[index];
+    }
+
+    public Player[] getPlayers() {
+        return this.players;
     }
 
     public String getBoard() {
@@ -164,6 +170,7 @@ public class Game {
      * @param key the key of the player resigning
      */
     public void handleResignation(char key) {
+        // identify the username of the player resigning, and invoke: sendToAll(username + "has resigned the game")
         // update winner
     }
 
@@ -174,8 +181,21 @@ public class Game {
      * @return the key for the spectator
      */
     public char addSpectator(Player spectator) {
+        sendToAll(spectator.getUsername() + " is now spectating the game");
         spectators.add(spectator);
         return '3';
+    }
+
+    private void sendToAll(String message) {
+        for (Player player : this.players) {
+            if (null != player) {
+                player.sendSystemMessage(message);
+            }
+        }
+
+        for (Player spectator : this.spectators) {
+            spectator.sendSystemMessage(message);
+        }
     }
 
     /**
