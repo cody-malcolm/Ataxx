@@ -14,28 +14,18 @@ public class User {
     private char key;
     /** The "key" of the active player */
     private char activePlayer;
-    /** The Controller associated with this user */
-    private Controller controller;
     /** The username for the User */
     private String username = "Anonymous";
     /** The current state of the board */
     private String board;
 
     /**
-     * Constructor for User. Stores the associated Controller.
-     *
-     * @param controller The controller to manage communcation with the rest of the Application.
-     */
-    public User(Controller controller) {
-        this.controller = controller;
-    }
-
-    /**
-     * Handles a mouse click on the Game board
+     * Handles a mouse click on the Game board and returns the Move associated with the click, if any.
      *
      * @param square The square that was clicked on
+     * @return a String representing the move in "0123" format (source row/source col/dest row/dest col) or null if no move
      */
-    public void clicked(Pair<Integer, Integer> square) {
+    public String clicked(Pair<Integer, Integer> square) {
         // if it is the player's turn
             // if this.source is null
                 // if "square" is occupied by a friendly piece (use Board.getSquare(board, square)), set this.source to square
@@ -46,17 +36,21 @@ public class User {
                     // set this.source to square
                 // else, square is unoccupied
                     // if Board.validateMove(board, this.source, square, this.key)
-                        // invoke controller.requestMove(this.source, square, key)
-                    // whether move was valid or not, set this.source to null
-
-        // after everything, if this.source is not null, invoke controller.refreshBoard
+                        // return the String representing the move (see temp code)
+                    // whether move was valid or not, set this.source to null before returning
 
         // temp code for testing Controller
         if (null == this.source) {
             this.source = square;
+            return null;
         } else {
-            controller.requestMove(this.source, square);
+            StringBuilder move = new StringBuilder();
+            move.append(this.source.getValue0())
+                    .append(this.source.getValue1())
+                    .append(square.getValue0())
+                    .append(square.getValue1());
             source = null;
+            return move.toString();
         }
     }
 

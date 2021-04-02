@@ -75,25 +75,10 @@ public class Controller {
      * @param square the square that was clicked on
      */
     public void processMouseClick(Pair<Integer, Integer> square) {
-        user.clicked(square);
-    }
-
-    /**
-     * Requests a move be performed.
-     *
-     * @param source the source square
-     * @param dest the destination square
-     */
-    public void requestMove(Pair<Integer, Integer> source, Pair<Integer, Integer> dest) {
-        StringBuilder request = new StringBuilder();
-        request.append("MOVE")
-                .append("\\")
-                .append(source.getValue0())
-                .append(source.getValue1())
-                .append(dest.getValue0())
-                .append(dest.getValue1());
-
-        sendRequest(request.toString());
+        String move = user.clicked(square);
+        if (null != move) {
+            sendRequest("MOVE\\" + move);
+        }
     }
 
     /**
