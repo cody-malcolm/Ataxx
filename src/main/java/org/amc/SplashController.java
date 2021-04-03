@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -15,8 +16,8 @@ public class SplashController extends Controller {
     @FXML
     private Button spectateButton;
 
-    public SplashController() {
-        super();
+    public SplashController(Stage stage) {
+        super(stage);
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("splash.fxml"));

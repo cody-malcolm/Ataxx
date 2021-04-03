@@ -1,6 +1,7 @@
 package org.amc;
 
 import javafx.stage.Stage;
+import org.javatuples.Pair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,6 +34,7 @@ public class ClientListener extends Thread {
     public ClientListener(String username, Stage stage) {
         this.user = new User(username, '0');
         this.stage = stage;
+        Views.setClientListener(this);
     }
 
     private boolean establishConnection() {
@@ -159,5 +161,17 @@ public class ClientListener extends Thread {
 
     public Stage getStage() {
         return this.stage;
+    }
+
+    /**
+     * Given a square that was clicked on, gives the information to the User.
+     *
+     * @param square the square that was clicked on
+     */
+    public void processMouseClick(Pair<Integer, Integer> square) {
+        String move = user.clicked(square);
+        if (null != move) {
+            sendRequest("MOVE\\" + move);
+        }
     }
 }

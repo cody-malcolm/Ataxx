@@ -73,18 +73,6 @@ public class GameController extends Controller {
     }
 
     /**
-     * Given a square that was clicked on, gives the information to the User.
-     *
-     * @param square the square that was clicked on
-     */
-    public void processMouseClick(Pair<Integer, Integer> square) {
-        String move = user.clicked(square);
-        if (null != move) {
-            sendRequest("MOVE\\" + move);
-        }
-    }
-
-    /**
      * Re-renders the board with the given game state, and updates the key and activePlayer stored by the User.
      *
      * @param board the board state to render

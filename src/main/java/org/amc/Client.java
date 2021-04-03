@@ -13,6 +13,6 @@ public class Client extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        new SplashController().showStage();
+        new SplashController(primaryStage).showStage();
     }
 }

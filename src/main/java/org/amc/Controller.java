@@ -9,8 +9,8 @@ public abstract class Controller {
     protected ClientListener listener;
     final protected Stage stage;
 
-    public Controller() {
-        this.stage = new Stage();
+    public Controller(Stage stage) {
+        this.stage = stage;
         stage.setTitle("Welcome to Ataxx!");
     }
 
