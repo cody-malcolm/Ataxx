@@ -1,4 +1,4 @@
-package org.amc;
+package org.amc.ataxx.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;

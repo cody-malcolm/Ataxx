@@ -1,4 +1,4 @@
-package org.amc;
+package org.amc.ataxx.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;

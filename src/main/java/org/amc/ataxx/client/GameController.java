@@ -1,4 +1,4 @@
-package org.amc;
+package org.amc.ataxx.client;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import org.amc.ataxx.server.Board;
 import org.javatuples.Pair;
 
 import java.io.IOException;

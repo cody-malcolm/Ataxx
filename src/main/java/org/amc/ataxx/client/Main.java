@@ -1,9 +1,9 @@
-package org.amc;
+package org.amc.ataxx.client;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-public class Client extends Application {
+public class Main extends Application {
     private static ClientListener listener;
 
     public static void main(String[] args) {
@@ -11,7 +11,7 @@ public class Client extends Application {
     }
 
     public static void setListener(ClientListener listener) {
-        Client.listener = listener;
+        Main.listener = listener;
     }
 
     @Override
@@ -22,7 +22,7 @@ public class Client extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
-        if (null != Client.listener) {
+        if (null != Main.listener) {
             listener.closeSocket();
         }
     }

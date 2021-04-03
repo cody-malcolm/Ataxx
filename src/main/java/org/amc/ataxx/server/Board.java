@@ -1,4 +1,4 @@
-package org.amc;
+package org.amc.ataxx.server;
 
 import org.javatuples.Pair;
 

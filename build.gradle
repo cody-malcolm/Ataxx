@@ -28,8 +28,8 @@ test {
 
 task start(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    main = 'org.amc.Server'
+    main = 'org.amc.ataxx.server.Main'
     standardInput = System.in
 }
 
-mainClassName = 'org.amc.Client'
+mainClassName = 'org.amc.ataxx.client.Main'

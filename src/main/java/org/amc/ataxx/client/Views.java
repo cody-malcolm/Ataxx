@@ -1,4 +1,4 @@
-package org.amc;
+package org.amc.ataxx.client;
 
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;

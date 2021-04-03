@@ -1,6 +1,7 @@
-package org.amc;
+package org.amc.ataxx.client;
 
 import javafx.stage.Stage;
+import org.amc.Utils;
 import org.javatuples.Pair;
 
 import java.io.BufferedReader;

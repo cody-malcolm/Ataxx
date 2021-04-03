@@ -1,5 +1,6 @@
 package org.amc;
 
+import org.amc.ataxx.server.Board;
 import org.javatuples.Pair;
 import org.junit.jupiter.api.Test;
 

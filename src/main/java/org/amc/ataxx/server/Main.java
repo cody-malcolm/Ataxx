@@ -1,4 +1,4 @@
-package org.amc;
+package org.amc.ataxx.server;
 
 import java.util.Collection;
 import java.util.Scanner;
@@ -8,7 +8,7 @@ import java.util.Scanner;
  *
  * Acknowledgment: Much of the code in this Class was reused from Assignment #2
  */
-public class Server {
+public class Main {
     /** A flag to track whether the server is listening for requests or not */
     private static boolean listening = false;
     /** A Thread to handle the listening for client requests (so the server listen for admin input) */

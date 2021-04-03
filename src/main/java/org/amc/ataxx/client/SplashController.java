@@ -1,10 +1,11 @@
-package org.amc;
+package org.amc.ataxx.client;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import org.amc.Utils;
 
 import java.io.IOException;
 
@@ -48,7 +49,7 @@ public class SplashController extends Controller {
         String username = "Anonymous"; // TODO pull from a field in the View
         if (Utils.verifyUsername(username)) {
             this.listener = new ClientListener(username, this.stage);
-            Client.setListener(this.listener);
+            Main.setListener(this.listener);
             this.listener.start();
             // TODO need to decide how to prevent multiple "connect" clicks - disable, hide, or flag
         } else {
