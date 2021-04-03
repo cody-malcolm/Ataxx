@@ -1,5 +1,7 @@
 package org.amc;
 
+import java.util.Random;
+
 /**
  * A static class that provides "utility" methods that are required by multiple classes
  */
@@ -28,4 +30,17 @@ public class Utils {
         return true;
     }
 
+    // Acknowledgement: This is code reused from a previous assignment
+    /**
+     * Wraps the Random.nextInt method for more straightforward use.
+     *
+     * @param a an integer
+     * @param b an integer
+     * @return a random integer between a and b, inclusive
+     */
+    public static int randInt(int a, int b) {
+        int min = Math.min(a, b);
+        int range = Math.max(a, b) - min + 1;
+        return new Random().nextInt(range) + min;
+    }
 }

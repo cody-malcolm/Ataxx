@@ -1,14 +1,13 @@
-package org.amc;
+package org.amc.ataxx.server;
 
-import org.amc.ataxx.server.Board;
 import org.javatuples.Pair;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BoardTest {
+    // TODO needs to be reviewed to see what should go in GameLogic
 
     Pair<Integer, Integer> source1 = new Pair<>(0, 0);
     Pair<Integer, Integer> dest1 = new Pair<>(0, 1);
@@ -74,66 +73,6 @@ public class BoardTest {
     public void testGetJumps() {
         // tests are needed for jumps
         // like Board.testAdjacent and Board.testGetSteps, should return an ArrayList<Pair<Integer, Integer>>
-    }
-
-
-    @Test
-    public void testBoardFull() {
-        assertFalse(Board.boardFull(board1), "Initial board");
-        assertFalse(Board.boardFull(board3), "Board almost full");
-        assertTrue(Board.boardFull(board4), "Board is full");
-
-    }
-    @Test
-    public void testValidateMove() {
-        assertTrue(Board.validateMove(board1, source1, dest1, '1'), "Move is legal.");
-        assertFalse(Board.validateMove(board1, source1, dest1, '2'), "Move is illegal - player doesn't control piece.");
-        assertFalse(Board.validateMove(board1, source1, dest2, '1'), "Move is illegal - too far.");
-        assertFalse(Board.validateMove(board1a, source1, dest1, '1'), "Move is illegal - destination square occupied.");
-    }
-
-    @Test
-    public void testIsSquareEmpty() {
-        assertFalse(Board.isSquareEmpty(board1, source1), "Square is occupied - p1");
-        assertTrue(Board.isSquareEmpty(board1, dest1), "Square is unoccupied");
-        assertFalse(Board.isSquareEmpty(board1, new Pair<>(0,6)), "Square is occupied - p2");
-    }
-
-    @Test
-    public void testGetAdjacent() {
-        ArrayList<Pair<Integer, Integer>> list1 = new ArrayList<>();
-        ArrayList<Pair<Integer, Integer>> list2 = new ArrayList<>();
-        ArrayList<Pair<Integer, Integer>> list3 = new ArrayList<>();
-
-        list1.add(new Pair<>(0,1));
-        list1.add(new Pair<>(1,1));
-        list1.add(new Pair<>(1,0));
-
-        list2.add(new Pair<>(0,0));
-        list2.add(new Pair<>(1,0));
-        list2.add(new Pair<>(1,1));
-        list2.add(new Pair<>(1,2));
-        list2.add(new Pair<>(0,2));
-
-        list3.add(new Pair<>(3,1));
-        list3.add(new Pair<>(3,2));
-        list3.add(new Pair<>(3,3));
-        list3.add(new Pair<>(4,1));
-        list3.add(new Pair<>(4,3));
-        list3.add(new Pair<>(5,1));
-        list3.add(new Pair<>(5,2));
-        list3.add(new Pair<>(5,3));
-
-        assertTrue(Board.getAdjacent(source1).equals(list1), "Corner square");
-        assertTrue(Board.getAdjacent(dest1).equals(list2), "Edge square");
-        assertTrue(Board.getAdjacent(dest3).equals(list3), "Central square");
-    }
-
-    @Test
-    public void testGetSquare() {
-        assertEquals('1', Board.getSquare(board1, source1), "Should return 1");
-        assertEquals('2', Board.getSquare(board2b, dest2), "Should return 2");
-        assertEquals('-', Board.getSquare(board1, dest1), "Should return -");
     }
 
 }

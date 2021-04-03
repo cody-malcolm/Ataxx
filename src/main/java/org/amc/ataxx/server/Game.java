@@ -1,20 +1,14 @@
 package org.amc.ataxx.server;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Game {
-    // TODO Really gonna need to separate application into client/server packages
-    // TODO implication being this class which is used by both needs to be split into two or refactored and a lower layer
 
-    private static HashMap<String, Game> games = new HashMap<>(); // Feel free to change the data type if desired
-    private String id = null;
+    private String id;
     private Player[] players = new Player[2];
     private ArrayList<Player> spectators;
     private Board board;
     private String winner = "-";
-
-    // will want some sort of a list of spectators unless we really run out of time - with a method to add arbitrary amount, and a getter for the whole list
 
     // '1' -> player 1 piece
     // '2' -> player 2 piece
@@ -41,41 +35,12 @@ public class Game {
 //        }
 //    }
 
-    public Game() {
-        String id = "0000"; // generate a random id
-
-        // verify id is unique - eg. use Game.games.get(id) and ensure it returns whatever the "not found" response is
-
+    public Game(String id) {
         // set up the board and any other internal stuff you need to do
         // up to you if you track active player at the Game level or the Board level, but requests will be sent to getActivePlayer()
-
         this.id = id;
         this.board = new Board();
         this.spectators = new ArrayList<>();
-        Game.games.put(id, this);
-    }
-
-    /**
-     * Check the map of Games for a game with only 1 player. If one is found, returns it. Otherwise, returns a new
-     * Game with no Players.
-     *
-     * @return A game for a player to be added to
-     */
-    /* Note: You could handle this by creating another static field (say openGame), which stores the currently waiting
-     game if any and null otherwise. Then you don't need to search the map each time, you just store that game in a temp,
-     change the static field to null, and return the temp. Complexity vs performance. */
-    public static synchronized Game getAvailableGame() {
-
-        return new Game();
-    }
-
-    /**
-     * Returns the Game associated with the given ID
-     * @param gameID the ID of the Game
-     * @return the game associated with the ID
-     */
-    public static Game getGame(String gameID) {
-        return Game.games.get(gameID);
     }
 
     /**
@@ -145,17 +110,10 @@ public class Game {
         // please explicitly check for '1' and '2', don't use else, in later iterations spectators might get '3' or something
         // also, activePlayer is '0' before game starts, more reason to not use else
 
-        // also need to call board.checkForWinner() and update "winner" with the corresponding player's username if there is one
+        // also need to call GameLogic.checkForWinner() and update "winner" with the corresponding player's username if there is one
     }
 
-    /**
-     * Returns the list of Games
-     *
-     * @return the list of Games
-     */
-    public static HashMap<String, Game> getGames() {
-        return Game.games;
-    }
+
 
     /**
      * Returns the username of the winner of the Game, or '-' if the Game is ongoing.

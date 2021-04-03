@@ -8,14 +8,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import org.amc.ataxx.server.Board;
+import org.amc.ataxx.GameLogic;
 import org.javatuples.Pair;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class GameController extends Controller {
-    // probably changed to 2nd view later
     @FXML
     private BorderPane borderPane;
     @FXML
@@ -93,8 +92,8 @@ public class GameController extends Controller {
     public void highlightSquares(String board) {
         Pair<Integer, Integer> source = user.getSource();
         if (null != source) {
-            ArrayList<Pair<Integer, Integer>> steps = Board.getSteps(board, source);
-            ArrayList<Pair<Integer, Integer>> jumps = Board.getJumps(board, source);
+            ArrayList<Pair<Integer, Integer>> steps = GameLogic.getSteps(board, source);
+            ArrayList<Pair<Integer, Integer>> jumps = GameLogic.getJumps(board, source);
             Views.highlightDestinationSquares(steps, jumps);
         }
     }

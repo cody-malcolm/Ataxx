@@ -75,7 +75,7 @@ public class Main {
      * Prints a listing of the active games on the server, or an appropriate message if no games are being played.
      */
     private static void printGames() {
-        Collection<Game> games = Game.getGames().values();
+        Collection<Game> games = GameManager.getInstance().getGames().values();
         if (games.size() != 0) {
             System.out.println("The active games are:");
             for (Game game : games) {
@@ -95,7 +95,6 @@ public class Main {
         } else {
             System.out.println("There are no active games.");
         }
-
     }
 
     /**

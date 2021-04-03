@@ -10,6 +10,7 @@ import org.javatuples.Pair;
 
 import java.util.ArrayList;
 
+// TODO this needs to be refactored into one or two singleton classes, needs to handle the splash scene and the game scene
 public class Views {
     /** The size of one square of the board, in pixels */
     final private static int SIZE = 80;

@@ -216,7 +216,7 @@ public class Player extends Thread {
 
         String oldBoard = null;
         if (null != this.gameID) {
-            oldBoard = Game.getGame(this.gameID).getBoard();
+            oldBoard = GameManager.getInstance().getGame(this.gameID).getBoard();
         } else {
             oldBoard = Board.INITIAL_BOARD;
         }
@@ -231,7 +231,6 @@ public class Player extends Thread {
             return false;
         } else if (type.regionMatches(true, 0, "game", 0, 4)) {
             handleGameRequest();
-            System.out.println("testin");
         } else if (type.regionMatches(true, 0, "spec", 0, 4)) {
             handleSpectateRequest(arg);
             return false;
@@ -244,7 +243,7 @@ public class Player extends Thread {
         }
 
         if (null != this.gameID) {
-            updateClients(oldBoard, move, Game.getGame(this.gameID));
+            updateClients(oldBoard, move, GameManager.getInstance().getGame(this.gameID));
         }
 
         return false;
@@ -257,7 +256,7 @@ public class Player extends Thread {
      */
     private void handleMoveRequest(String move) {
         if (null != gameID) {
-            Game game = Game.getGame(gameID);
+            Game game = GameManager.getInstance().getGame(gameID);
             game.applyMove(move, this.key);
         }
     }
@@ -268,7 +267,7 @@ public class Player extends Thread {
             return;
         }
 
-        Game game = Game.getGame(this.gameID);
+        Game game = GameManager.getInstance().getGame(this.gameID);
         Player[] players = game.getPlayers();
         ArrayList<Player> spectators = game.getSpectators();
         message = this.username + ": " + message;
@@ -304,14 +303,14 @@ public class Player extends Thread {
      */
     private void handleResignRequest() {
         if (null != gameID) {
-            Game game = Game.getGame(gameID);
+            Game game = GameManager.getInstance().getGame(gameID);
             game.handleResignation(this.key);
         }
     }
 
     private void handleSpectateRequest(String arg) {
         if (null == this.gameID) {
-            Game game = Game.getGame(arg);
+            Game game = GameManager.getInstance().getGame(arg);
             if (null != game) {
                 this.key = game.addSpectator(this);
             }
@@ -374,7 +373,7 @@ public class Player extends Thread {
     private void handleGameRequest() {
         // reject game requests if player is already playing
         if (null == this.gameID) {
-            Game game = Game.getAvailableGame();
+            Game game = GameManager.getInstance().getAvailableGame();
             this.gameID = game.getID();
             this.key = game.addPlayer(this);
         }
