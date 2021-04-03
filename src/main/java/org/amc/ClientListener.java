@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
@@ -84,6 +85,8 @@ public class ClientListener extends Thread {
         while (!disconnected) {
             try {
                 disconnected = processResponse(in.readLine());
+            } catch (SocketException e) {
+                disconnected = true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -172,6 +175,14 @@ public class ClientListener extends Thread {
         String move = user.clicked(square);
         if (null != move) {
             sendRequest("MOVE\\" + move);
+        }
+    }
+
+    public void closeSocket() {
+        try {
+            this.socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

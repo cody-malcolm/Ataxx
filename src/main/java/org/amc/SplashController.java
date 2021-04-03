@@ -48,6 +48,7 @@ public class SplashController extends Controller {
         String username = "Anonymous"; // TODO pull from a field in the View
         if (Utils.verifyUsername(username)) {
             this.listener = new ClientListener(username, this.stage);
+            Client.setListener(this.listener);
             this.listener.start();
             // TODO need to decide how to prevent multiple "connect" clicks - disable, hide, or flag
         } else {
