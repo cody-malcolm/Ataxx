@@ -15,10 +15,14 @@ public class User {
     /** The "key" of the active player */
     private char activePlayer;
     /** The username for the User */
-    private String username = "Anonymous";
+    final private String username;
     /** The current state of the board */
     private String board;
 
+    public User(String username, char key) {
+        this.username = username;
+        this.key = key;
+    }
     /**
      * Handles a mouse click on the Game board and returns the Move associated with the click, if any.
      *
@@ -70,18 +74,6 @@ public class User {
      */
     public void setActivePlayer(char activePlayer) {
         this.activePlayer = activePlayer;
-    }
-
-    /**
-     * Setter for username.
-     *
-     * @param username the username the User has provided
-     * @return true if the username was valid, false if it is deemed invalid
-     */
-    public boolean setUsername(String username) {
-        // TODO validate the user name isn't ""/"-" and doesn't contain a '\' before setting it, return true if valid else false
-        this.username = username;
-        return true;
     }
 
     /**

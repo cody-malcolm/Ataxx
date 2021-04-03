@@ -14,7 +14,7 @@ public class Views {
     /** The size of one square of the board, in pixels */
     final private static int SIZE = 80;
     /** The controller that manages communication with the rest of the Application */
-    private static Controller controller;
+    private static GameController gameController;
     /** The GraphicsContext associated with the Canvas */
     private static GraphicsContext gc;
 
@@ -84,7 +84,7 @@ public class Views {
                 Integer col = Integer.valueOf((int)Math.floor(event.getX()/SIZE));
 
                 Pair<Integer, Integer> square = new Pair<>(row, col);
-                controller.processMouseClick(square);
+                gameController.processMouseClick(square);
             }
         };
     }
@@ -92,10 +92,10 @@ public class Views {
     /**
      * Setter for controller.
      *
-     * @param controller the Controller to use to communicate with the rest of the Application.
+     * @param gameController the Controller to use to communicate with the rest of the Application.
      */
-    public static void setController(Controller controller) {
-        Views.controller = controller;
+    public static void setController(GameController gameController) {
+        Views.gameController = gameController;
     }
 
     /**
