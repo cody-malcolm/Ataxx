@@ -17,4 +17,15 @@ public class Utils {
         }
     }
 
+    /**
+     * Returns true if the given username is valid, false otherwise.
+     *
+     * @param username the username to verify
+     * @return true if the username is valid, false otherwise
+     */
+    public static boolean verifyUsername(String username) {
+        // TODO Needs to verify username - can't be "", "-", or contain a '\' - also should have a reasonable max characters
+        return true;
+    }
+
 }

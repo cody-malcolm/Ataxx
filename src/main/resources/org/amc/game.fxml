@@ -8,23 +8,22 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:id="borderPane"
-            fx:controller="org.amc.Controller" prefHeight="700.0" prefWidth="1200.0">
-<!--    padding-->
+            prefHeight="700.0" prefWidth="1200.0">
+    <!--    padding-->
     <padding>
         <Insets top="10" bottom="10" left="10" right="10" />
     </padding>
-<!--    link stylesheet -->
+    <!--    link stylesheet -->
     <stylesheets>
         <URL value="@main.css" />
     </stylesheets>
 
-<!--    temp buttons-->
+    <!--    temp buttons-->
     <top>
         <HBox>
-            <Button GridPane.rowIndex="0" GridPane.columnIndex="0" onAction="#connect" styleClass="button">Connect</Button>
-            <Button GridPane.rowIndex="0" GridPane.columnIndex="2" onAction="#game" styleClass="button">Find Game</Button>
-            <Button GridPane.rowIndex="0" GridPane.columnIndex="3" onAction="#resign" styleClass="button">Resign</Button>
-            <Button GridPane.rowIndex="0" GridPane.columnIndex="4" onAction="#disconnect" styleClass="button">Disconnect</Button>
+            <Button fx:id="resignButton" GridPane.rowIndex="0" GridPane.columnIndex="3" styleClass="button">Resign</Button>
+            <Button fx:id="disconnectButton" GridPane.rowIndex="0" GridPane.columnIndex="4" styleClass="button">Disconnect</Button>
+
         </HBox>
     </top>
 

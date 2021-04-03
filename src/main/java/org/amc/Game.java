@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Game {
+    // TODO Really gonna need to separate application into client/server packages
+    // TODO implication being this class which is used by both needs to be split into two or refactored and a lower layer
 
     private static HashMap<String, Game> games = new HashMap<>(); // Feel free to change the data type if desired
     private String id = null;

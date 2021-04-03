@@ -1,18 +1,26 @@
 package org.amc;
 
+import javafx.stage.Stage;
+import org.javatuples.Pair;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
  * Listens for and manages Server responses
  */
 public class ClientListener extends Thread {
+    /** The User associated with the controller */
+    private User user;
 
-    private Controller controller;
+    private boolean showingGameScene = false;
+    final private Stage stage;
+    private GameController gameController;
 
     private Socket socket = null;
     private BufferedReader in = null;
@@ -21,14 +29,13 @@ public class ClientListener extends Thread {
     final private static String HOST = "localhost"; // TODO later the connect screen should let user enter an IP
     final private static int PORT = 25436;
 
-    private String alias = "Anonymous"; // "Anonymous" in case String passed to constructor is somehow null
-
     /** The access code to establish a connection */
     final private String ACCESS_CODE = "arstdhneio";
 
-    public ClientListener(Controller controller, String username) {
-        this.controller = controller;
-        this.alias = username;
+    public ClientListener(String username, Stage stage) {
+        this.user = new User(username, '0');
+        this.stage = stage;
+        Views.setClientListener(this);
     }
 
     private boolean establishConnection() {
@@ -58,7 +65,7 @@ public class ClientListener extends Thread {
         }
 
         out.println("CODE\\" + ACCESS_CODE);
-        out.println("NAME\\" + this.alias);
+        out.println("NAME\\" + this.user.getUsername());
         return true;
     }
 
@@ -78,6 +85,8 @@ public class ClientListener extends Thread {
         while (!disconnected) {
             try {
                 disconnected = processResponse(in.readLine());
+            } catch (SocketException e) {
+                disconnected = true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -85,11 +94,14 @@ public class ClientListener extends Thread {
     }
 
     private boolean processResponse(String response) {
+        if (!showingGameScene) {
+            showingGameScene = showGameScene();
+        }
         if (null == response) {
             return true;
         }
 
-        System.out.println(response);
+        System.out.println(response); // just during development
 
         String type = response.substring(0, response.indexOf('\\'));
 
@@ -106,35 +118,40 @@ public class ClientListener extends Thread {
         return false;
     }
 
+    private boolean showGameScene() {
+        gameController = new GameController(this.user, this);
+        return true;
+    }
+
     private void handleChatMessage(String message) {
-        controller.processMessage(message, 'd');
+        gameController.processMessage(message, 'd');
     }
 
     private void handleErrorMessage(String message) {
-        controller.processMessage(message, 'b');
+        gameController.processMessage(message, 'b');
     }
 
     private void handleNormalMessage(String message) {
-        controller.processMessage(message, 'i');
+        gameController.processMessage(message, 'i');
     }
 
     private void handleGameResponse(String response) {
-
+//        updateScene(); ??
         String[] args = response.split("\\\\");
 
         char activePlayer = args[4].charAt(0);
         char key = args[5].charAt(0);
 
         if (args[2].equals("none")) {
-            controller.refreshBoard(args[3], activePlayer, key);
+            gameController.refreshBoard(args[3], activePlayer, key);
         } else {
-            controller.handleMove(args[1], args[2], args[3], activePlayer, key);
+            gameController.handleMove(args[1], args[2], args[3], activePlayer, key);
         }
-        controller.updateBoard(args[3]);
+        gameController.updateBoard(args[3]);
 
         String winner = args[6];
         if (!winner.equals("-")) {
-            controller.winnerDetermined(winner);
+            gameController.winnerDetermined(winner);
         }
     }
 
@@ -142,6 +159,30 @@ public class ClientListener extends Thread {
         // guard to prevent NullPointerException when in process of attempting to connect
         if (null != out) {
             out.println(request);
+        }
+    }
+
+    public Stage getStage() {
+        return this.stage;
+    }
+
+    /**
+     * Given a square that was clicked on, gives the information to the User.
+     *
+     * @param square the square that was clicked on
+     */
+    public void processMouseClick(Pair<Integer, Integer> square) {
+        String move = user.clicked(square);
+        if (null != move) {
+            sendRequest("MOVE\\" + move);
+        }
+    }
+
+    public void closeSocket() {
+        try {
+            this.socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
