@@ -22,6 +22,7 @@ public class Player extends Thread {
     private String gameID = null;
     /** The key to represent whether the player is Player '1' or '2' */
     private char key;
+    // TODO investigate making GameManager an instance field
 
     /**
      * Constructor for Player. Stores the socket parameter, establishes the input and output streams for the connection,

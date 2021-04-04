@@ -8,7 +8,7 @@ public class Game {
     private Player[] players = new Player[2];
     private ArrayList<Player> spectators;
     private Board board;
-    private String winner = "-";
+    private String winner = "-"; // may be unnecessary
 
     // '1' -> player 1 piece
     // '2' -> player 2 piece
@@ -72,6 +72,7 @@ public class Game {
 
     /**
      * Getter for ID
+     *
      * @return the ID of the Game
      */
     public String getID() {
@@ -84,8 +85,8 @@ public class Game {
      * @param index The index of the Player
      * @return the Player at the specified index
      */
-    public Player getPlayer(int index) {
-        return this.players[index];
+    public Player getPlayer(int index) { // maybe should be looked up based on player key
+        return this.players[index]; // will need a guard against null player
     }
 
     public Player[] getPlayers() {
@@ -116,7 +117,7 @@ public class Game {
 
 
     /**
-     * Returns the username of the winner of the Game, or '-' if the Game is ongoing.
+     * Returns the username of the winner of the Game, or "-" if the Game is ongoing.
      *
      * @return the username of the winner
      */

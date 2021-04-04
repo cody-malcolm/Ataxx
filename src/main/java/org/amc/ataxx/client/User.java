@@ -32,14 +32,14 @@ public class User {
     public String clicked(Pair<Integer, Integer> square) {
         // if it is the player's turn
             // if this.source is null
-                // if "square" is occupied by a friendly piece (use Board.getSquare(board, square)), set this.source to square
+                // if "square" is occupied by a friendly piece (use GameLogic.getSquare(board, square)), set this.source to square
             // else (this.source is not null, so user has already selected a source square), handle various scenarios
                 // if "square" is the same square as source, or is occupied by an opposing piece,
                     // set this.source to null (may want to use a helper function eg. "clearSelection()"/"clearSource()"
                 // else if square is occupied by a friendly piece,
                     // set this.source to square
                 // else, square is unoccupied
-                    // if Board.validateMove(board, this.source, square, this.key)
+                    // if GameLogic.validateMove(board, this.source, square, this.key)
                         // return the String representing the move (see temp code)
                     // whether move was valid or not, set this.source to null before returning
 
