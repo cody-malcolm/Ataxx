@@ -43,6 +43,7 @@ public class Board {
     // needs to validate the move before applying it (use GameLogic.validateMove)
     public void applyMove(Pair<Integer, Integer> source, Pair<Integer, Integer> dest, char key) {
         if (!GameLogic.validateMove(board, source, dest, key)) {
+            // TODO Top priority rn is to implement this function without any validation - git branching demo
             return;
         }
 
