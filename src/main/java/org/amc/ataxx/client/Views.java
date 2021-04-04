@@ -13,7 +13,9 @@ import java.util.ArrayList;
 // TODO this needs to be refactored into one or two singleton classes, needs to handle the splash scene and the game scene
 public class Views {
     /** The size of one square of the board, in pixels */
-    final private static int SIZE = 80;
+    final private static int SIZE = 90;
+    /** The true size of a drawn square of the board, in pixels */
+    final private static int actualSIZE = SIZE-2;
     /** The size of the canvas, in pixels */
     final private static int canvasSIZE = SIZE*7 + 10;
     /** The controller that manages communication with the rest of the Application */
@@ -45,12 +47,12 @@ public class Views {
         Color[] colors = {Color.hsb(0, 0, 0.90), Color.hsb(0, 0, 0.70)};
 
         gc.setFill(colors[1]);
-        gc.fillRoundRect(0.0, 0.0, canvasSIZE-2, canvasSIZE-2, 20.0,20.0);
+        gc.fillRoundRect(0.0, 0.0, canvasSIZE-2, canvasSIZE-2, SIZE/4,SIZE/4);
 
         gc.setFill(colors[0]);
         for (int j = 0; j < 7; j++) {
             for (int i = 0; i < 7; i++) {
-                gc.fillRoundRect(SIZE*i+5, SIZE*j+5, SIZE-2, SIZE-2, 20.0,20.0);
+                gc.fillRoundRect(SIZE*i+5, SIZE*j+5, actualSIZE, actualSIZE, SIZE/4,SIZE/4);
             }
         }
     }
@@ -86,7 +88,7 @@ public class Views {
      */
     private static void renderPiece(Color color,int row, int col) {
         gc.setFill(color);
-        gc.fillOval(getPosition(col), getPosition(row), SIZE-8,SIZE-8);
+        gc.fillOval(getPosition(col), getPosition(row), actualSIZE-(actualSIZE/10),actualSIZE-(actualSIZE/10));
     }
 
 
@@ -96,7 +98,7 @@ public class Views {
      * @param x the column or row of the square the piece will be in
      */
     private static double getPosition(int x){
-        return (SIZE/10) + (SIZE) * x;
+        return 5 + (actualSIZE/10)/2 + (SIZE) * x;
     }
 
     /**
