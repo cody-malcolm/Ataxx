@@ -44,7 +44,7 @@ public class Views {
      * Draws the board.
      */
     public static void drawBoard() {
-        Color[] colors = {Color.hsb(0, 0, 0.90), Color.hsb(0, 0, 0.70)};
+        Color[] colors = {Color.hsb(0, 0, 0.85), Color.hsb(0, 0, 0.50)};
 
         gc.setFill(colors[1]);
         gc.fillRoundRect(0.0, 0.0, canvasSIZE-2, canvasSIZE-2, SIZE/4,SIZE/4);
@@ -63,6 +63,7 @@ public class Views {
      * @param board the String representation of the board indicating the location of the pieces
      */
     private static void renderPieces(String board) {
+        Color[] colors = {Color.hsb(0,1,0.79), Color.hsb(215, 1, 0.79)};
         String[] rows = board.split("/");
 
         for (int i = 0; i < 7; i++){
@@ -71,9 +72,9 @@ public class Views {
                 char piece = rows[i].charAt(j);
 
                 if(piece == '1'){
-                    renderPiece(Color.RED,i,j);
+                    renderPiece(colors[0],i,j);
                 } else if (piece == '2'){
-                    renderPiece(Color.BLUE,i,j);
+                    renderPiece(colors[1],i,j);
                 }
             }
         }
