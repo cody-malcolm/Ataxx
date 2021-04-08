@@ -6,8 +6,8 @@
 <?import java.net.URL?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            prefHeight="700.0" prefWidth="1200.0">
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            prefHeight="700.0" prefWidth="1200.0" fx:id="borderPane">
 <!--    padding-->
     <padding>
         <Insets top="10" bottom="10" left="10" right="10" />
@@ -18,10 +18,12 @@
     </stylesheets>
 
 <!--    temp buttons-->
-    <HBox>
-        <Button fx:id="connectButton" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="button">Connect</Button>
-        <Button fx:id="gameButton" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="button">Find Game</Button>
-        <Button fx:id="spectateButton" GridPane.rowIndex="0" GridPane.columnIndex="2" styleClass="button">Spectate</Button>
-    </HBox>
+    <center>
+        <VBox alignment="CENTER" spacing="20">
+            <Button fx:id="connectButton" styleClass="button">Connect</Button>
+            <Button fx:id="gameButton" styleClass="button">Find Game</Button>
+            <Button fx:id="spectateButton" styleClass="button">Spectate</Button>
+        </VBox>
+    </center>
 
-</GridPane>
+</BorderPane>

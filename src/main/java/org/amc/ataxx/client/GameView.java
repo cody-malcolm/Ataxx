@@ -119,6 +119,18 @@ public class GameView {
     }
 
     /**
+     * Renders all updates to the board.
+     *
+     * @param oldBoard the String representation of the old board to render
+     * @param newBoard the String representation of the new board to render
+     * @param move the String representation of the move made to reach the new board state
+     */
+    public void updateBoard(String oldBoard, String newBoard, String move) {
+        animateMove(oldBoard, newBoard, move);
+        renderBoard(newBoard);
+    }
+
+    /**
      * Renders the provided board.
      *
      * @param board the String representation of the board to render
@@ -126,7 +138,6 @@ public class GameView {
     public void renderBoard(String board) {
         drawBoard();
         renderPieces(board);
-
 
         // take the given board and immediately render it, overwriting anything there already
     }
