@@ -26,6 +26,8 @@ public class GameController extends Controller {
     @FXML
     private Button disconnectButton;
 
+    private GameView view;
+
     /** The User associated with the controller */
     private User user;
     /** The ClientListener that listens for updates from server */
@@ -69,7 +71,8 @@ public class GameController extends Controller {
         resignButton.setOnAction(event -> resignClick());
         disconnectButton.setOnAction(event -> disconnectClick());
         // initialize the Canvas
-        Views.createCanvas(borderPane);
+        view = GameView.getInstance();
+        view.createCanvas(borderPane);
     }
 
     /**
@@ -80,7 +83,7 @@ public class GameController extends Controller {
      * @param key the User's key
      */
     public void refreshBoard(String board, char activePlayer, char key) {
-        Views.renderBoard(board);
+        view.renderBoard(board);
         user.setKey(key);
         user.setActivePlayer(activePlayer);
         highlightSquares(board);
@@ -94,7 +97,7 @@ public class GameController extends Controller {
         if (null != source) {
             ArrayList<Pair<Integer, Integer>> steps = GameLogic.getSteps(board, source);
             ArrayList<Pair<Integer, Integer>> jumps = GameLogic.getJumps(board, source);
-            Views.highlightDestinationSquares(steps, jumps);
+            view.highlightDestinationSquares(steps, jumps);
         }
     }
 
@@ -110,7 +113,7 @@ public class GameController extends Controller {
     public void handleMove(String oldBoard, String move, String newBoard, char activePlayer, char key) {
         user.setKey(key);
         user.setActivePlayer(activePlayer);
-        Views.animateMove(oldBoard, newBoard, move);
+        view.animateMove(oldBoard, newBoard, move);
     }
 
     /**
@@ -128,7 +131,7 @@ public class GameController extends Controller {
      * @param username the username of the winner
      */
     public void winnerDetermined(String username) {
-        Views.displayWinner(username);
+        view.displayWinner(username);
     }
 
     public void processMessage(String message, char style) {
