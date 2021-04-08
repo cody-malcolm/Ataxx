@@ -19,6 +19,8 @@ public class ClientListener extends Thread {
     /** The User associated with the controller */
     private User user;
 
+    private GameView view;
+
     private boolean showingGameScene = false;
     final private Stage stage;
     private GameController gameController;
@@ -36,7 +38,8 @@ public class ClientListener extends Thread {
     public ClientListener(String username, Stage stage) {
         this.user = new User(username, '0');
         this.stage = stage;
-        Views.setClientListener(this);
+        view = GameView.getInstance();
+        view.setClientListener(this);
     }
 
     private boolean establishConnection() {

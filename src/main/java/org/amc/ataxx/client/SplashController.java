@@ -17,9 +17,11 @@ public class SplashController extends Controller {
     @FXML
     private Button spectateButton;
 
+    private SplashView view;
+
     public SplashController(Stage stage) {
         super(stage);
-
+        view = SplashView.getInstance();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("splash.fxml"));
 
@@ -51,7 +53,7 @@ public class SplashController extends Controller {
             this.listener = new ClientListener(username, this.stage);
             Main.setListener(this.listener);
             this.listener.start();
-            // TODO need to decide how to prevent multiple "connect" clicks - disable, hide, or flag
+            view.disableConnect(connectButton);
         } else {
             // TODO prompt user to correct username
         }
