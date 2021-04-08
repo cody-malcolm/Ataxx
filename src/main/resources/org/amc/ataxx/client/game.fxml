@@ -25,22 +25,21 @@
 
     <!--    temp buttons-->
     <top>
-        <HBox>
-            <Button fx:id="resignButton" GridPane.rowIndex="0" GridPane.columnIndex="3" styleClass="button">Resign</Button>
-            <Button fx:id="disconnectButton" GridPane.rowIndex="0" GridPane.columnIndex="4" styleClass="button">Disconnect</Button>
-
+        <HBox alignment="TOP_LEFT" spacing="20">
+            <Button fx:id="resignButton" styleClass="button">Resign</Button>
+            <Button fx:id="disconnectButton" styleClass="button">Disconnect</Button>
         </HBox>
     </top>
 
     <left>
-        <VBox>
-            <ScrollPane fx:id="messagesContainer" minHeight="550">
+        <VBox alignment="CENTER">
+            <ScrollPane fx:id="messagesContainer" minHeight="565">
                 <Label fx:id="messages">
 
                 </Label>
 
             </ScrollPane>
-            <TextField fx:id="chat" onAction="#chat">
+            <TextField fx:id="chat" onAction="#chat" styleClass="chat">
 
             </TextField>
         </VBox>
