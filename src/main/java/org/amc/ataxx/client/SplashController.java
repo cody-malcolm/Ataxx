@@ -54,7 +54,6 @@ public class SplashController extends Controller {
             Main.setListener(this.listener);
             this.listener.start();
             view.disableConnect(connectButton);
-            // TODO need to decide how to prevent multiple "connect" clicks - disable, hide, or flag
         } else {
             // TODO prompt user to correct username
         }

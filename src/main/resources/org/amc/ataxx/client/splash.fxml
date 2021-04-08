@@ -20,6 +20,10 @@
 <!--    temp buttons-->
     <center>
         <VBox alignment="CENTER" spacing="20">
+            <HBox alignment="CENTER">
+                <Label text="Username: "/>
+                <TextField id="username" promptText="Enter your username" fx:id="usernameField"/>
+            </HBox>
             <Button fx:id="connectButton" styleClass="button">Connect</Button>
             <Button fx:id="gameButton" styleClass="button">Find Game</Button>
             <Button fx:id="spectateButton" styleClass="button">Spectate</Button>
