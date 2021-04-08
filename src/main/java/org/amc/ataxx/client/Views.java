@@ -13,7 +13,11 @@ import java.util.ArrayList;
 // TODO this needs to be refactored into one or two singleton classes, needs to handle the splash scene and the game scene
 public class Views {
     /** The size of one square of the board, in pixels */
-    final private static int SIZE = 80;
+    final private static int SIZE = 90;
+    /** The true size of a drawn square of the board, in pixels */
+    final private static int actualSIZE = SIZE-2;
+    /** The size of the canvas, in pixels */
+    final private static int canvasSIZE = SIZE*7 + 10;
     /** The controller that manages communication with the rest of the Application */
     private static ClientListener clientListener;
     /** The GraphicsContext associated with the Canvas */
@@ -28,8 +32,8 @@ public class Views {
      */
     public static void createCanvas(BorderPane borderPane) {
         Canvas canvas = new Canvas();
-        canvas.setHeight(SIZE*7);
-        canvas.setWidth(SIZE*7);
+        canvas.setHeight(canvasSIZE);
+        canvas.setWidth(canvasSIZE);
         canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, Views.handleMouseClick());
         gc = canvas.getGraphicsContext2D();
 
@@ -40,13 +44,15 @@ public class Views {
      * Draws the board.
      */
     public static void drawBoard() {
-        Color[] colors = {Color.hsb(0, 0, 0.90), Color.hsb(0, 0, 0.80)};
+        Color[] colors = {Color.hsb(0, 0, 0.85), Color.hsb(0, 0, 0.50)};
+
+        gc.setFill(colors[1]);
+        gc.fillRoundRect(0.0, 0.0, canvasSIZE-2, canvasSIZE-2, SIZE/4,SIZE/4);
+
+        gc.setFill(colors[0]);
         for (int j = 0; j < 7; j++) {
-            gc.setFill(colors[1]);
-            gc.setFill(colors[j%2]);
             for (int i = 0; i < 7; i++) {
-                gc.fillRect(SIZE*i, SIZE*j, SIZE, SIZE);
-                gc.setFill(colors[(i+j+1)%2]);
+                gc.fillRoundRect(SIZE*i+5, SIZE*j+5, actualSIZE, actualSIZE, SIZE/4,SIZE/4);
             }
         }
     }
@@ -57,7 +63,43 @@ public class Views {
      * @param board the String representation of the board indicating the location of the pieces
      */
     private static void renderPieces(String board) {
+        Color[] colors = {Color.hsb(0,1,0.79), Color.hsb(215, 1, 0.79)};
+        String[] rows = board.split("/");
 
+        for (int i = 0; i < 7; i++){
+            for (int j = 0; j < 7; j++) {
+
+                char piece = rows[i].charAt(j);
+
+                if(piece == '1'){
+                    renderPiece(colors[0],i,j);
+                } else if (piece == '2'){
+                    renderPiece(colors[1],i,j);
+                }
+            }
+        }
+    }
+
+    /**
+     * Renders a piece on the board.
+     *
+     * @param color the color of the needed piece
+     * @param row the row where the piece goes
+     * @param col the col where the piece goes
+     */
+    private static void renderPiece(Color color,int row, int col) {
+        gc.setFill(color);
+        gc.fillOval(getPosition(col), getPosition(row), actualSIZE-(actualSIZE/10),actualSIZE-(actualSIZE/10));
+    }
+
+
+    /**
+     * Returns the x or y position for a piece to be drawn.
+     *
+     * @param x the column or row of the square the piece will be in
+     */
+    private static double getPosition(int x){
+        return 5 + (actualSIZE/10)/2 + (SIZE) * x;
     }
 
     /**
@@ -68,6 +110,7 @@ public class Views {
     public static void renderBoard(String board) {
         Views.drawBoard();
         Views.renderPieces(board);
+
 
         // take the given board and immediately render it, overwriting anything there already
     }
