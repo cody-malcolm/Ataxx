@@ -7,6 +7,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TextArea?>
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:id="borderPane"
             prefHeight="700.0" prefWidth="1200.0">
     <!--    css-->
@@ -25,23 +26,26 @@
 
     <!--    temp buttons-->
     <top>
-        <HBox alignment="TOP_LEFT" spacing="20">
+        <HBox alignment="TOP_LEFT" spacing="20" minHeight="55">
             <Button fx:id="resignButton" styleClass="button">Resign</Button>
             <Button fx:id="disconnectButton" styleClass="button">Disconnect</Button>
         </HBox>
     </top>
 
     <left>
-        <VBox alignment="CENTER">
-            <ScrollPane fx:id="messagesContainer" minHeight="565">
-                <Label fx:id="messages">
+        <VBox alignment="CENTER" spacing="-10" styleClass="leftContainer" minWidth="315">
+            <TextArea fx:id="messages" minHeight="565" editable="false" styleClass="messagesContainer">
 
-                </Label>
-
-            </ScrollPane>
+            </TextArea>
             <TextField fx:id="chat" onAction="#chat" styleClass="chat">
 
             </TextField>
         </VBox>
     </left>
+
+    <bottom>
+        <HBox alignment="BOTTOM_LEFT" spacing="20" minHeight="55">
+
+        </HBox>
+    </bottom>
 </BorderPane>

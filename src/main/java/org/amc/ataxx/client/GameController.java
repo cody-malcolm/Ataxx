@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import org.amc.ataxx.GameLogic;
@@ -18,7 +18,7 @@ public class GameController extends Controller {
     @FXML
     private BorderPane borderPane;
     @FXML
-    private Label messages;
+    private TextArea messages;
     @FXML
     private TextField chat;
     @FXML
