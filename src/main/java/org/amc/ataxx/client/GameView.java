@@ -50,7 +50,7 @@ public class GameView {
         Canvas canvas = new Canvas();
         canvas.setHeight(canvasSIZE);
         canvas.setWidth(canvasSIZE);
-        canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, Views.handleMouseClick());
+        canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, instance.handleMouseClick());
         gc = canvas.getGraphicsContext2D();
 
         borderPane.setCenter(canvas);
@@ -136,7 +136,7 @@ public class GameView {
      *
      * @return the EventHandler to attach to the Canvas
      */
-    public static EventHandler<MouseEvent> handleMouseClick() {
+    private EventHandler<MouseEvent> handleMouseClick() {
         return new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
