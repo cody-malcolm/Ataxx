@@ -178,6 +178,19 @@ public class GameView {
      */
     public void highlightDestinationSquares(ArrayList<Pair<Integer, Integer>> steps, ArrayList<Pair<Integer, Integer>> jumps) {
         // render a small circle (probably SIZE/4) on each step and jump, use somewhat darker colour for jumps
+        highlightSquares(steps);
+        highlightSquares(jumps);
+    }
+
+    private void highlightSquares(ArrayList<Pair<Integer, Integer>> squares) {
+        Color color = Color.hsb(0, 0, 0.95);
+        int num = squares.size();
+        for (int i=0; i < num; i++){
+            int row = squares.get(i).getValue0();
+            int column = squares.get(i).getValue1();
+            renderPiece(color, row, column);
+        }
+
     }
 
     /**
@@ -225,6 +238,7 @@ public class GameView {
      * @param winner the Username of the winning player
      */
     public void displayWinner(String winner) {
+
     }
 
     /**
