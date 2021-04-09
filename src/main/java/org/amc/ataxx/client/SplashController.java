@@ -4,12 +4,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.amc.Utils;
 
 import java.io.IOException;
 
 public class SplashController extends Controller {
+    @FXML
+    private TextField usernameField;
+    @FXML
+    private TextField gameIDField;
+    @FXML
+    private HBox spectateBox;
     @FXML
     private Button connectButton;
     @FXML
@@ -53,7 +61,7 @@ public class SplashController extends Controller {
             this.listener = new ClientListener(username, this.stage);
             Main.setListener(this.listener);
             this.listener.start();
-            view.disableConnect(connectButton);
+            view.disableConnect(usernameField, connectButton, gameButton, spectateBox, spectateButton);
         } else {
             // TODO prompt user to correct username
         }

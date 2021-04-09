@@ -3,6 +3,7 @@
     -fx-padding: 10;
     -fx-background-color: #8C8C8C;
     -fx-text-fill: white;
+    -fx-pref-width: 150px;
 }
 
 .scroll-pane {
