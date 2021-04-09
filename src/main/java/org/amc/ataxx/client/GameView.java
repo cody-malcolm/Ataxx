@@ -209,7 +209,7 @@ public class GameView {
         String sourceSquare = String.valueOf(move.charAt(0)) + String.valueOf(move.charAt(1));
         String destinationSquare = String.valueOf(move.charAt(2)) + String.valueOf(move.charAt(3));
 
-        ArrayList<Pair<Integer, Integer>> adjacentSquares = getAdjacentSquares(destinationSquare);
+//        ArrayList<Pair<Integer, Integer>> adjacentSquares = getAdjacentSquares(destinationSquare);
 
         // ensure the currently rendered board is as expected
         renderBoard(oldBoard);
@@ -240,28 +240,29 @@ public class GameView {
 
         // Note: The animation should be quite fast, probably between 200-400ms each but we can adjust it easily if needed.
         // TODO later addition: execute the animation in a separate thread to not block other parts of UI such as chat window
+        renderBoard(newBoard);
     }
 
-    /**
-     * Returns a list of Pairs of Row,Column for all squares adjacent to the square provided.
-     *
-     * @param square the destination square of the move
-     */
-    private ArrayList<Pair<Integer, Integer>> getAdjacentSquares(String square) {
-        ArrayList<Pair<Integer, Integer>> adjacentSquares = new ArrayList<>();
-        int row = square.charAt(0);
-        int column = square.charAt(1);
-
-        if(row > 0 && column > 0 && row < 6 && column < 6){
-            for (int i = row-1; i <= row+1; i++){
-                for (int j = column-1; j <= column+1; j++){
-                    adjacentSquares.add(new Pair<>(i,j));
-                }
-            }
-        }
-
-        return adjacentSquares;
-    }
+//    /**
+//     * Returns a list of Pairs of Row,Column for all squares adjacent to the square provided.
+//     *
+//     * @param square the destination square of the move
+//     */
+//    private ArrayList<Pair<Integer, Integer>> getAdjacentSquares(String square) {
+//        ArrayList<Pair<Integer, Integer>> adjacentSquares = new ArrayList<>();
+//        int row = square.charAt(0);
+//        int column = square.charAt(1);
+//
+//        if(row > 0 && column > 0 && row < 6 && column < 6){
+//            for (int i = row-1; i <= row+1; i++){
+//                for (int j = column-1; j <= column+1; j++){
+//                    adjacentSquares.add(new Pair<>(i,j));
+//                }
+//            }
+//        }
+//
+//        return adjacentSquares;
+//    }
 
     /**
      * Displays that the game is over and the username of the winner
