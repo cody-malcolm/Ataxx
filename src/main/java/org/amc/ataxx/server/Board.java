@@ -32,6 +32,13 @@ public class Board {
     }
 
     /**
+     * Setter for board.
+     */
+    private void setBoard(String newBoard){
+        this.board=newBoard;
+    }
+
+    /**
      * Getter for activePlayer.
      *
      * @return a character representing the key of the activePlayer ('1' or '2' when game is active)
@@ -43,15 +50,35 @@ public class Board {
     // needs to validate the move before applying it (use GameLogic.validateMove)
     public void applyMove(Pair<Integer, Integer> source, Pair<Integer, Integer> dest, char key) {
         if (!GameLogic.validateMove(board, source, dest, key)) {
-            // TODO Top priority rn is to implement this function without any validation - git branching demo
             return;
+        }
+        else{
+            String oldBoard=this.getBoard();
+            String[] rows=oldBoard.split("\\/");
+            int i=dest.getValue0();
+            int j=dest.getValue1();
+
+            //String are immutable in Java, so we need to recreate a new Board, based on the old one
+            char[] charArray = rows[i].toCharArray();
+            charArray[j] = key;
+            rows[i]=new String(charArray); //changing the needed row
+
+            StringBuilder b = new StringBuilder();//b will be our new Board
+            for (String row : rows){
+                b.append(row+"/");
+            }
+            b.deleteCharAt(b.length()-1); //deleting last '/'
+            String newBoard=b.toString();
+            this.setBoard(newBoard);
         }
 
         // note: after applying the move, need to verify if the opponent has any legal moves
         // if the opponent has no legal moves, all the rest of the board gets immediately filled with this player's pieces
-        char opponentKey = (key == '1' ? '2' : '1');
+
+        //TODO noLegalMoves for the lines below
+        /*char opponentKey = (key == '1' ? '2' : '1');
         if (GameLogic.noLegalMoves(this.board, opponentKey)) {
             // fill all empty spaces on board w/ "key"
-        }
+        }*/
     }
 }
