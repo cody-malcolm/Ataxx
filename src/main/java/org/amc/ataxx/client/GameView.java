@@ -15,7 +15,7 @@ public class GameView {
     private static GameView instance = null;
 
     /** The size of one square of the board, in pixels */
-    final private static int SIZE = 90;
+    final private static int SIZE = 80;
     /** The true size of a drawn square of the board, in pixels */
     final private static int actualSIZE = SIZE-2;
     /** The size of the canvas, in pixels */
@@ -178,6 +178,24 @@ public class GameView {
      */
     public void highlightDestinationSquares(ArrayList<Pair<Integer, Integer>> steps, ArrayList<Pair<Integer, Integer>> jumps) {
         // render a small circle (probably SIZE/4) on each step and jump, use somewhat darker colour for jumps
+        highlightSquares(steps);
+        highlightSquares(jumps);
+    }
+
+    /**
+     * Highlights the squares in the given list.
+     *
+     * @param squares the list of pairs of squares to highlight
+     */
+    private void highlightSquares(ArrayList<Pair<Integer, Integer>> squares) {
+        Color color = Color.hsb(0, 0, 0.95);
+        int num = squares.size();
+        for (int i=0; i < num; i++){
+            int row = squares.get(i).getValue0();
+            int column = squares.get(i).getValue1();
+            renderPiece(color, row, column);
+        }
+
     }
 
     /**
@@ -188,6 +206,11 @@ public class GameView {
      * @param move the move being performed to transition from old to new
      */
     public void animateMove(String oldBoard, String newBoard, String move) {
+        String sourceSquare = String.valueOf(move.charAt(0)) + String.valueOf(move.charAt(1));
+        String destinationSquare = String.valueOf(move.charAt(2)) + String.valueOf(move.charAt(3));
+
+        ArrayList<Pair<Integer, Integer>> adjacentSquares = getAdjacentSquares(destinationSquare);
+
         // ensure the currently rendered board is as expected
         renderBoard(oldBoard);
 
@@ -220,11 +243,33 @@ public class GameView {
     }
 
     /**
+     * Returns a list of Pairs of Row,Column for all squares adjacent to the square provided.
+     *
+     * @param square the destination square of the move
+     */
+    private ArrayList<Pair<Integer, Integer>> getAdjacentSquares(String square) {
+        ArrayList<Pair<Integer, Integer>> adjacentSquares = new ArrayList<>();
+        int row = square.charAt(0);
+        int column = square.charAt(1);
+
+        if(row > 0 && column > 0 && row < 6 && column < 6){
+            for (int i = row-1; i <= row+1; i++){
+                for (int j = column-1; j <= column+1; j++){
+                    adjacentSquares.add(new Pair<>(i,j));
+                }
+            }
+        }
+
+        return adjacentSquares;
+    }
+
+    /**
      * Displays that the game is over and the username of the winner
      *
      * @param winner the Username of the winning player
      */
     public void displayWinner(String winner) {
+
     }
 
     /**
