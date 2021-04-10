@@ -81,7 +81,6 @@ public class Board {
         // note: after applying the move, need to verify if the opponent has any legal moves
         // if the opponent has no legal moves, all the rest of the board gets immediately filled with this player's pieces
 
-        //TODO maybe create a function findEmptySquares()
         char opponentKey = (key == '1' ? '2' : '1');
         if (GameLogic.noLegalMoves(this.board, opponentKey)) {
             // fill all empty spaces on board w/ "key"
