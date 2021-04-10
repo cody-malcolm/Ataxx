@@ -122,22 +122,30 @@ public class GameLogic {
         char sq = rows[row].charAt(col);
         return sq;
     }
+    public static ArrayList<Pair<Integer, Integer>> findEmptySquares(String board){
+        ArrayList<Pair<Integer, Integer>> emptySquares=new ArrayList<>();
 
+        for (int i = 0; i <= 6; i++) {
+            for (int j = 0; j <= 6; j++) {
+                Pair<Integer, Integer> square = new Pair<>(i, j);
+                if (isSquareEmpty(board, square)) {
+                    emptySquares.add(square);
+                }
+            }
+        }
+        return emptySquares;
+    }
     /**
      * Checks if all board squares are occupied
      * @param board the board to check
      * @return false unless the board is full
      */
     public static boolean boardFull(String board) {
-        for (int i = 0; i <= 6; i++) {
-            for (int j = 0; j <= 6; j++) {
-                Pair<Integer, Integer> square = new Pair<>(i, j);
-                if (isSquareEmpty(board, square)) { //there's empty square, board is not full
-                    return false;
-                }
-            }
+        if (findEmptySquares(board).size()==0){
+            return true;
         }
-        return true;
+
+        return false;
     }
 
 
@@ -149,32 +157,27 @@ public class GameLogic {
      * @return false unless the player has no legal moves
      */
     public static boolean noLegalMoves(String board, char key) {
-        String[] rows = board.split("\\/");
-        for (int i = 0; i <= 6; i++) {
-            for (int j = 0; j <= 6; j++) {
-                Pair<Integer, Integer> square = new Pair<>(i, j);
-                if (isSquareEmpty(board, square)) { //there's empty square
-                    //need to check now if this empty square is in reach of 'key' player
+        ArrayList<Pair<Integer, Integer>> emptySquaresList=findEmptySquares(board);
+        for (Pair<Integer, Integer> emptySq:emptySquaresList) {
 
-                    //first, checking adjacent occupied squares (within 1 square)
-                    ArrayList<Pair<Integer, Integer>> adjList=getSteps(board, square);
-                    for (Pair<Integer, Integer> adjSquare:adjList){
-                        if (getSquare(board, adjSquare)==key){
-                            return false;
-                        }
-                    }
-                    //second,checking if a key player can jump to the empty square
-                    ArrayList<Pair<Integer, Integer>> jumpList=getJumps(board, square);
-                    for (Pair<Integer, Integer> jumpSquare:adjList){
-                        if (getSquare(board, jumpSquare)==key){
-                            return false;
-                        }
-                    }
+            //need to check now if this empty square is in reach of 'key' player
 
-
+            //first, checking adjacent occupied squares (within 1 square)
+            ArrayList<Pair<Integer, Integer>> adjList = getSteps(board, emptySq);
+            for (Pair<Integer, Integer> adjSquare : adjList) {
+                if (getSquare(board, adjSquare) == key) {
+                    return false;
+                }
+            }
+            //second,checking if a key player can jump to the empty square
+            ArrayList<Pair<Integer, Integer>> jumpList = getJumps(board, emptySq);
+            for (Pair<Integer, Integer> jumpSquare : adjList) {
+                if (getSquare(board, jumpSquare) == key) {
+                    return false;
                 }
             }
         }
+
         return true; //no legal moves
 
     }
