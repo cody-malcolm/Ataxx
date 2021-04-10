@@ -27,11 +27,12 @@ public class GameLogic {
         }
 
         //sqrt((destRow-sourceRow)**2+(destCol-sourceCol)**2)=sqrt(?)
-        //sqrt(1**2+1**2)=sqrt(2) valid
-        //sqrt(0**2+1**2)=sqrt(1) valid
-        //sqrt(2**2+1**2)=sqrt(5) invalid
-        //sqrt(0**2+2**2)=sqrt(4) invalid(maybe valid is some scenarios, but that's later)
-        if (Math.pow(destRow - sourceRow, 2) + Math.pow(destCol - sourceCol, 2) <= 2.0) {
+        //sqrt(1**2+1**2)=sqrt(2) valid(step)
+        //sqrt(0**2+1**2)=sqrt(1) valid(step)
+        //sqrt(2**2+1**2)=sqrt(5) valid(jump)
+        //sqrt(0**2+2**2)=sqrt(4) valid(jump)
+        //sqrt(0**2+3**2)=sqrt(4) invalid(too far)
+        if (Math.pow(destRow - sourceRow, 2) + Math.pow(destCol - sourceCol, 2) <= 8.0) {
             legalMove = true;
         } else
             legalMove = false;
@@ -45,76 +46,75 @@ public class GameLogic {
         return false;
 
     }
-
+    /**
+     *Returns all square positions that are adjacent to the current square.
+     * Examples: (0,0)->(0,1) or (0,0)->(1,1) or (0,0)->(1,0) and so on
+     * @param square a pair of numbers indicating row&col index on a board (0-6,0-6)
+     * @return list of pairs(squares) that can be reached within at most 1 step in each direction
+     */
     public static ArrayList<Pair<Integer, Integer>> getAdjacent(Pair<Integer, Integer> square) {
         ArrayList<Pair<Integer, Integer>> listAdj = new ArrayList<>();
         int row = square.getValue0();
         int col = square.getValue1();
-        if ((row > 0 && row < 7) && (col > 0 && col < 7)) { //centred square
-            listAdj.add(new Pair<>(row - 1, col - 1));
-            listAdj.add(new Pair<>(row - 1, col));
-            listAdj.add(new Pair<>(row - 1, col + 1));
-            listAdj.add(new Pair<>(row, col - 1));
-            listAdj.add(new Pair<>(row, col + 1));
-            listAdj.add(new Pair<>(row + 1, col - 1));
-            listAdj.add(new Pair<>(row + 1, col));
-            listAdj.add(new Pair<>(row + 1, col + 1));
-        } else if (row == 0 && (col > 0 && col < 7)) { //first inner row
-            listAdj.add(new Pair<>(row, col - 1));
-            listAdj.add(new Pair<>(row, col + 1));
-            listAdj.add(new Pair<>(row + 1, col - 1));
-            listAdj.add(new Pair<>(row + 1, col));
-            listAdj.add(new Pair<>(row + 1, col + 1));
-        } else if (row == 7 && (col > 0 && col < 7)) { //last inner row
-            listAdj.add(new Pair<>(row - 1, col - 1));
-            listAdj.add(new Pair<>(row - 1, col));
-            listAdj.add(new Pair<>(row - 1, col + 1));
-            listAdj.add(new Pair<>(row, col - 1));
-            listAdj.add(new Pair<>(row, col + 1));
+        for (int r = row-1; r <= row+1; r++) {
+            for (int c = col-1; c <= col+1; c++) {
+                if (r >=0 && r <= 6 && c >= 0 && c <=6) {
+                    listAdj.add(new Pair<>(r, c));
+                }
+            }
+        }
 
-        } else if (col == 0 && (row > 0 && row < 7)) { //first inner column
-            listAdj.add(new Pair<>(row - 1, col));
-            listAdj.add(new Pair<>(row - 1, col + 1));
-            listAdj.add(new Pair<>(row, col + 1));
-            listAdj.add(new Pair<>(row + 1, col));
-            listAdj.add(new Pair<>(row + 1, col + 1));
-
-        } else if (col == 7 && (row > 0 && row < 7)) { //last inner column
-            listAdj.add(new Pair<>(row - 1, col - 1));
-            listAdj.add(new Pair<>(row - 1, col));
-            listAdj.add(new Pair<>(row, col - 1));
-            listAdj.add(new Pair<>(row + 1, col - 1));
-            listAdj.add(new Pair<>(row + 1, col));
-
-        } else if (col == 0 && row == 0) { //left top edge
-            listAdj.add(new Pair<>(row, col + 1));
-            listAdj.add(new Pair<>(row + 1, col));
-            listAdj.add(new Pair<>(row + 1, col + 1));
-        } else if (row == 0 && col == 7) { //right top edge
-            listAdj.add(new Pair<>(row, col - 1));
-            listAdj.add(new Pair<>(row + 1, col - 1));
-            listAdj.add(new Pair<>(row + 1, col));
-        } else if (row == 7 && col == 0) { //left bottom edge
-            listAdj.add(new Pair<>(row - 1, col));
-            listAdj.add(new Pair<>(row - 1, col + 1));
-            listAdj.add(new Pair<>(row, col + 1));
-        } else if (row == 7 && col == 7) { //right bottom edge
-            listAdj.add(new Pair<>(row - 1, col - 1));
-            listAdj.add(new Pair<>(row - 1, col));
-            listAdj.add(new Pair<>(row, col - 1));
-        } else
-            System.err.println("Square indices out of bound (0-7)");
         return listAdj;
     }
-
+    /**
+     *Returns occupied square positions that are adjacent to the current square.S
+     * Examples: (0,0)->(0,1) or (0,0)->(1,1) or (0,0)->(1,0) and so on
+     * @param board the board to check
+     * @param square a pair of numbers indicating row&col index on a board (0-6,0-6)
+     * @return list of pairs(occupied squares) that can be reached within at most 1 step in each direction
+     */
     public static ArrayList<Pair<Integer, Integer>> getSteps(String board, Pair<Integer, Integer> square) {
-        return new ArrayList<Pair<Integer, Integer>>();
+        //getAdjacent returns ALL adjacent squares, but we only need occupied
+        ArrayList<Pair<Integer, Integer>> adjacent=getAdjacent(square);
+        ArrayList<Pair<Integer, Integer>> occupiedAdjacent=new ArrayList<>();
+        //we go through all adjacent squares and take those which are occupied
+        for(Pair<Integer, Integer> adjPair:adjacent){
+            if (!isSquareEmpty(board, adjPair)){
+                occupiedAdjacent.add(adjPair);
+            }
+        }
+        return occupiedAdjacent;
     }
-
+    /**
+     *Returns occupied square positions that are within a jump from the current square.
+     * Examples: (0,0)->(0,2) or (0,0)->(1,2) or (0,0)->(2,2)
+     * @param board the board to check
+     * @param square a pair of numbers indicating row&col index on a board (0-6,0-6)
+     * @return list of pairs(occupied squares) that can be reached within a jump (at most 2 steps in each direction)
+     */
     public static ArrayList<Pair<Integer, Integer>> getJumps(String board, Pair<Integer, Integer> square) {
-        return new ArrayList<Pair<Integer, Integer>>();
-    }
+        ArrayList<Pair<Integer, Integer>> occupiedJumpAdjacent=new ArrayList<>();
+        int row=square.getValue0();
+        int col=square.getValue1();
+        for (int r = row-2; r <= row+2; r++) {
+            for (int c = col-2; c <= col+2; c++) {
+                if (r >=0 && r <= 6 && c >= 0 && c <=6) {
+                    Pair<Integer, Integer> jumpSquare=new Pair<>(r,c);
+                    if (!isSquareEmpty(board, jumpSquare)){
+                        occupiedJumpAdjacent.add(jumpSquare);
+                    }
 
+                }
+            }
+        }
+        return occupiedJumpAdjacent;
+    }
+    /**
+     * Checks which player('1' or '2') occupies a given square (if any); if the square is empty, returns '-'
+     * @param board the board to check
+     * @param square a pair of numbers indicating row&col index on a board (0-6,0-6)
+     * @return char representation of a square
+     */
     public static char getSquare(String board, Pair<Integer, Integer> square) {
         int row = square.getValue0();
         int col = square.getValue1();
@@ -123,10 +123,21 @@ public class GameLogic {
         return sq;
     }
 
-    // might be redundant, or only needed private
+    /**
+     * Checks if all board squares are occupied
+     * @param board the board to check
+     * @return false unless the board is full
+     */
     public static boolean boardFull(String board) {
-        //TODO still need this function for checking the winner
-        return false;
+        for (int i = 0; i <= 6; i++) {
+            for (int j = 0; j <= 6; j++) {
+                Pair<Integer, Integer> square = new Pair<>(i, j);
+                if (isSquareEmpty(board, square)) { //there's empty square, board is not full
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 
@@ -138,17 +149,34 @@ public class GameLogic {
      * @return false unless the player has no legal moves
      */
     public static boolean noLegalMoves(String board, char key) {
-        /*String[] rows = board.split("\\/");
-        for (int i = 0; i <= 7; i++) {
-            for (int j = 0; j <= 7; j++) {
+        String[] rows = board.split("\\/");
+        for (int i = 0; i <= 6; i++) {
+            for (int j = 0; j <= 6; j++) {
                 Pair<Integer, Integer> square = new Pair<>(i, j);
-                if (getSquare(board, square) == '-') { //there's legal move
-                    return false;
+                if (isSquareEmpty(board, square)) { //there's empty square
+                    //need to check now if this empty square is in reach of 'key' player
+
+                    //first, checking adjacent occupied squares (within 1 square)
+                    ArrayList<Pair<Integer, Integer>> adjList=getSteps(board, square);
+                    for (Pair<Integer, Integer> adjSquare:adjList){
+                        if (getSquare(board, adjSquare)==key){
+                            return false;
+                        }
+                    }
+                    //second,checking if a key player can jump to the empty square
+                    ArrayList<Pair<Integer, Integer>> jumpList=getJumps(board, square);
+                    for (Pair<Integer, Integer> jumpSquare:adjList){
+                        if (getSquare(board, jumpSquare)==key){
+                            return false;
+                        }
+                    }
+
+
                 }
             }
         }
-        return true; //no legal moves*/
-        return false;
+        return true; //no legal moves
+
     }
 
     /**
@@ -178,7 +206,7 @@ public class GameLogic {
                 winner=(numSquares1>numSquares2)?'1':'2';
             }
              else
-                System.err.println("Draw");
+                System.out.println("Draw");
         }
         return winner;
     }
