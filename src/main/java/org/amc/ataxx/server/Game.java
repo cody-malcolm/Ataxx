@@ -1,5 +1,7 @@
 package org.amc.ataxx.server;
 
+import org.javatuples.Pair;
+
 import java.util.ArrayList;
 
 public class Game {
@@ -110,7 +112,9 @@ public class Game {
         // you'll want to pass this on to board.applyMove, but it's up to you if you want to verify it at this stage (I'd just do it in board.applymove)
         // please explicitly check for '1' and '2', don't use else, in later iterations spectators might get '3' or something
         // also, activePlayer is '0' before game starts, more reason to not use else
-
+        Pair<Integer, Integer> source = new Pair(Character.getNumericValue(move.charAt(0)), Character.getNumericValue(move.charAt(1)));
+        Pair<Integer, Integer> dest = new Pair(Character.getNumericValue(move.charAt(2)), Character.getNumericValue(move.charAt(3)));
+        this.board.applyMove(source, dest, key);
         // also need to call GameLogic.checkForWinner() and update "winner" with the corresponding player's username if there is one
     }
 
