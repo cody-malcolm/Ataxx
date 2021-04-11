@@ -29,11 +29,15 @@
             </HBox>
             <HBox alignment="CENTER">
                 <Label text="Username: "/>
-                <TextField id="username" promptText="Enter your username" fx:id="usernameField"/>
+                <TextField id="username" promptText="Enter your username" fx:id="usernameField" styleClass="input"/>
             </HBox>
             <Button fx:id="connectButton" styleClass="button">Connect</Button>
-            <Button fx:id="gameButton" styleClass="button">Find Game</Button>
-            <Button fx:id="spectateButton" styleClass="button">Spectate</Button>
+            <Button fx:id="gameButton" styleClass="button" visible="false">Find Game</Button>
+            <HBox alignment="CENTER" visible="false" fx:id="spectateBox" spacing="10">
+                <Label text="GameID: "/>
+                <TextField id="gameID" promptText="Enter an existing Game ID" fx:id="gameIDField" styleClass="gameIDinput" />
+                <Button fx:id="spectateButton" styleClass="button" visible="false">Spectate</Button>
+            </HBox>
         </VBox>
     </center>
 
