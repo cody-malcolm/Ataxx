@@ -117,6 +117,7 @@ public class GameController extends Controller {
     public void handleMove(String oldBoard, String move, String newBoard, char activePlayer, char key) {
         user.setKey(key);
         user.setActivePlayer(activePlayer);
+        view.displayTurn(activePlayer, key, playerLabel);
         view.animateMove(oldBoard, newBoard, move);
     }
 
