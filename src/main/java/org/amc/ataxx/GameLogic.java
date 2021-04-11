@@ -87,28 +87,28 @@ public class GameLogic {
         return unoccupiedAdjacent;
     }
     /**
-     *Returns occupied square positions that are within a jump from the current square.
+     *Returns unoccupied square positions that are within a jump from the current square.
      * Examples: (0,0)->(0,2) or (0,0)->(1,2) or (0,0)->(2,2)
      * @param board the board to check
      * @param square a pair of numbers indicating row&col index on a board (0-6,0-6)
-     * @return list of pairs(occupied squares) that can be reached within a jump (at most 2 steps in each direction)
+     * @return list of pairs(unoccupied squares) that can be reached within a jump (at most 2 steps in each direction)
      */
     public static ArrayList<Pair<Integer, Integer>> getJumps(String board, Pair<Integer, Integer> square) {
-        ArrayList<Pair<Integer, Integer>> occupiedJumpAdjacent=new ArrayList<>();
+        ArrayList<Pair<Integer, Integer>> unoccupiedJumpAdjacent=new ArrayList<>();
         int row=square.getValue0();
         int col=square.getValue1();
         for (int r = row-2; r <= row+2; r++) {
             for (int c = col-2; c <= col+2; c++) {
                 if (r >=0 && r <= 6 && c >= 0 && c <=6) {
                     Pair<Integer, Integer> jumpSquare=new Pair<>(r,c);
-                    if (!isSquareEmpty(board, jumpSquare)){
-                        occupiedJumpAdjacent.add(jumpSquare);
+                    if (isSquareEmpty(board, jumpSquare)){
+                        unoccupiedJumpAdjacent.add(jumpSquare);
                     }
 
                 }
             }
         }
-        return occupiedJumpAdjacent;
+        return unoccupiedJumpAdjacent;
     }
     /**
      * Checks which player('1' or '2') occupies a given square (if any); if the square is empty, returns '-'
