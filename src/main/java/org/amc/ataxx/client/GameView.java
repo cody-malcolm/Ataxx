@@ -3,6 +3,7 @@ package org.amc.ataxx.client;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
@@ -142,6 +143,32 @@ public class GameView {
         // take the given board and immediately render it, overwriting anything there already
     }
 
+//    /**
+//     * Renders the provided board.
+//     *
+//     * @param board the String representation of the board to render
+//     */
+//    public void renderBoard(String board, char activePlayer, char key, Label playerLabel) {
+//        drawBoard();
+//        renderPieces(board);
+//        displayTurn(activePlayer, key, playerLabel);
+//    }
+
+    public void displayTurn(char activePlayer, char key, Label playerLabel) {
+        Color[] activeColors = {Color.hsb(0,1,0.79), Color.hsb(215, 1, 0.79)};
+        Color[] inactiveColors = {Color.hsb(0,1,0.40), Color.hsb(215, 1, 0.40)};
+        if (activePlayer == key){
+            // For testing
+//            System.out.println("Testing turn render: Inside activePlayer(" + activePlayer + ") == key(" + key + ")");
+            playerLabel.setTextFill(activeColors[Integer.valueOf(key)-49]);
+        } else {
+            // For testing
+//            System.out.println("Testing turn render: Inside activePlayer(" + activePlayer + ") != key(" + key + ")");
+            playerLabel.setTextFill(inactiveColors[Integer.valueOf(key)-49]);
+        }
+        playerLabel.setText("Player " + key);
+    }
+
     /**
      * Handles a MouseClick on the Canvas. Provides the controller with row/col index of the selected square.
      *
@@ -269,9 +296,7 @@ public class GameView {
      *
      * @param winner the Username of the winning player
      */
-    public void displayWinner(String winner) {
-
-    }
+    public void displayWinner(String winner) { }
 
     /**
      * Displays the provided message in the chat box. Applies styling based on the given char.

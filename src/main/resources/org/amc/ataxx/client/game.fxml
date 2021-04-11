@@ -26,9 +26,8 @@
 
     <!--    temp buttons-->
     <top>
-        <HBox alignment="TOP_RIGHT" spacing="20" minHeight="55">
-            <Button fx:id="resignButton" styleClass="button">Resign</Button>
-            <Button fx:id="disconnectButton" styleClass="button">Disconnect</Button>
+        <HBox alignment="TOP_LEFT" spacing="20" minHeight="55">
+            <Label fx:id="playerLabel" styleClass="playerLabel"></Label>
         </HBox>
     </top>
 
@@ -45,7 +44,8 @@
 
     <bottom>
         <HBox alignment="BOTTOM_RIGHT" spacing="20" minHeight="55">
-
+            <Button fx:id="resignButton" styleClass="button">Resign</Button>
+            <Button fx:id="disconnectButton" styleClass="button">Disconnect</Button>
         </HBox>
     </bottom>
 </BorderPane>
