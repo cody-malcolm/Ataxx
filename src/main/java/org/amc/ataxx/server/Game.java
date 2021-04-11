@@ -53,11 +53,18 @@ public class Game {
      */
     public char addPlayer(Player player) {
         sendToAll(player.getUsername() + " has joined the game"); // this should get sent before the player is added
-        players[0] = player;
+        if (null==players[0]){
+            players[0] = player;
+            return '1';
+        }
+        else{
+            players[1]=player;
+            return '2';
+        }
         // add player
         // check if game has two players, and set the active player (here or in Board) to '1' or '2' at random if so
         // return the index the player got assigned this time
-        return '1';
+
     }
 
     /**
@@ -116,6 +123,10 @@ public class Game {
         Pair<Integer, Integer> dest = new Pair(Character.getNumericValue(move.charAt(2)), Character.getNumericValue(move.charAt(3)));
         this.board.applyMove(source, dest, key);
         // also need to call GameLogic.checkForWinner() and update "winner" with the corresponding player's username if there is one
+        /*if (key== GameLogic.checkForWinner(this.getBoard())){
+            winner=key;
+
+        }*/
     }
 
 
