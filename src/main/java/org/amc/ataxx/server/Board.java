@@ -10,7 +10,7 @@ public class Board {
     final protected static String INITIAL_BOARD = "1-----2/-------/-------/-------/-------/-------/2-----1";
 
     private String board;
-    private char activePlayer;
+    private char activePlayer = '1';
 
     public Board() {
         // needs to set board to initial state (see tests) and pick '1' or '2' at random
@@ -58,6 +58,9 @@ public class Board {
         if (!GameLogic.validateMove(board, source, dest, key)) {
             return;
         }
+        if (key != activePlayer) {
+            return;
+        }
         int sourceRow = source.getValue0();
         int sourceCol = source.getValue1();
         int destRow = dest.getValue0();
@@ -82,6 +85,7 @@ public class Board {
         // if the opponent has no legal moves, all the rest of the board gets immediately filled with this player's pieces
 
         char opponentKey = (key == '1' ? '2' : '1');
+        System.out.println("this board " + this.board);
         if (GameLogic.noLegalMoves(this.board, opponentKey)) {
             // fill all empty spaces on board w/ "key"
             ArrayList<Pair<Integer, Integer>> emptySquaresList=GameLogic.findEmptySquares(board);
@@ -94,23 +98,54 @@ public class Board {
 
 
     public String fillSquare(String board, Pair<Integer, Integer> square, char key){
-        String oldBoard=board;
-        String[] rows=oldBoard.split("\\/");
-        int i=square.getValue0();
-        int j=square.getValue1();
+        ArrayList<Pair<Integer, Integer>> adjacent = GameLogic.getAdjacent(square);
+        for (Pair<Integer, Integer> s : adjacent) {
+            System.out.println(s);
+        }
+
+        char oppoKey = '3'; // so that '-' doesn't convert anything
+        if (key == '1') {
+            oppoKey = '2';
+        } else if (key == '2') {
+            oppoKey = '1';
+        }
+
+        String[] rows=board.split("\\/");
+
+        StringBuilder newBoard = new StringBuilder();
+        for (int r = 0; r < 7; r++) {
+            if (r != 0) {
+                newBoard.append('/');
+            }
+            for (int c = 0; c < 7; c++) {
+                Pair<Integer, Integer> temp = new Pair(r, c);
+                if (square.equals(temp)) {
+                    newBoard.append(key);
+                } else if (adjacent.contains(temp)) {
+                    if (oppoKey == GameLogic.getSquare(board, temp)) {
+                        newBoard.append(key);
+                    } else {
+                        newBoard.append(GameLogic.getSquare(board, temp));
+                    }
+                } else {
+                    newBoard.append(GameLogic.getSquare(board, temp));
+                }
+            }
+        }
+
 
         //String are immutable in Java, so we need to recreate a new Board, based on the old one
-        char[] charArray = rows[i].toCharArray();
-        charArray[j] = key;
-        rows[i]=new String(charArray); //changing the needed row
-
-        StringBuilder b = new StringBuilder();//b will be our new Board
-        for (String row : rows){
-            b.append(row+"/");
-        }
-        b.deleteCharAt(b.length()-1); //deleting last '/'
-        String newBoard=b.toString();
-        return newBoard;
+//        char[] charArray = rows[i].toCharArray();
+//        charArray[j] = key;
+//        rows[i]=new String(charArray); //changing the needed row
+//
+//        StringBuilder b = new StringBuilder();//b will be our new Board
+//        for (String row : rows){
+//            b.append(row+"/");
+//        }
+//        b.deleteCharAt(b.length()-1); //deleting last '/'
+//        String newBoard=b.toString();
+        return newBoard.toString();
     }
     /*public String applyMoveStep(Pair<Integer, Integer> dest, char key) {
         String oldBoard=this.getBoard();

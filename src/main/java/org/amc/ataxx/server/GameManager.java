@@ -75,6 +75,7 @@ public class GameManager {
         }
         else{
             Game temp=this.waitingGame;
+            // TODO fix bug with player leaving (needs to be don in controller first)
             this.waitingGame=null;
             return temp;
 

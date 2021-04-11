@@ -59,30 +59,32 @@ public class GameLogic {
         for (int r = row-1; r <= row+1; r++) {
             for (int c = col-1; c <= col+1; c++) {
                 if (r >=0 && r <= 6 && c >= 0 && c <=6) {
-                    listAdj.add(new Pair<>(r, c));
+                    if (row != r || col != c) {
+                        listAdj.add(new Pair<>(r, c));
+                    }
                 }
             }
         }
         return listAdj;
     }
     /**
-     *Returns occupied square positions that are adjacent to the current square.S
+     *Returns unoccupied square positions that are adjacent to the current square.S
      * Examples: (0,0)->(0,1) or (0,0)->(1,1) or (0,0)->(1,0) and so on
      * @param board the board to check
      * @param square a pair of numbers indicating row&col index on a board (0-6,0-6)
-     * @return list of pairs(occupied squares) that can be reached within at most 1 step in each direction
+     * @return list of pairs(unoccupied squares) that can be reached within at most 1 step in each direction
      */
     public static ArrayList<Pair<Integer, Integer>> getSteps(String board, Pair<Integer, Integer> square) {
-        //getAdjacent returns ALL adjacent squares, but we only need occupied
+        //getAdjacent returns ALL adjacent squares, but we only need unoccupied
         ArrayList<Pair<Integer, Integer>> adjacent=getAdjacent(square);
-        ArrayList<Pair<Integer, Integer>> occupiedAdjacent=new ArrayList<>();
-        //we go through all adjacent squares and take those which are occupied
+        ArrayList<Pair<Integer, Integer>> unoccupiedAdjacent=new ArrayList<>();
+        //we go through all adjacent squares and take those which are unoccupied
         for(Pair<Integer, Integer> adjPair:adjacent){
-            if (!isSquareEmpty(board, adjPair)){
-                occupiedAdjacent.add(adjPair);
+            if (isSquareEmpty(board, adjPair)){
+                unoccupiedAdjacent.add(adjPair);
             }
         }
-        return occupiedAdjacent;
+        return unoccupiedAdjacent;
     }
     /**
      *Returns occupied square positions that are within a jump from the current square.
