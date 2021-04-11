@@ -46,16 +46,9 @@ public class GameManager {
      *
      * @return A game for a player to be added to
      */
-    /* Note: You could handle this by creating another field (say openGame), which stores the currently waiting
-     game if any and null otherwise. Then you don't need to search the map each time, you just store that game in a temp,
-     change the field to null, and return the temp. Complexity vs performance. */
     public synchronized Game getAvailableGame() {
-        /*// if game available with 1 player, return that, otherwise make new game, add it to internal list of games, and return it
-        int gameID = Utils.randInt(1000, 9999); // temp
-        Game game = new Game(Integer.toString(gameID)); // temp
-        this.games.put(game.getID(), game);
-        // in addition to the above, also need to generate a random ID and ensure it's unique to pass to the constructor for Game
-        return game;*/
+        // if game available with 1 player, return that, otherwise make new game, add it to internal list of games, and return it
+
         Set<String> gameIDlist=games.keySet();
         boolean foundUniqueGameID=false;
         int gameID=0;

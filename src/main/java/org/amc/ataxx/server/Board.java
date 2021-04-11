@@ -110,8 +110,6 @@ public class Board {
             oppoKey = '1';
         }
 
-        String[] rows=board.split("\\/");
-
         StringBuilder newBoard = new StringBuilder();
         for (int r = 0; r < 7; r++) {
             if (r != 0) {
@@ -122,51 +120,23 @@ public class Board {
                 if (square.equals(temp)) {
                     newBoard.append(key);
                 } else if (adjacent.contains(temp)) {
+                    //if adjacent piece is an opponent's piece, we replace it with our piece
                     if (oppoKey == GameLogic.getSquare(board, temp)) {
                         newBoard.append(key);
                     } else {
+                        //if adjacent piece is a friendly/empty , it stays the same
                         newBoard.append(GameLogic.getSquare(board, temp));
                     }
                 } else {
+                    //if not adjacent or the square, it stays the same
                     newBoard.append(GameLogic.getSquare(board, temp));
                 }
             }
         }
 
-
-        //String are immutable in Java, so we need to recreate a new Board, based on the old one
-//        char[] charArray = rows[i].toCharArray();
-//        charArray[j] = key;
-//        rows[i]=new String(charArray); //changing the needed row
-//
-//        StringBuilder b = new StringBuilder();//b will be our new Board
-//        for (String row : rows){
-//            b.append(row+"/");
-//        }
-//        b.deleteCharAt(b.length()-1); //deleting last '/'
-//        String newBoard=b.toString();
         return newBoard.toString();
     }
-    /*public String applyMoveStep(Pair<Integer, Integer> dest, char key) {
-        String oldBoard=this.getBoard();
-        String[] rows=oldBoard.split("\\/");
-        int i=dest.getValue0();
-        int j=dest.getValue1();
 
-        //String are immutable in Java, so we need to recreate a new Board, based on the old one
-        char[] charArray = rows[i].toCharArray();
-        charArray[j] = key;
-        rows[i]=new String(charArray); //changing the needed row
-
-        StringBuilder b = new StringBuilder();//b will be our new Board
-        for (String row : rows){
-            b.append(row+"/");
-        }
-        b.deleteCharAt(b.length()-1); //deleting last '/'
-        String newBoard=b.toString();
-        return newBoard;
-
-    }*/
     public String applyMoveJump(Pair<Integer, Integer> source, Pair<Integer, Integer> dest, char key) {
         //1 step) we need to add a new piece at a dest square
         //for this, we can use applyMoveStep()

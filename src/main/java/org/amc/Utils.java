@@ -26,7 +26,7 @@ public class Utils {
      * @return true if the username is valid, false otherwise
      */
     public static boolean verifyUsername(String username) {
-        // TODO Needs to verify username - can't be "", "-", or contain a '\' - also should have a reasonable max characters
+        
         if (username.equals("")||username.equals("-")){
             return false;
         }
