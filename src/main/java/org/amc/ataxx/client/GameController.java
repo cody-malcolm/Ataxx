@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -25,6 +26,8 @@ public class GameController extends Controller {
     private Button resignButton;
     @FXML
     private Button disconnectButton;
+    @FXML
+    private Label playerLabel;
 
     private GameView view;
 
@@ -86,6 +89,7 @@ public class GameController extends Controller {
         view.renderBoard(board);
         user.setKey(key);
         user.setActivePlayer(activePlayer);
+        view.displayTurn(activePlayer, key, playerLabel);
         highlightSquares(board);
     }
 
