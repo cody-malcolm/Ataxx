@@ -206,7 +206,7 @@ public class GameLogic {
      *
      * @return the key of the player who won, or '-'
      */
-    public char checkForWinner(String board) {
+    public static char checkForWinner(String board) {
         char winner = '-';
         if (boardFull(board)){
             int numSquares1 = 0;

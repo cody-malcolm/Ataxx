@@ -3,6 +3,7 @@ package org.amc.ataxx.server;
 import org.amc.Utils;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * The singleton GameManager manages access to the collection of Games being played on the server. All Games are to be
@@ -16,6 +17,7 @@ public class GameManager {
     private GameManager() {
         games = new HashMap<>();
     }
+    private Game waitingGame=null;
 
     /**
      * Returns a unique ID for a new Game.
@@ -48,12 +50,36 @@ public class GameManager {
      game if any and null otherwise. Then you don't need to search the map each time, you just store that game in a temp,
      change the field to null, and return the temp. Complexity vs performance. */
     public synchronized Game getAvailableGame() {
-        // if game available with 1 player, return that, otherwise make new game, add it to internal list of games, and return it
+        /*// if game available with 1 player, return that, otherwise make new game, add it to internal list of games, and return it
         int gameID = Utils.randInt(1000, 9999); // temp
         Game game = new Game(Integer.toString(gameID)); // temp
         this.games.put(game.getID(), game);
         // in addition to the above, also need to generate a random ID and ensure it's unique to pass to the constructor for Game
-        return game;
+        return game;*/
+        Set<String> gameIDlist=games.keySet();
+        boolean foundUniqueGameID=false;
+        int gameID=0;
+        while (!foundUniqueGameID) {
+            gameID = Utils.randInt(1000, 9999); // temp
+            if (!gameIDlist.contains(gameID)) { //gameID is unique
+                foundUniqueGameID=true;
+
+            }
+        }
+        if (null==waitingGame){
+            //int gameID = Utils.randInt(1000, 9999); // temp
+            Game game = new Game(Integer.toString(gameID)); // temp
+            this.games.put(game.getID(), game);
+            this.waitingGame=game;
+            return game;
+        }
+        else{
+            Game temp=this.waitingGame;
+            this.waitingGame=null;
+            return temp;
+
+        }
+
     }
 
     /**

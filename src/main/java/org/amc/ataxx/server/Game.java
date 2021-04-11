@@ -1,5 +1,6 @@
 package org.amc.ataxx.server;
 
+import org.amc.ataxx.GameLogic;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
@@ -52,12 +53,20 @@ public class Game {
      * @return '1' if the player is player 1, '2' otherwise
      */
     public char addPlayer(Player player) {
-        sendToAll(player.getUsername() + " has joined the game"); // this should get sent before the player is added
-        players[0] = player;
         // add player
         // check if game has two players, and set the active player (here or in Board) to '1' or '2' at random if so
         // return the index the player got assigned this time
-        return '1';
+        sendToAll(player.getUsername() + " has joined the game"); // this should get sent before the player is added
+        if (null==players[0]){
+            players[0] = player;
+            return '1';
+        }
+        else{
+            players[1]=player;
+            return '2';
+        }
+
+
     }
 
     /**
@@ -69,7 +78,12 @@ public class Game {
         // up to you where you track the active player, here or in the Board class. Either way, Model should be able to
         // confirm move is being requested by the active player before applying it. Also, active Player should be '-'
         // until the Game has two Players.
-        return '-';
+        int numPlayers=this.players.length;
+        if (numPlayers!=2){
+            return '-';
+        }
+        return this.board.getActivePlayer();
+
     }
 
     /**
@@ -116,6 +130,12 @@ public class Game {
         Pair<Integer, Integer> dest = new Pair(Character.getNumericValue(move.charAt(2)), Character.getNumericValue(move.charAt(3)));
         this.board.applyMove(source, dest, key);
         // also need to call GameLogic.checkForWinner() and update "winner" with the corresponding player's username if there is one
+        if (key== GameLogic.checkForWinner(this.getBoard())){
+            int index=Character.getNumericValue(key)-1;
+            Player winningPlayer=getPlayer(index);
+            winner= winningPlayer.getUsername();
+
+        }
     }
 
 
@@ -137,6 +157,17 @@ public class Game {
     public void handleResignation(char key) {
         // identify the username of the player resigning, and invoke: sendToAll(username + "has resigned the game")
         // update winner
+        int index=Character.getNumericValue(key)-1;
+        Player resigningPlayer=getPlayer(index);
+        sendToAll(resigningPlayer.getUsername() + " has resigned the game");
+        Player winningPlayer;
+        if (key=='1'){
+            winningPlayer=getPlayer(0);
+        }
+        else{
+            winningPlayer=getPlayer(1);
+        }
+        winner=winningPlayer.getUsername();
     }
 
     /**
