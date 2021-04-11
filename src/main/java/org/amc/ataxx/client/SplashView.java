@@ -25,4 +25,7 @@ public class SplashView {
     public void disableConnect(Button connectButton) {
         connectButton.setDisable(true);
     }
+
+    public void promptForNewUsername() {
+    }
 }
