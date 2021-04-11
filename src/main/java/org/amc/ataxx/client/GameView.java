@@ -158,9 +158,13 @@ public class GameView {
         Color[] activeColors = {Color.hsb(0,1,0.79), Color.hsb(215, 1, 0.79)};
         Color[] inactiveColors = {Color.hsb(0,1,0.40), Color.hsb(215, 1, 0.40)};
         if (activePlayer == key){
+            // For testing
+            System.out.println("Inside activePlayer(" + activePlayer + ") == key(" + key + ")");
             playerLabel.setTextFill(activeColors[Integer.valueOf(key)-49]);
             playerLabel.setText("Player " + key);
         } else {
+            // For testing
+            System.out.println("Inside activePlayer(" + activePlayer + ") != key(" + key + ")");
             playerLabel.setTextFill(inactiveColors[Integer.valueOf(key)-49]);
             playerLabel.setText("Player " + key);
         }
