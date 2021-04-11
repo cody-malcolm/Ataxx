@@ -1,0 +1,25 @@
+.button {
+    -fx-font-size: 14px;
+    -fx-padding: 10;
+    -fx-background-color: #8C8C8C;
+    -fx-text-fill: white;
+    -fx-pref-width: 150px;
+}
+
+.gameIDinput{
+    -fx-font-size: 14px;
+    -fx-padding: 10;
+    -fx-background-color: #E4E4E4;
+    -fx-pref-width: 200px;
+}
+
+.input {
+    -fx-font-size: 14px;
+    -fx-padding: 10;
+    -fx-background-color: #E4E4E4;
+    -fx-pref-width: 150px;
+}
+
+.label {
+    -fx-font-size: 14px;
+}
