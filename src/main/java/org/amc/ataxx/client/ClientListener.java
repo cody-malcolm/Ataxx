@@ -34,6 +34,7 @@ public class ClientListener extends Thread {
 
     /** The access code to establish a connection */
     final private String ACCESS_CODE = "arstdhneio";
+    private boolean abortConnectionAttempt = false;
 
     public ClientListener(String username, Stage stage) {
         this.user = new User(username, '0');
@@ -45,7 +46,7 @@ public class ClientListener extends Thread {
     private boolean establishConnection() {
         boolean connected = false;
         int attempts = 1;
-        while (!connected && attempts < 10) {
+        while (!connected && attempts < 10 && !this.abortConnectionAttempt) {
             try {
                 this.socket = new Socket(HOST, PORT);
                 connected = true;
@@ -187,6 +188,8 @@ public class ClientListener extends Thread {
             this.socket.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            this.abortConnectionAttempt = true;
         }
     }
 }
