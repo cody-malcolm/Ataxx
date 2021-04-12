@@ -23,3 +23,9 @@
 .label {
     -fx-font-size: 14px;
 }
+
+.playerLabel{
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+    -fx-padding: 10;
+}
