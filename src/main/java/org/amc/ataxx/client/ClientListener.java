@@ -112,7 +112,7 @@ public class ClientListener extends Thread {
             return true;
         }
 
-        System.out.println(response); // just during development
+//        System.out.println(response); // just during development
 
         String type = response.substring(0, response.indexOf('\\'));
 
@@ -133,7 +133,7 @@ public class ClientListener extends Thread {
 
     private void handleInfoResponse(String response) {
         String[] args = response.split("\\\\");
-        user.setOpponentUsername(args[0], args[1]);
+        user.setDisplayNames(args[0], args[1]);
         user.setGameId(args[2]);
     }
 
@@ -160,19 +160,19 @@ public class ClientListener extends Thread {
 
         char activePlayer = args[4].charAt(0);
         char key = args[5].charAt(0);
-
         this.user.setBoard(args[3]);
 
+
         if (args[2].equals("none")) {
-            this.gameController.refreshBoard(args[3], activePlayer, key,
-                    this.user.getUsername(), this.user.getOpponentUsername(), this.user.getGameId());
+            this.gameController.refreshBoard(args[3], activePlayer, key, this.user.getDisplayNames(), this.user.getGameId());
         } else {
-            gameController.handleMove(args[1], args[2], args[3], activePlayer, key);
+            gameController.handleMove(args[1], args[2], args[3], activePlayer, key, this.user.getDisplayNames());
         }
+
         gameController.updateBoard(args[3]);
 
-        String winner = args[6];
-        if (!winner.equals("-")) {
+        char winner = args[6].charAt(0);
+        if (winner != '-') {
             gameController.winnerDetermined(winner);
         }
     }

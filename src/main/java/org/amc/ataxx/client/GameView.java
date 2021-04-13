@@ -159,26 +159,32 @@ public class GameView {
 //        displayTurn(activePlayer, key, playerLabel);
 //    }
 
-    public void displayTurn(char activePlayer, char key, Label playerLabel) {
-        String username;
-        if (key == '1' || key == '2') {
-            Color[] activeColors = {Color.hsb(0,1,0.79), Color.hsb(215, 1, 0.79)};
-            Color[] inactiveColors = {Color.hsb(0,1,0.40), Color.hsb(215, 1, 0.40)};
-            if (activePlayer == key){
-                // For testing
+    public void displayTurn(char activePlayer, char key, Label playerLabel, Label opponentLabel, String[] displayNames) {
+
+        Color[] activeColors = {Color.hsb(0,1,0.79), Color.hsb(215, 1, 0.79)};
+        Color[] inactiveColors = {Color.hsb(0,1,0.40), Color.hsb(215, 1, 0.40)};
+        // TODO bet this can be cleaned up now
+        if (activePlayer == key) {
+            // For testing
 //            System.out.println("Testing turn render: Inside activePlayer(" + activePlayer + ") == key(" + key + ")");
-                playerLabel.setTextFill(activeColors[Integer.valueOf(key)-49]);
-            } else {
-                // For testing
+            playerLabel.setTextFill(activeColors[Integer.valueOf(key)-49]);
+            opponentLabel.setTextFill(inactiveColors[((Integer.valueOf(key)-49)+1)%2]);
+        } else if (key == '3' && activePlayer == '1') {
+            playerLabel.setTextFill(activeColors[0]);
+            opponentLabel.setTextFill(inactiveColors[1]);
+        } else if (key != '3') {
+            // For testing
 //            System.out.println("Testing turn render: Inside activePlayer(" + activePlayer + ") != key(" + key + ")");
-                playerLabel.setTextFill(inactiveColors[Integer.valueOf(key)-49]);
-            }
-            username = "Player " + key;
+            playerLabel.setTextFill(inactiveColors[Integer.valueOf(key)-49]);
+            opponentLabel.setTextFill(activeColors[((Integer.valueOf(key)-49)+1)%2]);
         } else {
-            username = "Spectator";
+            playerLabel.setTextFill(inactiveColors[0]);
+            opponentLabel.setTextFill(activeColors[1]);
         }
+
         Platform.runLater(()-> {
-            playerLabel.setText(username);
+            playerLabel.setText(displayNames[1]);
+            opponentLabel.setText(displayNames[0]);
         });
     }
 
@@ -309,7 +315,9 @@ public class GameView {
      *
      * @param winner the Username of the winning player
      */
-    public void displayWinner(String winner) { }
+    public void displayWinner(String winner) {
+
+    }
 
     /**
      * Displays the provided message in the chat box. Applies styling based on the given char.
@@ -344,12 +352,6 @@ public class GameView {
             children.add(buffer);
             pane.setVvalue(1);
         });
-    }
-
-    public void displayUsernames(String username, String opponentName) {
-        System.out.println("This player is " + username);
-        System.out.println("The opponent is " + opponentName);
-
     }
 
     public void displayGameId(String gameId) {

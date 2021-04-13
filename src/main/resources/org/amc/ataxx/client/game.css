@@ -40,3 +40,10 @@
 .errorLabel {
     -fx-font-weight: bold;
 }
+
+.playerLabel{
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+    -fx-padding: 10;
+    -fx-alignment: center;
+}

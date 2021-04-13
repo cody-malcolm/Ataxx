@@ -98,6 +98,5 @@ public class GameManager {
         if (null != this.waitingGame && this.waitingGame.getID() == id) {
             this.waitingGame = null;
         }
-        this.games.remove(id);
     }
 }

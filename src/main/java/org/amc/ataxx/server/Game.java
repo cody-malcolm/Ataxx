@@ -181,6 +181,7 @@ public class Game {
     public char addSpectator(Player spectator) {
         sendToAll(spectator.getUsername() + " is now spectating the game");
         spectators.add(spectator);
+        sendGameInfo();
         return '3';
     }
 

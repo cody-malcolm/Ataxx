@@ -31,6 +31,8 @@ public class GameController extends Controller {
     @FXML
     private Label playerLabel;
     @FXML
+    private Label opponentLabel;
+    @FXML
     private Label buffer;
 
     private GameView view;
@@ -94,14 +96,13 @@ public class GameController extends Controller {
      * @param activePlayer the active player
      * @param key the User's key
      */
-    public void refreshBoard(String board, char activePlayer, char key, String username, String opponentName, String id) {
-        view.displayUsernames(username, opponentName);
+    public void refreshBoard(String board, char activePlayer, char key, String[] displayNames, String id) {
         view.displayGameId(id);
         view.displayCounts(GameLogic.getCounts(board));
         view.renderBoard(board);
         user.setKey(key);
         user.setActivePlayer(activePlayer);
-        view.displayTurn(activePlayer, key, playerLabel);
+        view.displayTurn(activePlayer, key, playerLabel, opponentLabel, displayNames);
         highlightSquares(board);
     }
 
@@ -126,11 +127,12 @@ public class GameController extends Controller {
      * @param activePlayer the authoritative active player
      * @param key the User's key
      */
-    public void handleMove(String oldBoard, String move, String newBoard, char activePlayer, char key) {
+    public void handleMove(String oldBoard, String move, String newBoard, char activePlayer,
+                           char key, String[] displayNames) {
         user.setKey(key);
         user.setActivePlayer(activePlayer);
         view.displayCounts(GameLogic.getCounts(newBoard));
-        view.displayTurn(activePlayer, key, playerLabel);
+        view.displayTurn(activePlayer, key, playerLabel, opponentLabel, displayNames);
         view.animateMove(oldBoard, newBoard, move);
     }
 
@@ -146,9 +148,10 @@ public class GameController extends Controller {
     /**
      * Updates the view with the game over screen according to if the User won or lost
      *
-     * @param username the username of the winner
+     * @param key the key of the winner
      */
-    public void winnerDetermined(String username) {
+    public void winnerDetermined(char key) {
+        String username = user.getName(key);
         view.displayWinner(username);
     }
 
