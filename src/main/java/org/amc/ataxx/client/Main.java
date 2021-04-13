@@ -23,6 +23,7 @@ public class Main extends Application {
     public void stop() throws Exception {
         super.stop();
         if (null != Main.listener) {
+            listener.sendRequest("RESN");
             listener.closeSocket();
         }
     }

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import java.net.URL?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            prefHeight="700.0" prefWidth="1200.0">
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            prefHeight="700.0" prefWidth="1200.0" fx:id="borderPane">
 <!--    padding-->
     <padding>
         <Insets top="10" bottom="10" left="10" right="10" />
@@ -17,11 +19,26 @@
         <URL value="@main.css" />
     </stylesheets>
 
-<!--    temp buttons-->
-    <HBox>
-        <Button fx:id="connectButton" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="button">Connect</Button>
-        <Button fx:id="gameButton" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="button">Find Game</Button>
-        <Button fx:id="spectateButton" GridPane.rowIndex="0" GridPane.columnIndex="2" styleClass="button">Spectate</Button>
-    </HBox>
+<!--    buttons-->
+    <center>
+        <VBox alignment="CENTER" spacing="20">
+            <HBox alignment="CENTER" fx:id="imageContainer">
+                <children>
+                    <ImageView></ImageView>
+                </children>
+            </HBox>
+            <HBox alignment="CENTER">
+                <Label text="Username: "/>
+                <TextField id="username" promptText="Enter your username" fx:id="usernameField" styleClass="input"/>
+            </HBox>
+            <Button fx:id="connectButton" styleClass="button">Connect</Button>
+            <Button fx:id="gameButton" styleClass="button" visible="false">Find Game</Button>
+            <HBox alignment="CENTER" visible="false" fx:id="spectateBox" spacing="10">
+                <Label text="GameID: "/>
+                <TextField id="gameID" promptText="Enter an existing Game ID" fx:id="gameIDField" styleClass="gameIDinput" />
+                <Button fx:id="spectateButton" styleClass="button" visible="false">Spectate</Button>
+            </HBox>
+        </VBox>
+    </center>
 
-</GridPane>
+</BorderPane>

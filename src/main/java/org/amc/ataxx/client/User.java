@@ -1,5 +1,6 @@
 package org.amc.ataxx.client;
 
+import org.amc.ataxx.GameLogic;
 import org.javatuples.Pair;
 
 /**
@@ -18,6 +19,10 @@ public class User {
     final private String username;
     /** The current state of the board */
     private String board;
+    /** The username of the current opponent */
+    private String opponentUsername;
+    /** The ID of the Game being played */
+    private String gameId;
 
     public User(String username, char key) {
         this.username = username;
@@ -30,32 +35,47 @@ public class User {
      * @return a String representing the move in "0123" format (source row/source col/dest row/dest col) or null if no move
      */
     public String clicked(Pair<Integer, Integer> square) {
-        // if it is the player's turn
-            // if this.source is null
-                // if "square" is occupied by a friendly piece (use GameLogic.getSquare(board, square)), set this.source to square
-            // else (this.source is not null, so user has already selected a source square), handle various scenarios
-                // if "square" is the same square as source, or is occupied by an opposing piece,
-                    // set this.source to null (may want to use a helper function eg. "clearSelection()"/"clearSource()"
-                // else if square is occupied by a friendly piece,
-                    // set this.source to square
-                // else, square is unoccupied
-                    // if GameLogic.validateMove(board, this.source, square, this.key)
-                        // return the String representing the move (see temp code)
-                    // whether move was valid or not, set this.source to null before returning
+        //if it's player's turn
+        if (this.key==this.activePlayer){
 
-        // temp code for testing Controller
-        if (null == this.source) {
-            this.source = square;
-            return null;
-        } else {
-            StringBuilder move = new StringBuilder();
-            move.append(this.source.getValue0())
-                    .append(this.source.getValue1())
-                    .append(square.getValue0())
-                    .append(square.getValue1());
-            source = null;
-            return move.toString();
+            // if this.source is null
+            if (null == this.source) {
+                //if the player controls this piece
+                if (GameLogic.getSquare(this.board, square)==this.key){
+                    this.source = square;
+                }
+
+            } else {//this.source is not null, so user has already selected a source square
+                char oppKey=key=='1'?'2':'1';
+                // if "square" is the same square as source, or is occupied by an opposing piece,
+                // set this.source to null
+                if (square.equals(this.source) ||GameLogic.getSquare(this.board, square) ==oppKey){
+                    this.source=null;
+                }
+                //if square is occupied by a friendly piece,
+                // set this.source to square
+                else if (GameLogic.getSquare(this.board, square) ==key){
+                    this.source=square;
+                }
+                //square is unoccupied
+                else {
+                    //if move is legal, return move
+                    //return move and reset this.source to null
+                    if (GameLogic.validateMove(this.board, this.source, square, this.key)){
+                        StringBuilder move = new StringBuilder();
+                        move.append(this.source.getValue0())
+                                .append(this.source.getValue1())
+                                .append(square.getValue0())
+                                .append(square.getValue1());
+                        this.source = null;
+                        return move.toString();
+                    }
+                    this.source = null;
+                }
+            }
         }
+        return null;
+
     }
 
     /**
@@ -112,4 +132,24 @@ public class User {
         return this.board;
     }
 
+    public void setOpponentUsername(String playerOneUsername, String playerTwoUsername) {
+        // 2nd player receives INFO response before being assigned a key, so can't query key safely in this method
+        if (this.username.equals(playerOneUsername)) {
+            this.opponentUsername = playerTwoUsername;
+        } else {
+            this.opponentUsername = playerOneUsername;
+        }
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
+    }
+
+    public String getOpponentUsername() {
+        return this.opponentUsername;
+    }
+
+    public String getGameId() {
+        return this.gameId;
+    }
 }

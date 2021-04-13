@@ -1,5 +1,8 @@
 package org.amc.ataxx.server;
 
+import org.amc.ataxx.GameLogic;
+import org.javatuples.Pair;
+
 import java.util.ArrayList;
 
 public class Game {
@@ -8,7 +11,7 @@ public class Game {
     private Player[] players = new Player[2];
     private ArrayList<Player> spectators;
     private Board board;
-    private String winner = "-"; // may be unnecessary
+    private char winner = '-'; // may be unnecessary
 
     // '1' -> player 1 piece
     // '2' -> player 2 piece
@@ -50,12 +53,18 @@ public class Game {
      * @return '1' if the player is player 1, '2' otherwise
      */
     public char addPlayer(Player player) {
-        sendToAll(player.getUsername() + " has joined the game"); // this should get sent before the player is added
-        players[0] = player;
-        // add player
         // check if game has two players, and set the active player (here or in Board) to '1' or '2' at random if so
-        // return the index the player got assigned this time
-        return '1';
+        sendToAll(player.getUsername() + " has joined the game"); // this should get sent before the player is added
+        if (null==players[0]){
+            players[0] = player;
+            return '1';
+        }
+        else{
+            players[1]=player;
+            sendGameInfo();
+            return '2';
+        }
+
     }
 
     /**
@@ -67,7 +76,12 @@ public class Game {
         // up to you where you track the active player, here or in the Board class. Either way, Model should be able to
         // confirm move is being requested by the active player before applying it. Also, active Player should be '-'
         // until the Game has two Players.
-        return '-';
+        int numPlayers=this.players.length;
+        if (numPlayers!=2){
+            return '-';
+        }
+        return this.board.getActivePlayer();
+
     }
 
     /**
@@ -107,21 +121,35 @@ public class Game {
      * @param key The player requesting the move. '1' or '2'
      */
     public void applyMove(String move, char key) {
-        // you'll want to pass this on to board.applyMove, but it's up to you if you want to verify it at this stage (I'd just do it in board.applymove)
-        // please explicitly check for '1' and '2', don't use else, in later iterations spectators might get '3' or something
-        // also, activePlayer is '0' before game starts, more reason to not use else
+        Pair<Integer, Integer> source = new Pair(Character.getNumericValue(move.charAt(0)), Character.getNumericValue(move.charAt(1)));
+        Pair<Integer, Integer> dest = new Pair(Character.getNumericValue(move.charAt(2)), Character.getNumericValue(move.charAt(3)));
+        this.board.applyMove(source, dest, key);
+        this.winner = GameLogic.checkForWinner(this.board.getBoard());
+        if (this.winner != '-') {
+            handleGameOver();
+        }
+    }
 
-        // also need to call GameLogic.checkForWinner() and update "winner" with the corresponding player's username if there is one
+    private void handleGameOver() {
+        for (Player player : this.players) {
+            if (null != player) {
+                player.finishedGame();
+            }
+        }
+
+        for (Player spectator : this.spectators) {
+            spectator.finishedGame();
+        }
+        GameManager.getInstance().removeGame(this.id);
     }
 
 
-
     /**
-     * Returns the username of the winner of the Game, or "-" if the Game is ongoing.
+     * Returns the key of the winner of the Game, or '-' if the Game is ongoing.
      *
-     * @return the username of the winner
+     * @return the key of the winner
      */
-    public String getWinner() {
+    public char getWinner() {
         return this.winner;
     }
 
@@ -133,6 +161,15 @@ public class Game {
     public void handleResignation(char key) {
         // identify the username of the player resigning, and invoke: sendToAll(username + "has resigned the game")
         // update winner
+        if (key == '1' || key == '2') {
+            int index = Character.getNumericValue(key)-1;
+            Player resigningPlayer=getPlayer(index);
+            sendToAll(resigningPlayer.getUsername() + " has resigned the game");
+            char winnerKey = key == '1' ? '2' : '1';
+            board.fillAllSquares(winnerKey);
+            this.winner = winnerKey;
+            handleGameOver();
+        }
     }
 
     /**
@@ -147,7 +184,7 @@ public class Game {
         return '3';
     }
 
-    private void sendToAll(String message) {
+    public void sendToAll(String message) {
         for (Player player : this.players) {
             if (null != player) {
                 player.sendSystemMessage(message);
@@ -159,6 +196,23 @@ public class Game {
         }
     }
 
+    private void sendGameInfo() {
+
+        if (null != this.players[0] && null != this.players[1]) {
+            String playerOneUsername = this.players[0].getUsername();
+            String playerTwoUsername = this.players[1].getUsername();
+
+            for (Player player : this.players) {
+                player.sendGameInformation(playerOneUsername, playerTwoUsername, this.id);
+            }
+
+            for (Player spectator : this.spectators) {
+                spectator.sendGameInformation(playerOneUsername, playerTwoUsername, this.id);
+            }
+        }
+    }
+
+
     /**
      * Removes the given spectator from the ArrayList.
      *
@@ -166,6 +220,7 @@ public class Game {
      */
     public void removeSpectator(Player spectator) {
         spectators.remove(spectator);
+        sendToAll(spectator.getUsername() + " has left the game");
     }
 
     /**

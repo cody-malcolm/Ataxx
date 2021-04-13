@@ -7,8 +7,14 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TextArea?>
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:id="borderPane"
             prefHeight="700.0" prefWidth="1200.0">
+    <!--    css-->
+    <stylesheets>
+        <URL value="@game.css" />
+    </stylesheets>
+
     <!--    padding-->
     <padding>
         <Insets top="10" bottom="10" left="10" right="10" />
@@ -20,24 +26,28 @@
 
     <!--    temp buttons-->
     <top>
-        <HBox>
-            <Button fx:id="resignButton" GridPane.rowIndex="0" GridPane.columnIndex="3" styleClass="button">Resign</Button>
-            <Button fx:id="disconnectButton" GridPane.rowIndex="0" GridPane.columnIndex="4" styleClass="button">Disconnect</Button>
-
+        <HBox alignment="TOP_LEFT" spacing="20" minHeight="55">
+            <Label fx:id="playerLabel" styleClass="playerLabel"></Label>
         </HBox>
     </top>
 
     <left>
-        <VBox>
-            <ScrollPane fx:id="messagesContainer" minHeight="550">
-                <Label fx:id="messages">
-
-                </Label>
-
+        <VBox alignment="CENTER" spacing="-10" styleClass="leftContainer" minWidth="315">
+            <ScrollPane fx:id="messagesScrollpane" minHeight="565" styleClass="messagesContainer">
+                <VBox fx:id="messagesContainer" spacing="5">
+                    <Label fx:id="buffer"></Label>
+                </VBox>
             </ScrollPane>
-            <TextField fx:id="chat" onAction="#chat">
+            <TextField fx:id="chat" promptText="Type to chat. Press Enter to send." onAction="#chat" styleClass="chat">
 
             </TextField>
         </VBox>
     </left>
+
+    <bottom>
+        <HBox alignment="BOTTOM_RIGHT" spacing="20" minHeight="55">
+            <Button fx:id="resignButton" styleClass="button">Resign</Button>
+            <Button fx:id="disconnectButton" styleClass="button">Disconnect</Button>
+        </HBox>
+    </bottom>
 </BorderPane>

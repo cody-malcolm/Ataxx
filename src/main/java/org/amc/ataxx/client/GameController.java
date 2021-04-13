@@ -1,13 +1,14 @@
 package org.amc.ataxx.client;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import org.amc.ataxx.GameLogic;
 import org.javatuples.Pair;
 
@@ -18,13 +19,21 @@ public class GameController extends Controller {
     @FXML
     private BorderPane borderPane;
     @FXML
-    private Label messages;
+    private VBox messagesContainer;
+    @FXML
+    private ScrollPane messagesScrollpane;
     @FXML
     private TextField chat;
     @FXML
     private Button resignButton;
     @FXML
     private Button disconnectButton;
+    @FXML
+    private Label playerLabel;
+    @FXML
+    private Label buffer;
+
+    private GameView view;
 
     /** The User associated with the controller */
     private User user;
@@ -59,6 +68,9 @@ public class GameController extends Controller {
      */
     public void disconnectClick() {
         sendRequest("CLSE");
+
+        // in a future iteration, could return to original splash screen
+        System.exit(0);
     }
 
     /**
@@ -69,7 +81,10 @@ public class GameController extends Controller {
         resignButton.setOnAction(event -> resignClick());
         disconnectButton.setOnAction(event -> disconnectClick());
         // initialize the Canvas
-        Views.createCanvas(borderPane);
+        view = GameView.getInstance();
+        view.createCanvas(borderPane);
+
+        this.buffer.setText("\r\n");
     }
 
     /**
@@ -79,10 +94,14 @@ public class GameController extends Controller {
      * @param activePlayer the active player
      * @param key the User's key
      */
-    public void refreshBoard(String board, char activePlayer, char key) {
-        Views.renderBoard(board);
+    public void refreshBoard(String board, char activePlayer, char key, String username, String opponentName, String id) {
+        view.displayUsernames(username, opponentName);
+        view.displayGameId(id);
+        view.displayCounts(GameLogic.getCounts(board));
+        view.renderBoard(board);
         user.setKey(key);
         user.setActivePlayer(activePlayer);
+        view.displayTurn(activePlayer, key, playerLabel);
         highlightSquares(board);
     }
 
@@ -94,7 +113,7 @@ public class GameController extends Controller {
         if (null != source) {
             ArrayList<Pair<Integer, Integer>> steps = GameLogic.getSteps(board, source);
             ArrayList<Pair<Integer, Integer>> jumps = GameLogic.getJumps(board, source);
-            Views.highlightDestinationSquares(steps, jumps);
+            view.highlightDestinationSquares(steps, jumps);
         }
     }
 
@@ -110,7 +129,9 @@ public class GameController extends Controller {
     public void handleMove(String oldBoard, String move, String newBoard, char activePlayer, char key) {
         user.setKey(key);
         user.setActivePlayer(activePlayer);
-        Views.animateMove(oldBoard, newBoard, move);
+        view.displayCounts(GameLogic.getCounts(newBoard));
+        view.displayTurn(activePlayer, key, playerLabel);
+        view.animateMove(oldBoard, newBoard, move);
     }
 
     /**
@@ -128,18 +149,25 @@ public class GameController extends Controller {
      * @param username the username of the winner
      */
     public void winnerDetermined(String username) {
-        Views.displayWinner(username);
+        view.displayWinner(username);
     }
 
     public void processMessage(String message, char style) {
 //        Views.displayMessage(message, style);
-        Platform.runLater(()-> {
-            if (messages.getText().equals("")) {
-                messages.setText(message);
-            } else {
-                messages.setText(messages.getText() + "\r\n" + message);
-            }
-        });
+        if (style == 'd') {
+            this.view.addChat(message, this.messagesContainer, this.messagesScrollpane);
+        } else if (style == 'i') {
+            this.view.addNotification(message, this.messagesContainer, this.messagesScrollpane);
+        } else if (style == 'b') {
+            this.view.addError(message, this.messagesContainer, this.messagesScrollpane);
+        }
+//        Platform.runLater(()-> {
+//            if (messages.getText().equals("")) {
+//                messages.setText(message);
+//            } else {
+//                messages.setText(messages.getText() + "\r\n" + message);
+//            }
+//        });
 
     }
 

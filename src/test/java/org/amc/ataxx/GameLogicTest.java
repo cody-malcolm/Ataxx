@@ -78,10 +78,24 @@ public class GameLogicTest {
         list3.add(new Pair<>(5,2));
         list3.add(new Pair<>(5,3));
 
-        assertTrue(GameLogic.getAdjacent(source1).equals(list1), "Corner square");
-        assertTrue(GameLogic.getAdjacent(dest1).equals(list2), "Edge square");
-        assertTrue(GameLogic.getAdjacent(dest3).equals(list3), "Central square");
+        assertTrue(GameLogicTest.pairsMatch(GameLogic.getAdjacent(source1), list1), "Corner square");
+        assertTrue(GameLogicTest.pairsMatch(GameLogic.getAdjacent(dest1), list2), "Edge square");
+        assertTrue(GameLogicTest.pairsMatch(GameLogic.getAdjacent(dest3), list3), "Central square");
     }
+    private static boolean pairsMatch(ArrayList<Pair<Integer, Integer>> adjacent, ArrayList<Pair<Integer, Integer>> list1) {
+        for (Pair<Integer, Integer> sq : adjacent) {
+            if (!list1.contains(sq)) {
+                return false;
+            }
+        }
+        for (Pair<Integer, Integer> sq : list1) {
+            if (!adjacent.contains(sq)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     @Test
     public void testGetSquare() {

@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.amc.Utils;
 
@@ -11,15 +13,23 @@ import java.io.IOException;
 
 public class SplashController extends Controller {
     @FXML
+    private TextField gameIDField;
+    @FXML
+    private HBox spectateBox;
+    @FXML
     private Button connectButton;
     @FXML
     private Button gameButton;
     @FXML
     private Button spectateButton;
+    @FXML
+    private TextField usernameField;
+
+    private SplashView view;
 
     public SplashController(Stage stage) {
         super(stage);
-
+        view = SplashView.getInstance();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("splash.fxml"));
 
@@ -46,14 +56,14 @@ public class SplashController extends Controller {
      * Handles a click of the connect button.
      */
     public void connectClick() {
-        String username = "Anonymous"; // TODO pull from a field in the View
+        String username = usernameField.getText(); // TODO pull from a field in the View
         if (Utils.verifyUsername(username)) {
             this.listener = new ClientListener(username, this.stage);
             Main.setListener(this.listener);
             this.listener.start();
-            // TODO need to decide how to prevent multiple "connect" clicks - disable, hide, or flag
+            view.disableConnect(usernameField, connectButton, gameButton, spectateBox, spectateButton);
         } else {
-            // TODO prompt user to correct username
+            view.promptForNewUsername();
         }
     }
 
@@ -65,6 +75,6 @@ public class SplashController extends Controller {
     }
 
     public void spectateClick() {
-        sendRequest("SPEC\\0000"); // TODO get gameID from UI
+        sendRequest("SPEC\\" + gameIDField.getText()); // TODO get gameID from UI
     }
 }

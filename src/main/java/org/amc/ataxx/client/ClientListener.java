@@ -19,6 +19,8 @@ public class ClientListener extends Thread {
     /** The User associated with the controller */
     private User user;
 
+    private GameView view;
+
     private boolean showingGameScene = false;
     final private Stage stage;
     private GameController gameController;
@@ -32,17 +34,19 @@ public class ClientListener extends Thread {
 
     /** The access code to establish a connection */
     final private String ACCESS_CODE = "arstdhneio";
+    private boolean abortConnectionAttempt = false;
 
     public ClientListener(String username, Stage stage) {
         this.user = new User(username, '0');
         this.stage = stage;
-        Views.setClientListener(this);
+        view = GameView.getInstance();
+        view.setClientListener(this);
     }
 
     private boolean establishConnection() {
         boolean connected = false;
         int attempts = 1;
-        while (!connected && attempts < 10) {
+        while (!connected && attempts < 10 && !this.abortConnectionAttempt) {
             try {
                 this.socket = new Socket(HOST, PORT);
                 connected = true;
@@ -114,9 +118,17 @@ public class ClientListener extends Thread {
             handleChatMessage(response.substring(response.indexOf('\\')+1));
         } else if (type.regionMatches(true, 0, "ERR", 0, 3)) {
             handleErrorMessage(response.split("\\\\")[1]);
+        } else if (type.regionMatches(true, 0, "INFO", 0, 4)) {
+            handleInfoResponse(response.substring(response.indexOf('\\')+1));
         }
 
         return false;
+    }
+
+    private void handleInfoResponse(String response) {
+        String[] args = response.split("\\\\");
+        user.setOpponentUsername(args[0], args[1]);
+        user.setGameId(args[2]);
     }
 
     private boolean showGameScene() {
@@ -143,8 +155,11 @@ public class ClientListener extends Thread {
         char activePlayer = args[4].charAt(0);
         char key = args[5].charAt(0);
 
+        this.user.setBoard(args[3]);
+
         if (args[2].equals("none")) {
-            gameController.refreshBoard(args[3], activePlayer, key);
+            this.gameController.refreshBoard(args[3], activePlayer, key,
+                    this.user.getUsername(), this.user.getOpponentUsername(), this.user.getGameId());
         } else {
             gameController.handleMove(args[1], args[2], args[3], activePlayer, key);
         }
@@ -184,6 +199,8 @@ public class ClientListener extends Thread {
             this.socket.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            this.abortConnectionAttempt = true;
         }
     }
 }

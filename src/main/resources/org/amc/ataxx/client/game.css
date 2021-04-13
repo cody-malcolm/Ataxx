@@ -1,0 +1,42 @@
+.button {
+    -fx-font-size: 16px;
+    -fx-padding: 10;
+    -fx-background-color: #8C8C8C;
+    -fx-text-fill: white;
+    -fx-pref-width: 150px;
+}
+
+.scroll-pane {
+    -fx-fill-width: 100%;
+    -fx-background-color: #CDC9C9;
+    -fx-pref-width: 300;
+    -fx-wrap-text: true;
+}
+
+.messagesContainer {
+    -fx-padding: 5;
+    -fx-background-color: #8C8C8C;
+    -fx-font-size: 14px;
+    -fx-wrap-text: true;
+    -fx-fit-to-width: true;
+}
+
+
+.chat{
+    -fx-font-size: 14px;
+    -fx-padding: 15;
+    -fx-background-color: #E4E4E4;
+    -fx-border-width: 5px;
+    -fx-border-color: #8C8C8C;
+}
+
+.chatLabel {
+}
+
+.notificationLabel {
+    -fx-font-style: italic;
+}
+
+.errorLabel {
+    -fx-font-weight: bold;
+}
