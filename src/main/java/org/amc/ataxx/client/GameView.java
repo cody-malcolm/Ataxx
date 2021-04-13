@@ -160,18 +160,26 @@ public class GameView {
 //    }
 
     public void displayTurn(char activePlayer, char key, Label playerLabel) {
-        Color[] activeColors = {Color.hsb(0,1,0.79), Color.hsb(215, 1, 0.79)};
-        Color[] inactiveColors = {Color.hsb(0,1,0.40), Color.hsb(215, 1, 0.40)};
-        if (activePlayer == key){
-            // For testing
+        String username;
+        if (key == '1' || key == '2') {
+            Color[] activeColors = {Color.hsb(0,1,0.79), Color.hsb(215, 1, 0.79)};
+            Color[] inactiveColors = {Color.hsb(0,1,0.40), Color.hsb(215, 1, 0.40)};
+            if (activePlayer == key){
+                // For testing
 //            System.out.println("Testing turn render: Inside activePlayer(" + activePlayer + ") == key(" + key + ")");
-            playerLabel.setTextFill(activeColors[Integer.valueOf(key)-49]);
-        } else {
-            // For testing
+                playerLabel.setTextFill(activeColors[Integer.valueOf(key)-49]);
+            } else {
+                // For testing
 //            System.out.println("Testing turn render: Inside activePlayer(" + activePlayer + ") != key(" + key + ")");
-            playerLabel.setTextFill(inactiveColors[Integer.valueOf(key)-49]);
+                playerLabel.setTextFill(inactiveColors[Integer.valueOf(key)-49]);
+            }
+            username = "Player " + key;
+        } else {
+            username = "Spectator";
         }
-        playerLabel.setText("Player " + key);
+        Platform.runLater(()-> {
+            playerLabel.setText(username);
+        });
     }
 
     /**
@@ -338,4 +346,18 @@ public class GameView {
         });
     }
 
+    public void displayUsernames(String username, String opponentName) {
+        System.out.println("This player is " + username);
+        System.out.println("The opponent is " + opponentName);
+
+    }
+
+    public void displayGameId(String gameId) {
+        System.out.println("The game ID is " + gameId);
+    }
+
+    public void displayCounts(Pair<Integer, Integer> counts) {
+        System.out.println("Player 1: " + counts.getValue0());
+        System.out.println("Player 2: " + counts.getValue1());
+    }
 }

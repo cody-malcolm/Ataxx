@@ -85,12 +85,11 @@ public class Board {
         // if the opponent has no legal moves, all the rest of the board gets immediately filled with this player's pieces
 
         char opponentKey = (key == '1' ? '2' : '1');
-        System.out.println("this board " + this.board);
         if (GameLogic.noLegalMoves(this.board, opponentKey)) {
             // fill all empty spaces on board w/ "key"
-            ArrayList<Pair<Integer, Integer>> emptySquaresList=GameLogic.findEmptySquares(board);
+            ArrayList<Pair<Integer, Integer>> emptySquaresList=GameLogic.getEmptySquares(board);
             for (Pair<Integer, Integer> emptySq : emptySquaresList){
-                String filledCurrentEmptySquare=fillSquare(this.getBoard(), emptySq, opponentKey);
+                String filledCurrentEmptySquare=fillSquare(this.getBoard(), emptySq, key);
                 this.setBoard(filledCurrentEmptySquare);
             }
         }
@@ -99,9 +98,6 @@ public class Board {
 
     public String fillSquare(String board, Pair<Integer, Integer> square, char key){
         ArrayList<Pair<Integer, Integer>> adjacent = GameLogic.getAdjacent(square);
-        for (Pair<Integer, Integer> s : adjacent) {
-            System.out.println(s);
-        }
 
         char oppoKey = '3'; // so that '-' doesn't convert anything
         if (key == '1') {
@@ -146,5 +142,24 @@ public class Board {
 
         return step2;
 
+    }
+
+    public void fillAllSquares(char key) {
+        ArrayList<Pair<Integer, Integer>> emptySquares = GameLogic.getEmptySquares(this.board);
+        StringBuilder newBoard = new StringBuilder();
+        for (int r = 0; r < 7; r++) {
+            if (r != 0) {
+                newBoard.append('/');
+            }
+            for (int c = 0; c < 7; c++) {
+                Pair<Integer, Integer> temp = new Pair(r, c);
+                if (emptySquares.contains(temp)) {
+                    newBoard.append(key);
+                } else {
+                    newBoard.append(GameLogic.getSquare(this.board, temp));
+                }
+            }
+        }
+        this.board = newBoard.toString();
     }
 }

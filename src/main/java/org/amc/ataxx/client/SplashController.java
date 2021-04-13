@@ -75,6 +75,6 @@ public class SplashController extends Controller {
     }
 
     public void spectateClick() {
-        sendRequest("SPEC\\0000"); // TODO get gameID from UI
+        sendRequest("SPEC\\" + gameIDField.getText()); // TODO get gameID from UI
     }
 }
