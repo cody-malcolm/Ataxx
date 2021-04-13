@@ -1,14 +1,14 @@
 package org.amc.ataxx.client;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import org.amc.ataxx.GameLogic;
 import org.javatuples.Pair;
 
@@ -19,7 +19,9 @@ public class GameController extends Controller {
     @FXML
     private BorderPane borderPane;
     @FXML
-    private TextArea messages;
+    private VBox messagesContainer;
+    @FXML
+    private ScrollPane messagesScrollpane;
     @FXML
     private TextField chat;
     @FXML
@@ -28,6 +30,8 @@ public class GameController extends Controller {
     private Button disconnectButton;
     @FXML
     private Label playerLabel;
+    @FXML
+    private Label buffer;
 
     private GameView view;
 
@@ -76,6 +80,8 @@ public class GameController extends Controller {
         // initialize the Canvas
         view = GameView.getInstance();
         view.createCanvas(borderPane);
+
+        this.buffer.setText("\r\n");
     }
 
     /**
@@ -141,13 +147,20 @@ public class GameController extends Controller {
 
     public void processMessage(String message, char style) {
 //        Views.displayMessage(message, style);
-        Platform.runLater(()-> {
-            if (messages.getText().equals("")) {
-                messages.setText(message);
-            } else {
-                messages.setText(messages.getText() + "\r\n" + message);
-            }
-        });
+        if (style == 'd') {
+            this.view.addChat(message, this.messagesContainer, this.messagesScrollpane);
+        } else if (style == 'i') {
+            this.view.addNotification(message, this.messagesContainer, this.messagesScrollpane);
+        } else if (style == 'b') {
+            this.view.addError(message, this.messagesContainer, this.messagesScrollpane);
+        }
+//        Platform.runLater(()-> {
+//            if (messages.getText().equals("")) {
+//                messages.setText(message);
+//            } else {
+//                messages.setText(messages.getText() + "\r\n" + message);
+//            }
+//        });
 
     }
 

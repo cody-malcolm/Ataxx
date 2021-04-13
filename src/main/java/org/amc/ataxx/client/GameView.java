@@ -1,11 +1,16 @@
 package org.amc.ataxx.client;
 
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.javatuples.Pair;
 
@@ -307,4 +312,30 @@ public class GameView {
     public void displayMessage(String message, char style) {
         System.out.println(message);
     }
+
+    public void addChat(String message, VBox container, ScrollPane pane) {
+        insertMessage(message, container, pane, "chatLabel");
+    }
+
+    public void addNotification(String message, VBox container, ScrollPane pane) {
+        insertMessage(message, container, pane, "notificationLabel");
+    }
+
+    public void addError(String message, VBox container, ScrollPane pane) {
+        insertMessage(message, container, pane, "errorLabel");
+    }
+
+    private void insertMessage(String message, VBox container, ScrollPane pane, String styleClass) {
+        Platform.runLater(()-> {
+            Label label = new Label(message);
+            label.setWrapText(true);
+            label.getStyleClass().add(styleClass);
+            ObservableList<Node> children = container.getChildren();
+            Node buffer = children.remove(children.size()-1);
+            children.add(label);
+            children.add(buffer);
+            pane.setVvalue(1);
+        });
+    }
+
 }

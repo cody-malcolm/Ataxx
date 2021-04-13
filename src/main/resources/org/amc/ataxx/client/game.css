@@ -29,3 +29,14 @@
     -fx-border-width: 5px;
     -fx-border-color: #8C8C8C;
 }
+
+.chatLabel {
+}
+
+.notificationLabel {
+    -fx-font-style: italic;
+}
+
+.errorLabel {
+    -fx-font-weight: bold;
+}
