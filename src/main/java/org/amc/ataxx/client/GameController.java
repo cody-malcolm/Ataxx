@@ -68,6 +68,9 @@ public class GameController extends Controller {
      */
     public void disconnectClick() {
         sendRequest("CLSE");
+
+        // in a future iteration, could return to original splash screen
+        System.exit(0);
     }
 
     /**

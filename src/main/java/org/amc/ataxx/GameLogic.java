@@ -124,7 +124,7 @@ public class GameLogic {
         return sq;
     }
 
-    public static ArrayList<Pair<Integer, Integer>> findEmptySquares(String board){
+    public static ArrayList<Pair<Integer, Integer>> getEmptySquares(String board){
         ArrayList<Pair<Integer, Integer>> emptySquares=new ArrayList<>();
 
         for (int i = 0; i <= 6; i++) {

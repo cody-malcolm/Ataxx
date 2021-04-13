@@ -11,13 +11,12 @@ import java.util.Set;
  */
 public class GameManager {
     private static GameManager gameManager = null;
-
     private HashMap<String, Game> games; // Feel free to change the data type if you want to research the best type of Map
+    private Game waitingGame = null;
 
     private GameManager() {
         games = new HashMap<>();
     }
-    private Game waitingGame=null;
 
     /**
      * Returns a unique ID for a new Game.
@@ -93,5 +92,12 @@ public class GameManager {
      */
     public HashMap<String, Game> getGames() {
         return games;
+    }
+
+    public synchronized void removeGame(String id) {
+        if (null != this.waitingGame && this.waitingGame.getID() == id) {
+            this.waitingGame = null;
+        }
+        this.games.remove(id);
     }
 }
