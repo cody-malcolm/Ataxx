@@ -31,6 +31,10 @@
                 <Label text="Username: "/>
                 <TextField id="username" promptText="Enter your username" fx:id="usernameField" styleClass="input"/>
             </HBox>
+            <HBox alignment="CENTER">
+                <Label text="Host IP Address: "/>
+                <TextField id="hostIP" promptText="Enter the host IP" fx:id="hostIPField" styleClass="input"/>
+            </HBox>
             <Button fx:id="connectButton" styleClass="button">Connect</Button>
             <Button fx:id="gameButton" styleClass="button" visible="false">Find Game</Button>
             <HBox alignment="CENTER" visible="false" fx:id="spectateBox" spacing="10">

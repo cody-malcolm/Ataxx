@@ -24,23 +24,28 @@ public class ClientListener extends Thread {
     private boolean showingGameScene = false;
     final private Stage stage;
     private GameController gameController;
+    private SplashController splashController;
 
     private Socket socket = null;
     private BufferedReader in = null;
     private PrintWriter out = null;
 
-    final private static String HOST = "localhost"; // TODO later the connect screen should let user enter an IP
+    private static String HOST = "localhost";
     final private static int PORT = 25436;
 
     /** The access code to establish a connection */
     final private String ACCESS_CODE = "arstdhneio";
     private boolean abortConnectionAttempt = false;
 
-    public ClientListener(String username, Stage stage) {
+    public ClientListener(String username, Stage stage, String host, SplashController splashController) {
+        if (!"".equals(host)) {
+            this.HOST = host;
+        }
         this.user = new User(username, '0');
         this.stage = stage;
         view = GameView.getInstance();
         view.setClientListener(this);
+        this.splashController = splashController;
     }
 
     private boolean establishConnection() {
@@ -85,7 +90,7 @@ public class ClientListener extends Thread {
             System.err.println("Error during handshake process");
             return;
         }
-
+        this.splashController.disableConnect();
         boolean disconnected = false;
         while (!disconnected) {
             try {
@@ -99,6 +104,7 @@ public class ClientListener extends Thread {
     }
 
     private boolean processResponse(String response) {
+        // could make this conditional on response if the server later sends information before a game is requested
         if (!showingGameScene) {
             showingGameScene = showGameScene();
         }

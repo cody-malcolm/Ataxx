@@ -24,6 +24,8 @@ public class SplashController extends Controller {
     private Button spectateButton;
     @FXML
     private TextField usernameField;
+    @FXML
+    private TextField hostIPField;
 
     private SplashView view;
 
@@ -56,12 +58,12 @@ public class SplashController extends Controller {
      * Handles a click of the connect button.
      */
     public void connectClick() {
-        String username = usernameField.getText(); // TODO pull from a field in the View
+        String username = usernameField.getText();
+        String hostIP = hostIPField.getText();
         if (Utils.verifyUsername(username)) {
-            this.listener = new ClientListener(username, this.stage);
+            this.listener = new ClientListener(username, this.stage, hostIP, this);
             Main.setListener(this.listener);
             this.listener.start();
-            view.disableConnect(usernameField, connectButton, gameButton, spectateBox, spectateButton);
         } else {
             view.promptForNewUsername();
         }
@@ -76,5 +78,9 @@ public class SplashController extends Controller {
 
     public void spectateClick() {
         sendRequest("SPEC\\" + gameIDField.getText()); // TODO get gameID from UI
+    }
+
+    public void disableConnect() {
+        view.disableConnect(usernameField, connectButton, gameButton, spectateBox, spectateButton);
     }
 }
