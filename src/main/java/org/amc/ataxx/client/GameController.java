@@ -94,6 +94,7 @@ public class GameController extends Controller {
     public void refreshBoard(String board, char activePlayer, char key, String username, String opponentName, String id) {
         view.displayUsernames(username, opponentName);
         view.displayGameId(id);
+        view.displayCounts(GameLogic.getCounts(board));
         view.renderBoard(board);
         user.setKey(key);
         user.setActivePlayer(activePlayer);
@@ -125,6 +126,7 @@ public class GameController extends Controller {
     public void handleMove(String oldBoard, String move, String newBoard, char activePlayer, char key) {
         user.setKey(key);
         user.setActivePlayer(activePlayer);
+        view.displayCounts(GameLogic.getCounts(newBoard));
         view.displayTurn(activePlayer, key, playerLabel);
         view.animateMove(oldBoard, newBoard, move);
     }

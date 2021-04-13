@@ -171,7 +171,9 @@ public class GameView {
 //            System.out.println("Testing turn render: Inside activePlayer(" + activePlayer + ") != key(" + key + ")");
             playerLabel.setTextFill(inactiveColors[Integer.valueOf(key)-49]);
         }
-        playerLabel.setText("Player " + key);
+        Platform.runLater(()-> {
+            playerLabel.setText("Player " + key);
+        });
     }
 
     /**
@@ -346,5 +348,10 @@ public class GameView {
 
     public void displayGameId(String gameId) {
         System.out.println("The game ID is " + gameId);
+    }
+
+    public void displayCounts(Pair<Integer, Integer> counts) {
+        System.out.println("Player 1: " + counts.getValue0());
+        System.out.println("Player 2: " + counts.getValue1());
     }
 }

@@ -230,6 +230,19 @@ public class GameLogic {
         }
         return winner;
     }
+
+    public static Pair<Integer, Integer> getCounts(String board) {
+        int playerOne = 0;
+        int playerTwo = 0;
+        for (char c : board.toCharArray()) {
+            if (c == '1') {
+                playerOne++;
+            } else if (c == '2') {
+                playerTwo++;
+            }
+        }
+        return new Pair<>(playerOne, playerTwo);
+    }
 }
 
 

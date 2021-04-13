@@ -155,6 +155,8 @@ public class ClientListener extends Thread {
         char activePlayer = args[4].charAt(0);
         char key = args[5].charAt(0);
 
+        this.user.setBoard(args[3]);
+
         if (args[2].equals("none")) {
             this.gameController.refreshBoard(args[3], activePlayer, key,
                     this.user.getUsername(), this.user.getOpponentUsername(), this.user.getGameId());
