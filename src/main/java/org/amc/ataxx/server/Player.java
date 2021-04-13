@@ -309,11 +309,13 @@ public class Player extends Thread {
         }
     }
 
-    private void handleSpectateRequest(String arg) {
+    private void handleSpectateRequest(String gameId) {
         if (null == this.gameID) {
-            Game game = GameManager.getInstance().getGame(arg);
+            Game game = GameManager.getInstance().getGame(gameId);
             if (null != game) {
                 this.key = game.addSpectator(this);
+                this.gameID = gameId;
+                updateClients(game.getBoard(), "none", game);
             }
         }
     }

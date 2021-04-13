@@ -89,7 +89,7 @@ public class Board {
             // fill all empty spaces on board w/ "key"
             ArrayList<Pair<Integer, Integer>> emptySquaresList=GameLogic.findEmptySquares(board);
             for (Pair<Integer, Integer> emptySq : emptySquaresList){
-                String filledCurrentEmptySquare=fillSquare(this.getBoard(), emptySq, opponentKey);
+                String filledCurrentEmptySquare=fillSquare(this.getBoard(), emptySq, key);
                 this.setBoard(filledCurrentEmptySquare);
             }
         }
