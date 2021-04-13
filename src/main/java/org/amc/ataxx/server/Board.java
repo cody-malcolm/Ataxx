@@ -85,7 +85,6 @@ public class Board {
         // if the opponent has no legal moves, all the rest of the board gets immediately filled with this player's pieces
 
         char opponentKey = (key == '1' ? '2' : '1');
-        System.out.println("this board " + this.board);
         if (GameLogic.noLegalMoves(this.board, opponentKey)) {
             // fill all empty spaces on board w/ "key"
             ArrayList<Pair<Integer, Integer>> emptySquaresList=GameLogic.findEmptySquares(board);
@@ -99,9 +98,6 @@ public class Board {
 
     public String fillSquare(String board, Pair<Integer, Integer> square, char key){
         ArrayList<Pair<Integer, Integer>> adjacent = GameLogic.getAdjacent(square);
-        for (Pair<Integer, Integer> s : adjacent) {
-            System.out.println(s);
-        }
 
         char oppoKey = '3'; // so that '-' doesn't convert anything
         if (key == '1') {

@@ -19,6 +19,10 @@ public class User {
     final private String username;
     /** The current state of the board */
     private String board;
+    /** The username of the current opponent */
+    private String opponentUsername;
+    /** The ID of the Game being played */
+    private String gameId;
 
     public User(String username, char key) {
         this.username = username;
@@ -128,4 +132,24 @@ public class User {
         return this.board;
     }
 
+    public void setOpponentUsername(String playerOneUsername, String playerTwoUsername) {
+        // 2nd player receives INFO response before being assigned a key, so can't query key safely in this method
+        if (this.username.equals(playerOneUsername)) {
+            this.opponentUsername = playerTwoUsername;
+        } else {
+            this.opponentUsername = playerOneUsername;
+        }
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
+    }
+
+    public String getOpponentUsername() {
+        return this.opponentUsername;
+    }
+
+    public String getGameId() {
+        return this.gameId;
+    }
 }

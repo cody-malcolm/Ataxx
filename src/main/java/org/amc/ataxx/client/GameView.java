@@ -338,4 +338,13 @@ public class GameView {
         });
     }
 
+    public void displayUsernames(String username, String opponentName) {
+        System.out.println("This player is " + username);
+        System.out.println("The opponent is " + opponentName);
+
+    }
+
+    public void displayGameId(String gameId) {
+        System.out.println("The game ID is " + gameId);
+    }
 }

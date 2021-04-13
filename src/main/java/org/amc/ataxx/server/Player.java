@@ -395,4 +395,13 @@ public class Player extends Thread {
     public String getUsername() {
         return this.username;
     }
+
+    public void sendGameInformation(String playerOneUsername, String playerTwoUsername, String id) {
+        StringBuilder gameInfo = new StringBuilder();
+        gameInfo.append("INFO\\")
+                .append(playerOneUsername).append("\\")
+                .append(playerTwoUsername).append("\\")
+                .append(id);
+        responseOutput.println(gameInfo);
+    }
 }

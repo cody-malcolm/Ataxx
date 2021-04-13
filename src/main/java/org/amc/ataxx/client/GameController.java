@@ -91,7 +91,9 @@ public class GameController extends Controller {
      * @param activePlayer the active player
      * @param key the User's key
      */
-    public void refreshBoard(String board, char activePlayer, char key) {
+    public void refreshBoard(String board, char activePlayer, char key, String username, String opponentName, String id) {
+        view.displayUsernames(username, opponentName);
+        view.displayGameId(id);
         view.renderBoard(board);
         user.setKey(key);
         user.setActivePlayer(activePlayer);

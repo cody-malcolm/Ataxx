@@ -118,9 +118,17 @@ public class ClientListener extends Thread {
             handleChatMessage(response.substring(response.indexOf('\\')+1));
         } else if (type.regionMatches(true, 0, "ERR", 0, 3)) {
             handleErrorMessage(response.split("\\\\")[1]);
+        } else if (type.regionMatches(true, 0, "INFO", 0, 4)) {
+            handleInfoResponse(response.substring(response.indexOf('\\')+1));
         }
 
         return false;
+    }
+
+    private void handleInfoResponse(String response) {
+        String[] args = response.split("\\\\");
+        user.setOpponentUsername(args[0], args[1]);
+        user.setGameId(args[2]);
     }
 
     private boolean showGameScene() {
@@ -148,7 +156,8 @@ public class ClientListener extends Thread {
         char key = args[5].charAt(0);
 
         if (args[2].equals("none")) {
-            gameController.refreshBoard(args[3], activePlayer, key);
+            this.gameController.refreshBoard(args[3], activePlayer, key,
+                    this.user.getUsername(), this.user.getOpponentUsername(), this.user.getGameId());
         } else {
             gameController.handleMove(args[1], args[2], args[3], activePlayer, key);
         }
