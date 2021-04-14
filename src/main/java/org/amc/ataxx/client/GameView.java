@@ -35,7 +35,7 @@ public class GameView {
     private static Color[] pieceColors = {Color.hsb(0,1,0.79), Color.hsb(215, 1, 0.79)};
     private static Color[] squareHighlightColors = {Color.hsb(0,0.0,0.70), Color.hsb(215, 0.0, 0.70)};
     private static Color[] inactiveColors = {Color.hsb(0,1,0.40), Color.hsb(215, 1, 0.40)};
-    
+
 
     /**
      * Constructor
@@ -229,9 +229,9 @@ public class GameView {
         // render a small circle (probably SIZE/4) on each step and jump, use somewhat darker colour for jumps
         highlightSquares(steps, key);
         highlightSquares(jumps, key);
-//        gc.setFill(squareHighlightColors[Integer.valueOf(key)-49]);
-//        gc.fillRoundRect(SIZE*source.getValue1()+5, SIZE*source.getValue0()+5, actualSIZE, actualSIZE, SIZE/4,SIZE/4);
-//        renderPiece(pieceColors[Integer.valueOf(key)-49], source.getValue0(), source.getValue1());
+        gc.setFill(squareHighlightColors[Integer.valueOf(key)-49]);
+        gc.fillRoundRect(SIZE*source.getValue1()+5, SIZE*source.getValue0()+5, actualSIZE, actualSIZE, SIZE/4,SIZE/4);
+        renderPiece(pieceColors[Integer.valueOf(key)-49], source.getValue0(), source.getValue1());
     }
 
     /**
@@ -244,8 +244,6 @@ public class GameView {
         for (int i=0; i < num; i++){
             int row = squares.get(i).getValue0();
             int column = squares.get(i).getValue1();
-//            gc.setFill(squareHighlightColors[Integer.valueOf(key)-49]);
-//            gc.fillRoundRect(SIZE*column+5, SIZE*row+5, actualSIZE, actualSIZE, SIZE/4,SIZE/4);
             renderPiece(squareHighlightColors[Integer.valueOf(key)-49], row, column);
         }
 
