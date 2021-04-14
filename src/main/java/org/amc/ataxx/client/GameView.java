@@ -334,7 +334,8 @@ public class GameView {
                     renderBoard(oldBoard);
                     gc.setFill(pieceColors[changeColor(activePlayer)]);
                     gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
-                    renderPiece(color.getValue(), (int)sourceRow+1, (int)sourceColumn+1);
+                    gc.setFill(color.getValue());
+                    gc.fillOval(getPosition(sourceColumn+1), getPosition( sourceRow+1), actualSIZE-(actualSIZE/10)+1,actualSIZE-(actualSIZE/10)+1);
                 }
             };
 
@@ -343,7 +344,10 @@ public class GameView {
             colorTimeline.play();
             timeline.setOnFinished(event -> {
                 timer.stop();
-                renderBoard(newBoard);
+                renderBoard(oldBoard);
+                renderPiece(pieceColors[changeColor(activePlayer)], destRow+1, destColumn+1);
+                gc.setFill(Color.hsb(0, 0, 0.85));
+                gc.fillOval(getPosition(sourceColumn+1)-1, getPosition( sourceRow+1)-1, actualSIZE-(actualSIZE/10)+2,actualSIZE-(actualSIZE/10)+2);
             });
 
         }
