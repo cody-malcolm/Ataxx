@@ -9,7 +9,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TextArea?>
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:id="borderPane"
-            prefHeight="700.0" prefWidth="1200.0">
+            prefHeight="700.0" prefWidth="1200.0" >
 
     <!--    link stylesheet -->
     <stylesheets>
@@ -31,7 +31,7 @@
 
     <left>
         <VBox alignment="CENTER" spacing="-10" styleClass="leftContainer" minWidth="315">
-            <ScrollPane fx:id="messagesScrollpane" minHeight="565" styleClass="messagesContainer">
+            <ScrollPane fx:id="messagesScrollpane" minHeight="465" styleClass="messagesContainer">
                 <VBox fx:id="messagesContainer" spacing="5">
                     <Label fx:id="buffer"></Label>
                 </VBox>

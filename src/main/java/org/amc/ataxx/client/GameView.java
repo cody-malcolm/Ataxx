@@ -28,7 +28,7 @@ public class GameView {
     private static GameView instance = null;
 
     /** The size of one square of the board, in pixels */
-    final private static int SIZE = 80;
+    final private static int SIZE = 70;
     /** The true size of a drawn square of the board, in pixels */
     final private static int actualSIZE = SIZE-2;
     /** The size of the canvas, in pixels */
