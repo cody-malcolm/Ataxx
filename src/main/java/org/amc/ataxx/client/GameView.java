@@ -350,43 +350,42 @@ public class GameView {
                 renderPiece(pieceColors[changeColor(activePlayer)], destRow, destColumn);
                 gc.setFill(Color.hsb(0, 0, 0.85));
                 gc.fillOval(getPosition(sourceColumn)-1, getPosition( sourceRow)-1, actualSIZE-(actualSIZE/10)+2,actualSIZE-(actualSIZE/10)+2);
+                renderBoard(newBoard);
             });
 
         }
 
         // second, animate the converted pieces changing color
 
-        // my approach would be:
-        // compare each square in old board and each in new and convert them if the color is different
-//        ObjectProperty<Color> color = new SimpleObjectProperty<>();
+//        ObjectProperty<Color> color2 = new SimpleObjectProperty<>();
 //
-//        Timeline colorTimeline = new Timeline(
+//        Timeline colorTimeline2 = new Timeline(
 //                new KeyFrame(Duration.ZERO,
-//                        new KeyValue(color, pieceColors[activePlayer])
+//                        new KeyValue(color2, pieceColors[activePlayer])
 //                ),
 //                new KeyFrame(Duration.seconds(0.5),
-//                        new KeyValue(color, pieceColors[changeColor(activePlayer)])
+//                        new KeyValue(color2, pieceColors[changeColor(activePlayer)])
 //                )
 //        );
 //
-//        colorTimeline.setCycleCount(1);
+//        colorTimeline2.setCycleCount(1);
 //
 //
-//        AnimationTimer timer = new AnimationTimer() {
+//        AnimationTimer timer2 = new AnimationTimer() {
 //            @Override
 //            public void handle(long now) {
-//                ArrayList<Pair<Integer,Integer>> adjacent = GameLogic.getAdjacent(new Pair<>((int)move.charAt(2), (int) move.charAt(3)));
+//                ArrayList<Pair<Integer,Integer>> adjacent = GameLogic.getAdjacent(new Pair<>(destRow, destColumn));
 //                System.out.println(adjacent);
 ////                for (int i = 0; i < adjacent.size(); i++) {
-////                    renderPiece(color.getValue(), adjacent.get(i).getValue0(), adjacent.get(i).getValue1());
+////                    renderPiece(color2.getValue(), adjacent.get(i).getValue0(), adjacent.get(i).getValue1());
 ////                }
 //            }
 //        };
 //
-//        timer.start();
-//        colorTimeline.play();
-//        colorTimeline.setOnFinished(event -> {
-//            timer.stop();
+//        timer2.start();
+//        colorTimeline2.play();
+//        colorTimeline2.setOnFinished(event -> {
+//            timer2.stop();
 //            renderBoard(newBoard);
 //        });
 
