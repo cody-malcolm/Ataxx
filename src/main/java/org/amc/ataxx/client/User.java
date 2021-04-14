@@ -33,6 +33,10 @@ public class User {
     public char getKey() {
         return this.key;
     }
+
+    public boolean usersTurn() {
+        return this.key == this.activePlayer;
+    }
     
     /**
      * Handles a mouse click on the Game board and returns the Move associated with the click, if any.

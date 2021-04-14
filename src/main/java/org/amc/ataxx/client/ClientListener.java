@@ -200,12 +200,14 @@ public class ClientListener extends Thread {
         if (null != move) {
             sendRequest("MOVE\\" + move);
         } else {
-            String board = user.getBoard();
-            Pair<Integer, Integer> source = user.getSource();
-            ArrayList<Pair<Integer, Integer>> steps = GameLogic.getSteps(board, source);
-            ArrayList<Pair<Integer, Integer>> jumps = GameLogic.getJumps(board, source);
-            view.renderBoard(board);
-            view.applyHighlighting(source, steps, jumps, user.getKey());
+            if (user.usersTurn()) {
+                String board = user.getBoard();
+                Pair<Integer, Integer> source = user.getSource();
+                ArrayList<Pair<Integer, Integer>> steps = GameLogic.getSteps(board, source);
+                ArrayList<Pair<Integer, Integer>> jumps = GameLogic.getJumps(board, source);
+                view.renderBoard(board);
+                view.applyHighlighting(source, steps, jumps, user.getKey());
+            }
         }
     }
 
