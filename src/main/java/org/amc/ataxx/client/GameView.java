@@ -1,6 +1,12 @@
 package org.amc.ataxx.client;
 
+import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -12,6 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
@@ -116,7 +123,7 @@ public class GameView {
      */
     private void renderPiece(Color color,int row, int col) {
         gc.setFill(color);
-        gc.fillOval(getPosition(col), getPosition(row), actualSIZE-(actualSIZE/10),actualSIZE-(actualSIZE/10));
+        gc.fillOval(getPosition((double) col), getPosition((double) row), actualSIZE-(actualSIZE/10),actualSIZE-(actualSIZE/10));
     }
 
 
@@ -125,21 +132,21 @@ public class GameView {
      *
      * @param x the column or row of the square the piece will be in
      */
-    private double getPosition(int x){
+    private double getPosition(double x){
         return 5 + (actualSIZE/10)/2 + (SIZE) * x;
     }
 
-    /**
-     * Renders all updates to the board.
-     *
-     * @param oldBoard the String representation of the old board to render
-     * @param newBoard the String representation of the new board to render
-     * @param move the String representation of the move made to reach the new board state
-     */
-    public void updateBoard(String oldBoard, String newBoard, String move) {
-        animateMove(oldBoard, newBoard, move);
-        renderBoard(newBoard);
-    }
+//    /**
+//     * Renders all updates to the board.
+//     *
+//     * @param oldBoard the String representation of the old board to render
+//     * @param newBoard the String representation of the new board to render
+//     * @param move the String representation of the move made to reach the new board state
+//     */
+//    public void updateBoard(String oldBoard, String newBoard, String move) {
+//        animateMove(oldBoard, newBoard, move);
+//        renderBoard(newBoard);
+//    }
 
     /**
      * Renders the provided board.
@@ -256,21 +263,89 @@ public class GameView {
      * @param newBoard the new state of the board
      * @param move the move being performed to transition from old to new
      */
-    public void animateMove(String oldBoard, String newBoard, String move) {
+    private static int x;
+    public void animateMove(String oldBoard, String newBoard, String move, char activePlayer) {
         String sourceSquare = String.valueOf(move.charAt(0)) + String.valueOf(move.charAt(1));
         String destinationSquare = String.valueOf(move.charAt(2)) + String.valueOf(move.charAt(3));
-
-//        ArrayList<Pair<Integer, Integer>> adjacentSquares = getAdjacentSquares(destinationSquare);
-
+        int sourceRow = Integer.valueOf(sourceSquare.charAt(0))-49;
+        int sourceColumn = Integer.valueOf(sourceSquare.charAt(1))-49;
+        int destRow = Integer.valueOf(destinationSquare.charAt(0))-49;
+        int destColumn = Integer.valueOf(destinationSquare.charAt(1))-49;
+        x = sourceColumn;
         // ensure the currently rendered board is as expected
         renderBoard(oldBoard);
 
-        // Two consecutive animations:
-        // first, animate the piece stepping or jumping
+        if (isAdjecent(sourceSquare, destinationSquare)){ // if it's a step
 
-        // my approach would be:
-        // compare the square at index move.charAt(0), move.charAt(1) in oldBoard and newBoard, if same do nothing, if different, shrink the piece to nothing
-        // at same time, expand a circle from nothing at square indicated by move.charAt(2), move.charAt(3)
+            DoubleProperty x  = new SimpleDoubleProperty(getPosition(destColumn+1));
+            DoubleProperty y  = new SimpleDoubleProperty(getPosition(destRow+1));
+
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.seconds(0),
+                            new KeyValue(x, getPosition(sourceColumn+1)),
+                            new KeyValue(y, getPosition(sourceRow+1))
+                    ),
+                    new KeyFrame(Duration.seconds(0.5),
+                            new KeyValue(x, getPosition(destColumn+1)),
+                            new KeyValue(y, getPosition(destRow+1))
+                    )
+            );
+            timeline.setCycleCount(1);
+
+            AnimationTimer timer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    renderBoard(oldBoard);
+                    gc.setFill(pieceColors[changeColor(activePlayer)]);
+                    gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
+                }
+            };
+
+            timer.start();
+            timeline.play();
+            timeline.setOnFinished(event -> {
+                timer.stop();
+                renderBoard(newBoard);
+            });
+
+        } else { // else it's a jump
+            DoubleProperty x  = new SimpleDoubleProperty(getPosition(destColumn+1));
+            DoubleProperty y  = new SimpleDoubleProperty(getPosition(destRow+1));
+
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.seconds(0),
+                            new KeyValue(x, getPosition(sourceColumn+1)),
+                            new KeyValue(y, getPosition(sourceRow+1))
+                    ),
+                    new KeyFrame(Duration.seconds(0.5),
+                            new KeyValue(x, getPosition(destColumn+1)),
+                            new KeyValue(y, getPosition(destRow+1))
+                    )
+            );
+            timeline.setCycleCount(1);
+
+            AnimationTimer timer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    renderBoard(oldBoard);
+                    gc.setFill(pieceColors[changeColor(activePlayer)]);
+                    gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
+                }
+            };
+
+            timer.start();
+            timeline.play();
+            timeline.setOnFinished(event -> {
+                timer.stop();
+                renderBoard(newBoard);
+            });
+
+
+//            renderPiece(pieceColors[changeColor(activePlayer)], destRow, destColumn);
+        }
+
+
+
 
         // second, animate the converted pieces changing color
 
@@ -291,7 +366,39 @@ public class GameView {
 
         // Note: The animation should be quite fast, probably between 200-400ms each but we can adjust it easily if needed.
         // TODO later addition: execute the animation in a separate thread to not block other parts of UI such as chat window
+        gc.clearRect(0,0, canvasSIZE,canvasSIZE);
         renderBoard(newBoard);
+
+    }
+
+    private int changeColor(char activePlayer){
+        int k = Integer.valueOf(activePlayer)-49;
+        if (k == 0){
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    private boolean isAdjecent(String source, String destination){
+        int sourceRow = Integer.valueOf(source.charAt(0))-49;
+        int sourceColumn = Integer.valueOf(source.charAt(1))-49;
+        int destRow = Integer.valueOf(destination.charAt(0))-49;
+        int destColumn = Integer.valueOf(destination.charAt(1))-49;
+
+        for (int i = sourceRow-1; i <= sourceRow+1; i++) {
+            if (destRow == i){
+                return true;
+            }
+        }
+
+        for (int i = sourceColumn-1; i <= sourceColumn+1; i++) {
+            if (destColumn == i){
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
