@@ -21,6 +21,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import org.amc.ataxx.GameLogic;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
@@ -257,7 +258,7 @@ public class GameView {
         // ensure the currently rendered board is as expected
         renderBoard(oldBoard);
 
-        if (isAdjecent(sourceSquare, destinationSquare)){ // if it's a step
+        if (isAdjecent(sourceRow, sourceColumn, destRow, destColumn)){ // if it's a step
 
             DoubleProperty x  = new SimpleDoubleProperty();
             DoubleProperty y  = new SimpleDoubleProperty();
@@ -396,20 +397,11 @@ public class GameView {
         }
     }
 
-    private boolean isAdjecent(String source, String destination){
-        int sourceRow = Integer.valueOf(source.charAt(0))-49;
-        int sourceColumn = Integer.valueOf(source.charAt(1))-49;
-        int destRow = Integer.valueOf(destination.charAt(0))-49;
-        int destColumn = Integer.valueOf(destination.charAt(1))-49;
+    private boolean isAdjecent(int sourceRow, int sourceColumn, int destRow, int destColumn){
+        ArrayList<Pair<Integer,Integer>> adjacent = GameLogic.getAdjacent(new Pair<>(sourceRow, sourceColumn));
 
-        for (int i = sourceRow-1; i <= sourceRow+1; i++) {
-            if (destRow == i){
-                return true;
-            }
-        }
-
-        for (int i = sourceColumn-1; i <= sourceColumn+1; i++) {
-            if (destColumn == i){
+        for (int i = 0; i < adjacent.size(); i++) {
+            if (adjacent.get(i).getValue0() == destRow && adjacent.get(i).getValue1() == destColumn){
                 return true;
             }
         }
