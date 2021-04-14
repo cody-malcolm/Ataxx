@@ -28,6 +28,9 @@
                 </children>
             </HBox>
             <HBox alignment="CENTER">
+                <Label fx:id="feedback" />
+            </HBox>
+            <HBox alignment="CENTER">
                 <Label text="Username: "/>
                 <TextField id="username" promptText="Enter your username" fx:id="usernameField" styleClass="input"/>
             </HBox>

@@ -46,15 +46,19 @@ public class ClientListener extends Thread {
     private boolean establishConnection() {
         boolean connected = false;
         int attempts = 1;
-        while (!connected && attempts < 10 && !this.abortConnectionAttempt) {
+        while (!connected && attempts < 20 && !this.abortConnectionAttempt) {
             try {
                 this.socket = new Socket(HOST, PORT);
                 connected = true;
             } catch (UnknownHostException e) {
-                System.err.println("Attempt " + attempts++ + ": Unknown host: " + HOST);
+                String message = "Attempt " + attempts++ + ": Unknown host: " + HOST;
+                splashController.giveFeedback(message);
+                System.err.println(message);
                 Utils.sleep(1250);
             } catch (IOException e) {
-                System.err.println("Attempt " + attempts++ + ": Error when attempting to connect to " + HOST);
+                String message = "Attempt " + attempts++ + ": Error when attempting to connect to " + HOST;
+                splashController.giveFeedback(message);
+                System.err.println(message);
                 Utils.sleep(1250);
             }
         }
@@ -77,16 +81,22 @@ public class ClientListener extends Thread {
     @Override
     public void run() {
         if (!establishConnection()) {
-            System.err.println("Unable to connect to " + HOST);
+            String message = "Unable to connect to " + HOST;
+            splashController.giveFeedback(message);
+            System.err.println(message);
             return;
         }
 
         if (!performHandshake()) {
-            System.err.println("Error during handshake process");
+            String message = "Error during handshake process";
+            splashController.giveFeedback(message);
+            System.err.println(message);
             return;
         }
+
         this.splashController.disableConnect();
         boolean disconnected = false;
+        splashController.giveFeedback("Successfully connected to " + HOST);
         while (!disconnected) {
             try {
                 disconnected = processResponse(in.readLine());

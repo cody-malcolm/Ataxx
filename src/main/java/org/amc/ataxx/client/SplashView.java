@@ -1,6 +1,7 @@
 package org.amc.ataxx.client;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 
@@ -32,6 +33,7 @@ public class SplashView {
         spectateButton.setVisible(true);
     }
 
-    public void promptForNewUsername() {
+    public void promptForNewUsername(Label feedbackLabel) {
+        feedbackLabel.setText("Sorry, that username is not valid.");
     }
 }
