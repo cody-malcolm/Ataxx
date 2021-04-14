@@ -144,14 +144,8 @@ public class User {
     }
 
     public void setDisplayNames(String playerOneUsername, String playerTwoUsername) {
-        // 2nd player receives INFO response before being assigned a key, so can't query key safely in this method
-        if (this.username.equals(playerTwoUsername)) {
-            this.displayNames[0] = playerOneUsername;
-            this.displayNames[1] = playerTwoUsername;
-        } else {
-            this.displayNames[0] = playerTwoUsername;
-            this.displayNames[1] = playerOneUsername;
-        }
+        this.displayNames[0] = playerOneUsername;
+        this.displayNames[1] = playerTwoUsername;
     }
 
     public String[] getDisplayNames() {

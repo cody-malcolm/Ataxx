@@ -13,7 +13,7 @@ public class ServerListener extends Thread{
     /** The port the server will listen to */
     final private static int PORT = 25436;
     /** The max number of simultaneous connections */
-    final private static int MAX_CLIENTS = 100; // TODO test this with 2 later on
+    final private static int MAX_CLIENTS = 100;
     /** The Socket used to facilitate the connection */
     private ServerSocket serverSocket = null;
     /** A flag to indicate if a stop has been requested */
@@ -50,7 +50,6 @@ public class ServerListener extends Thread{
                     // wait for a connection
                     Socket clientSocket = serverSocket.accept();
 
-                    // TODO "Server is at max capacity" message if all are active
                     while (null != players[numPlayers] && players[numPlayers].isAlive()) {
                         numPlayers++;
                     }

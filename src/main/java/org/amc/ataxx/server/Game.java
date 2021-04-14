@@ -161,10 +161,12 @@ public class Game {
      * @return the key for the spectator
      */
     public char addSpectator(Player spectator) {
-        spectators.add(spectator);
         if (this.active) {
             sendToAll(spectator.getUsername() + " is now spectating the game");
+            spectators.add(spectator);
             sendGameInfo();
+        } else {
+            spectators.add(spectator);
         }
         return '3';
     }
@@ -212,7 +214,7 @@ public class Game {
      */
     public void removeSpectator(Player spectator) {
         spectators.remove(spectator);
-        sendToAll(spectator.getUsername() + " has left the game");
+        sendToAll(spectator.getUsername() + " is no longer spectating the game");
     }
 
     /**
