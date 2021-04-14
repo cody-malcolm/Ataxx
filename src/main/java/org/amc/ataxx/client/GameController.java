@@ -158,7 +158,7 @@ public class GameController extends Controller {
         user.setActivePlayer(activePlayer);
         view.displayCounts(GameLogic.getCounts(newBoard));
         view.displayTurn(activePlayer, key, playerLabel, opponentLabel, displayNames);
-        view.animateMove(oldBoard, newBoard, move);
+        view.animateMove(oldBoard, newBoard, move, activePlayer);
     }
 
     /**
