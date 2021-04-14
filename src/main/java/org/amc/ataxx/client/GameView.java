@@ -40,7 +40,7 @@ public class GameView {
 
     /** Colors */
     private static Color[] pieceColors = {Color.hsb(0,1,0.79), Color.hsb(215, 1, 0.79)};
-    private static Color[] squareHighlightColors = {Color.hsb(0,0.0,0.70), Color.hsb(215, 0.0, 0.70)};
+    private static Color[] squareHighlightColors = {Color.hsb(0,0.0,0.70), Color.hsb(0, 0.0, 0.50)};
     private static Color[] inactiveColors = {Color.hsb(0,1,0.40), Color.hsb(215, 1, 0.40)};
 
 
@@ -136,17 +136,6 @@ public class GameView {
         return 5 + (actualSIZE/10)/2 + (SIZE) * x;
     }
 
-//    /**
-//     * Renders all updates to the board.
-//     *
-//     * @param oldBoard the String representation of the old board to render
-//     * @param newBoard the String representation of the new board to render
-//     * @param move the String representation of the move made to reach the new board state
-//     */
-//    public void updateBoard(String oldBoard, String newBoard, String move) {
-//        animateMove(oldBoard, newBoard, move);
-//        renderBoard(newBoard);
-//    }
 
     /**
      * Renders the provided board.
@@ -233,9 +222,8 @@ public class GameView {
      * @param jumps squares the selected piece can legally move to by jumping
      */
     public void applyHighlighting(Pair<Integer, Integer> source, ArrayList<Pair<Integer, Integer>> steps, ArrayList<Pair<Integer, Integer>> jumps, char key) {
-        // render a small circle (probably SIZE/4) on each step and jump, use somewhat darker colour for jumps
-        highlightSquares(steps, key);
-        highlightSquares(jumps, key);
+        highlightSquares(jumps, key, squareHighlightColors[1]);
+        highlightSquares(steps, key, squareHighlightColors[0]);
         gc.setFill(squareHighlightColors[Integer.valueOf(key)-49]);
         gc.fillRoundRect(SIZE*source.getValue1()+5, SIZE*source.getValue0()+5, actualSIZE, actualSIZE, SIZE/4,SIZE/4);
         renderPiece(pieceColors[Integer.valueOf(key)-49], source.getValue0(), source.getValue1());
@@ -246,12 +234,12 @@ public class GameView {
      *
      * @param squares the list of pairs of squares to highlight
      */
-    private void highlightSquares(ArrayList<Pair<Integer, Integer>> squares, char key) {
+    private void highlightSquares(ArrayList<Pair<Integer, Integer>> squares, char key, Color color) {
         int num = squares.size();
         for (int i=0; i < num; i++){
             int row = squares.get(i).getValue0();
             int column = squares.get(i).getValue1();
-            renderPiece(squareHighlightColors[Integer.valueOf(key)-49], row, column);
+            renderPiece(color, row, column);
         }
 
     }
@@ -340,8 +328,6 @@ public class GameView {
                 renderBoard(newBoard);
             });
 
-
-//            renderPiece(pieceColors[changeColor(activePlayer)], destRow, destColumn);
         }
 
 
