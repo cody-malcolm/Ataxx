@@ -421,6 +421,12 @@ public class Player extends Thread {
         return this.username;
     }
 
+    /**
+    * Sends player's names and gameID to the client associated with "this"
+    * @param playerOneUsername
+     * @param playerTwoUsername
+     * id - game ID that was given at the beginning of the game
+    */
     public void sendGameInformation(String playerOneUsername, String playerTwoUsername, String id) {
         StringBuilder gameInfo = new StringBuilder();
         gameInfo.append("INFO\\")
@@ -429,7 +435,9 @@ public class Player extends Thread {
                 .append(id);
         responseOutput.println(gameInfo);
     }
-
+    /**
+     * Finished the current game, allowing a new game to get started
+    */
     public void finishedGame() {
         this.newGameAllowed = true;
     }
