@@ -25,15 +25,27 @@ public class GameController extends Controller {
     @FXML
     private TextField chat;
     @FXML
+    private Button replayButton;
+    @FXML
+    private Button newGameButton;
+    @FXML
     private Button resignButton;
     @FXML
     private Button disconnectButton;
     @FXML
-    private Label playerLabel;
+    private Label blueNameLabel;
     @FXML
-    private Label opponentLabel;
+    private Label redNameLabel;
+    @FXML
+    private Label blueScoreLabel;
+    @FXML
+    private Label redScoreLabel;
+    @FXML
+    private Label feedbackLabel;
     @FXML
     private Label buffer;
+    @FXML
+    private Label gameIDlabel;
 
     private GameView view;
 
@@ -98,12 +110,12 @@ public class GameController extends Controller {
      * @param key the User's key
      */
     public void refreshBoard(String board, char activePlayer, char key, String[] displayNames, String id) {
-        view.displayGameId(id);
-        view.displayCounts(GameLogic.getCounts(board));
+        view.displayGameId(id, gameIDlabel);
+        view.displayCounts(GameLogic.getCounts(board), blueScoreLabel, redScoreLabel);
         view.renderBoard(board);
         user.setKey(key);
         user.setActivePlayer(activePlayer);
-        view.displayTurn(activePlayer, key, playerLabel, opponentLabel, displayNames);
+        view.displayTurn(activePlayer, key, blueNameLabel, redNameLabel, displayNames);
         highlightSquares(board); // TODO 1 99% sure this can be deleted
     }
 
@@ -156,8 +168,8 @@ public class GameController extends Controller {
                            char key, String[] displayNames) {
         user.setKey(key);
         user.setActivePlayer(activePlayer);
-        view.displayCounts(GameLogic.getCounts(newBoard));
-        view.displayTurn(activePlayer, key, playerLabel, opponentLabel, displayNames);
+        view.displayCounts(GameLogic.getCounts(newBoard), blueScoreLabel, redScoreLabel);
+        view.displayTurn(activePlayer, key, blueNameLabel, redNameLabel, displayNames);
         view.animateMove(oldBoard, newBoard, move, activePlayer);
     }
 

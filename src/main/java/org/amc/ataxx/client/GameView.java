@@ -30,7 +30,7 @@ public class GameView {
     private static GameView instance = null;
 
     /** The size of one square of the board, in pixels */
-    final private static int SIZE = 80;
+    final private static int SIZE = 70;
     /** The true size of a drawn square of the board, in pixels */
     final private static int actualSIZE = SIZE-2;
     /** The size of the canvas, in pixels */
@@ -162,30 +162,22 @@ public class GameView {
 //        displayTurn(activePlayer, key, playerLabel);
 //    }
 
-    public void displayTurn(char activePlayer, char key, Label playerLabel, Label opponentLabel, String[] displayNames) {
+    public void displayTurn(char activePlayer, char key, Label blueLabel, Label redLabel, String[] displayNames) {
 
         // TODO bet this can be cleaned up now
-        if (activePlayer == key) {
+        if (activePlayer == '1') {
             // For testing
 //            System.out.println("Testing turn render: Inside activePlayer(" + activePlayer + ") == key(" + key + ")");
-            playerLabel.setTextFill(pieceColors[Integer.valueOf(key)-49]);
-            opponentLabel.setTextFill(inactiveColors[((Integer.valueOf(key)-49)+1)%2]);
-        } else if (key == '3' && activePlayer == '1') {
-            playerLabel.setTextFill(pieceColors[0]);
-            opponentLabel.setTextFill(inactiveColors[1]);
-        } else if (key != '3') {
-            // For testing
-//            System.out.println("Testing turn render: Inside activePlayer(" + activePlayer + ") != key(" + key + ")");
-            playerLabel.setTextFill(inactiveColors[Integer.valueOf(key)-49]);
-            opponentLabel.setTextFill(pieceColors[((Integer.valueOf(key)-49)+1)%2]);
+            redLabel.setTextFill(pieceColors[0]);
+            blueLabel.setTextFill(inactiveColors[1]);
         } else {
-            playerLabel.setTextFill(inactiveColors[0]);
-            opponentLabel.setTextFill(pieceColors[1]);
+            redLabel.setTextFill(inactiveColors[0]);
+            blueLabel.setTextFill(pieceColors[1]);
         }
 
         Platform.runLater(()-> {
-            playerLabel.setText(displayNames[1]);
-            opponentLabel.setText(displayNames[0]);
+            blueLabel.setText(displayNames[1]);
+            redLabel.setText(displayNames[0]);
         });
     }
 
@@ -435,16 +427,6 @@ public class GameView {
 
     }
 
-    /**
-     * Displays the provided message in the chat box. Applies styling based on the given char.
-     *
-     * @param message the message to display
-     * @param style 'i' for italics, 'b' for bold, 'd' for plaintext
-     */
-    public void displayMessage(String message, char style) {
-        System.out.println(message);
-    }
-
     public void addChat(String message, VBox container, ScrollPane pane) {
         insertMessage(message, container, pane, "chatLabel");
     }
@@ -470,12 +452,16 @@ public class GameView {
         });
     }
 
-    public void displayGameId(String gameId) {
-        System.out.println("The game ID is " + gameId);
+    public void displayGameId(String gameId, Label gameIDlabel) {
+        gameIDlabel.setText("Game ID:" + gameId);
     }
 
-    public void displayCounts(Pair<Integer, Integer> counts) {
-        System.out.println("Player 1: " + counts.getValue0());
-        System.out.println("Player 2: " + counts.getValue1());
+    public void displayCounts(Pair<Integer, Integer> counts, Label blueLabel, Label redLabel) {
+        blueLabel.setTextFill(pieceColors[1]);
+        redLabel.setTextFill(pieceColors[0]);
+        Platform.runLater(()-> {
+            blueLabel.setText(counts.getValue1().toString());
+            redLabel.setText(counts.getValue0().toString());
+        });
     }
 }
