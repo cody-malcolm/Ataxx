@@ -40,7 +40,7 @@ public class GameView {
 
     /** Colors */
     private static Color[] pieceColors = {Color.hsb(0,1,0.79), Color.hsb(215, 1, 0.79)};
-    private static Color[] squareHighlightColors = {Color.hsb(0,0.0,0.70), Color.hsb(0, 0.0, 0.50)};
+    private static Color[] squareHighlightColors = {Color.hsb(0,0.0,0.60), Color.hsb(0, 0.0, 0.70)};
     private static Color[] inactiveColors = {Color.hsb(0,1,0.40), Color.hsb(215, 1, 0.40)};
 
 
@@ -318,6 +318,7 @@ public class GameView {
                     renderBoard(oldBoard);
                     gc.setFill(pieceColors[changeColor(activePlayer)]);
                     gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
+                    renderPiece(pieceColors[changeColor(activePlayer)], (int)sourceRow, (int)sourceColumn);
                 }
             };
 
