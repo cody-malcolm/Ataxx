@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class Game {
 
+    private boolean active = false;
     private String id;
     private Player[] players = new Player[2];
     private ArrayList<Player> spectators;
@@ -131,6 +132,7 @@ public class Game {
     }
 
     private void handleGameOver() {
+        this.active = false;
         for (Player player : this.players) {
             if (null != player) {
                 player.finishedGame();
@@ -202,7 +204,7 @@ public class Game {
         if (null != this.players[0] && null != this.players[1]) {
             String playerOneUsername = this.players[0].getUsername();
             String playerTwoUsername = this.players[1].getUsername();
-
+            this.active = true;
             for (Player player : this.players) {
                 player.sendGameInformation(playerOneUsername, playerTwoUsername, this.id);
             }
@@ -231,5 +233,9 @@ public class Game {
      */
     public ArrayList<Player> getSpectators() {
         return this.spectators;
+    }
+
+    public boolean getActive() {
+        return this.active;
     }
 }

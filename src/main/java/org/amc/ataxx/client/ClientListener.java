@@ -2,8 +2,6 @@ package org.amc.ataxx.client;
 
 import javafx.stage.Stage;
 import org.amc.Utils;
-import org.amc.ataxx.GameLogic;
-import org.javatuples.Pair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,16 +10,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
 /**
- * Listens for and manages Server responses
+ * Listens for and manages Server responses and user mouse clicks
  */
 public class ClientListener extends Thread {
     /** The User associated with the controller */
     private User user;
-
-    private GameView view;
 
     private boolean showingGameScene = false;
     final private Stage stage;
@@ -45,8 +40,6 @@ public class ClientListener extends Thread {
         }
         this.user = new User(username, '0');
         this.stage = stage;
-        view = GameView.getInstance();
-        view.setClientListener(this);
         this.splashController = splashController;
     }
 
@@ -163,6 +156,7 @@ public class ClientListener extends Thread {
         char activePlayer = args[4].charAt(0);
         char key = args[5].charAt(0);
         this.user.setBoard(args[3]);
+        this.user.setGameActive(args[7].equals("true"));
 
 
         if (args[2].equals("none")) {
@@ -188,27 +182,6 @@ public class ClientListener extends Thread {
 
     public Stage getStage() {
         return this.stage;
-    }
-
-    /**
-     * Given a square that was clicked on, gives the information to the User.
-     *
-     * @param square the square that was clicked on
-     */
-    public void processMouseClick(Pair<Integer, Integer> square) {
-        String move = user.clicked(square);
-        if (null != move) {
-            sendRequest("MOVE\\" + move);
-        } else {
-            if (user.usersTurn()) {
-                String board = user.getBoard();
-                Pair<Integer, Integer> source = user.getSource();
-                ArrayList<Pair<Integer, Integer>> steps = GameLogic.getSteps(board, source);
-                ArrayList<Pair<Integer, Integer>> jumps = GameLogic.getJumps(board, source);
-                view.renderBoard(board);
-                view.applyHighlighting(source, steps, jumps, user.getKey());
-            }
-        }
     }
 
     public void closeSocket() {
