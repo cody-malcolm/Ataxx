@@ -28,7 +28,7 @@
                 </children>
             </HBox>
             <HBox alignment="CENTER">
-                <Label fx:id="usernameFeedback" />
+                <Label fx:id="feedback" />
             </HBox>
             <HBox alignment="CENTER">
                 <Label text="Username: "/>

@@ -1,6 +1,6 @@
 package org.amc.ataxx.client;
 
-import javafx.event.ActionEvent;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -29,7 +29,7 @@ public class SplashController extends Controller {
     @FXML
     private TextField hostIPField;
     @FXML
-    private Label usernameFeedback;
+    private Label feedback;
 
     private SplashView view;
 
@@ -61,9 +61,11 @@ public class SplashController extends Controller {
             if (Utils.verifyUsername(usernameField.getText())) {
                 usernameField.getStyleClass().clear();
                 usernameField.getStyleClass().addAll("text-input", "text-field", "input", "valid");
+                feedback.setText("");
             } else {
                 usernameField.getStyleClass().clear();
                 usernameField.getStyleClass().addAll("text-input", "text-field", "input", "invalid");
+                feedback.setText("");
             }
         });
     }
@@ -79,7 +81,7 @@ public class SplashController extends Controller {
             Main.setListener(this.listener);
             this.listener.start();
         } else {
-            view.promptForNewUsername(usernameFeedback);
+            view.promptForNewUsername(feedback);
         }
     }
 
@@ -98,7 +100,11 @@ public class SplashController extends Controller {
         view.disableConnect(usernameField, connectButton, gameButton, spectateBox, spectateButton);
     }
 
-    public void handleUsernameChange(ActionEvent event) {
-        System.out.println(event);
-    }
+
+    public void giveFeedback(String message) {
+        Platform.runLater(()-> {
+            this.feedback.setText(message);
+        });
+    };
+
 }
