@@ -14,8 +14,6 @@ public class Game {
     private Board board;
     private char winner = '-'; // may be unnecessary
 
-
-
     public Game(String id) {
         // set up the board and any other internal stuff you need to do
         // up to you if you track active player at the Game level or the Board level, but requests will be sent to getActivePlayer()
@@ -31,8 +29,6 @@ public class Game {
      * @return '1' if the player is player 1, '2' otherwise
      */
     public char addPlayer(Player player) {
-        // check if game has two players, and set the active player (here or in Board) to '1' or '2' at random if so
-        sendToAll(player.getUsername() + " has joined the game"); // this should get sent before the player is added
         if (null==players[0]){
             players[0] = player;
             return '1';
@@ -165,9 +161,11 @@ public class Game {
      * @return the key for the spectator
      */
     public char addSpectator(Player spectator) {
-        sendToAll(spectator.getUsername() + " is now spectating the game");
         spectators.add(spectator);
-        sendGameInfo();
+        if (this.active) {
+            sendToAll(spectator.getUsername() + " is now spectating the game");
+            sendGameInfo();
+        }
         return '3';
     }
 

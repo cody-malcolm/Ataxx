@@ -107,4 +107,8 @@ public class SplashController extends Controller {
         });
     };
 
+    public void disableButtons() {
+        view.disableButtons(gameButton, gameIDField, spectateButton);
+    }
+
 }

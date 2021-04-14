@@ -109,10 +109,7 @@ public class ClientListener extends Thread {
     }
 
     private boolean processResponse(String response) {
-        // could make this conditional on response if the server later sends information before a game is requested
-        if (!showingGameScene) {
-            showingGameScene = showGameScene();
-        }
+
         if (null == response) {
             return true;
         }
@@ -160,14 +157,26 @@ public class ClientListener extends Thread {
     }
 
     private void handleGameResponse(String response) {
+        // could make this conditional on response if the server later sends information before a game is requested
+
 //        updateScene(); ??
         String[] args = response.split("\\\\");
 
         char activePlayer = args[4].charAt(0);
         char key = args[5].charAt(0);
         this.user.setBoard(args[3]);
-        this.user.setGameActive(args[7].equals("true"));
+        boolean gameActive = args[7].equals("true");
+        this.user.setGameActive(gameActive);
 
+        if (!gameActive) {
+            splashController.giveFeedback("Waiting for opponent...");
+            splashController.disableButtons();
+            return;
+        }
+
+        if (!showingGameScene) {
+            showingGameScene = showGameScene();
+        }
 
         if (args[2].equals("none")) {
             this.gameController.refreshBoard(args[3], activePlayer, key, this.user.getDisplayNames(), this.user.getGameId());
@@ -181,6 +190,7 @@ public class ClientListener extends Thread {
         if (winner != '-') {
             gameController.winnerDetermined(winner);
         }
+
     }
 
     public void sendRequest(String request) {

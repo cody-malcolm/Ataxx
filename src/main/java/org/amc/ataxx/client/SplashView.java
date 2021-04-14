@@ -36,4 +36,10 @@ public class SplashView {
     public void promptForNewUsername(Label feedbackLabel) {
         feedbackLabel.setText("Sorry, that username is not valid.");
     }
+
+    public void disableButtons(Button gameButton, TextField gameIDfield, Button spectateButton) {
+        gameButton.setDisable(true);
+        spectateButton.setDisable(true);
+        gameIDfield.setEditable(false);
+    }
 }
