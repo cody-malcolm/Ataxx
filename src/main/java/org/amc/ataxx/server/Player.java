@@ -261,7 +261,8 @@ public class Player extends Thread {
                 if (!this.newGameAllowed) {
                     game.handleResignation(this.key);
                 }
-                game.sendToAll(this.username + " has disconnected.");
+                game.sendToAll(this.username + " has disconnected");
+                updateClients(game.getBoard(), "resn", game);
             }
         }
     }

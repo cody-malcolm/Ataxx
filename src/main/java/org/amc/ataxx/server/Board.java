@@ -1,5 +1,6 @@
 package org.amc.ataxx.server;
 
+import org.amc.Utils;
 import org.amc.ataxx.GameLogic;
 import org.javatuples.Pair;
 
@@ -7,14 +8,15 @@ import java.util.ArrayList;
 
 public class Board {
     // depends on encoding you choose, feel free to change, just a temp for testing controller
-    final protected static String INITIAL_BOARD = "1-----2/-------/-------/-------/-------/-------/2-----1";
+    final protected static String INITIAL_BOARD = "2-----1/-------/-------/-------/-------/-------/1-----2";
 
     private String board;
-    private char activePlayer = '1';
+    private char activePlayer;
 
     public Board() {
         // needs to set board to initial state (see tests) and pick '1' or '2' at random
         board = INITIAL_BOARD;
+        this.activePlayer = Character.forDigit(Utils.randInt(1, 2), 10);
     }
 
     // only used in tests
