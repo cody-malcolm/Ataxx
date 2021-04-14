@@ -6,7 +6,9 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -312,18 +314,33 @@ public class GameView {
             );
             timeline.setCycleCount(1);
 
+            ObjectProperty<Color> color = new SimpleObjectProperty<>();
+
+            Timeline colorTimeline = new Timeline(
+                    new KeyFrame(Duration.ZERO,
+                            new KeyValue(color, pieceColors[changeColor(activePlayer)])
+                    ),
+                    new KeyFrame(Duration.seconds(0.5),
+                            new KeyValue(color, Color.hsb(0, 0, 0.85))
+                    )
+            );
+
+            colorTimeline.setCycleCount(1);
+
+
             AnimationTimer timer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
                     renderBoard(oldBoard);
                     gc.setFill(pieceColors[changeColor(activePlayer)]);
                     gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
-                    renderPiece(pieceColors[changeColor(activePlayer)], (int)sourceRow, (int)sourceColumn);
+                    renderPiece(color.getValue(), (int)sourceRow+1, (int)sourceColumn+1);
                 }
             };
 
             timer.start();
             timeline.play();
+            colorTimeline.play();
             timeline.setOnFinished(event -> {
                 timer.stop();
                 renderBoard(newBoard);
