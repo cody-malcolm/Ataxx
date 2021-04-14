@@ -31,6 +31,12 @@ public class GameView {
     /** The GraphicsContext associated with the Canvas */
     private static GraphicsContext gc;
 
+    /** Colors */
+    private static Color[] pieceColors = {Color.hsb(0,1,0.79), Color.hsb(215, 1, 0.79)};
+    private static Color[] squareHighlightColors = {Color.hsb(0,0.0,0.70), Color.hsb(215, 0.0, 0.70)};
+    private static Color[] inactiveColors = {Color.hsb(0,1,0.40), Color.hsb(215, 1, 0.40)};
+    
+
     /**
      * Constructor
      */
@@ -85,7 +91,6 @@ public class GameView {
      * @param board the String representation of the board indicating the location of the pieces
      */
     private void renderPieces(String board) {
-        Color[] colors = {Color.hsb(0,1,0.79), Color.hsb(215, 1, 0.79)};
         String[] rows = board.split("/");
 
         for (int i = 0; i < 7; i++){
@@ -94,9 +99,9 @@ public class GameView {
                 char piece = rows[i].charAt(j);
 
                 if(piece == '1'){
-                    renderPiece(colors[0],i,j);
+                    renderPiece(pieceColors[0],i,j);
                 } else if (piece == '2'){
-                    renderPiece(colors[1],i,j);
+                    renderPiece(pieceColors[1],i,j);
                 }
             }
         }
@@ -161,25 +166,23 @@ public class GameView {
 
     public void displayTurn(char activePlayer, char key, Label playerLabel, Label opponentLabel, String[] displayNames) {
 
-        Color[] activeColors = {Color.hsb(0,1,0.79), Color.hsb(215, 1, 0.79)};
-        Color[] inactiveColors = {Color.hsb(0,1,0.40), Color.hsb(215, 1, 0.40)};
         // TODO bet this can be cleaned up now
         if (activePlayer == key) {
             // For testing
 //            System.out.println("Testing turn render: Inside activePlayer(" + activePlayer + ") == key(" + key + ")");
-            playerLabel.setTextFill(activeColors[Integer.valueOf(key)-49]);
+            playerLabel.setTextFill(pieceColors[Integer.valueOf(key)-49]);
             opponentLabel.setTextFill(inactiveColors[((Integer.valueOf(key)-49)+1)%2]);
         } else if (key == '3' && activePlayer == '1') {
-            playerLabel.setTextFill(activeColors[0]);
+            playerLabel.setTextFill(pieceColors[0]);
             opponentLabel.setTextFill(inactiveColors[1]);
         } else if (key != '3') {
             // For testing
 //            System.out.println("Testing turn render: Inside activePlayer(" + activePlayer + ") != key(" + key + ")");
             playerLabel.setTextFill(inactiveColors[Integer.valueOf(key)-49]);
-            opponentLabel.setTextFill(activeColors[((Integer.valueOf(key)-49)+1)%2]);
+            opponentLabel.setTextFill(pieceColors[((Integer.valueOf(key)-49)+1)%2]);
         } else {
             playerLabel.setTextFill(inactiveColors[0]);
-            opponentLabel.setTextFill(activeColors[1]);
+            opponentLabel.setTextFill(pieceColors[1]);
         }
 
         Platform.runLater(()-> {
@@ -222,10 +225,13 @@ public class GameView {
      * @param steps squares the selected piece can legally move to without jumping
      * @param jumps squares the selected piece can legally move to by jumping
      */
-    public void highlightDestinationSquares(ArrayList<Pair<Integer, Integer>> steps, ArrayList<Pair<Integer, Integer>> jumps) {
+    public void applyHighlighting(Pair<Integer, Integer> source, ArrayList<Pair<Integer, Integer>> steps, ArrayList<Pair<Integer, Integer>> jumps, char key) {
         // render a small circle (probably SIZE/4) on each step and jump, use somewhat darker colour for jumps
-        highlightSquares(steps);
-        highlightSquares(jumps);
+        highlightSquares(steps, key);
+        highlightSquares(jumps, key);
+//        gc.setFill(squareHighlightColors[Integer.valueOf(key)-49]);
+//        gc.fillRoundRect(SIZE*source.getValue1()+5, SIZE*source.getValue0()+5, actualSIZE, actualSIZE, SIZE/4,SIZE/4);
+//        renderPiece(pieceColors[Integer.valueOf(key)-49], source.getValue0(), source.getValue1());
     }
 
     /**
@@ -233,13 +239,14 @@ public class GameView {
      *
      * @param squares the list of pairs of squares to highlight
      */
-    private void highlightSquares(ArrayList<Pair<Integer, Integer>> squares) {
-        Color color = Color.hsb(0, 0, 0.95);
+    private void highlightSquares(ArrayList<Pair<Integer, Integer>> squares, char key) {
         int num = squares.size();
         for (int i=0; i < num; i++){
             int row = squares.get(i).getValue0();
             int column = squares.get(i).getValue1();
-            renderPiece(color, row, column);
+//            gc.setFill(squareHighlightColors[Integer.valueOf(key)-49]);
+//            gc.fillRoundRect(SIZE*column+5, SIZE*row+5, actualSIZE, actualSIZE, SIZE/4,SIZE/4);
+            renderPiece(squareHighlightColors[Integer.valueOf(key)-49], row, column);
         }
 
     }
@@ -289,26 +296,6 @@ public class GameView {
         renderBoard(newBoard);
     }
 
-//    /**
-//     * Returns a list of Pairs of Row,Column for all squares adjacent to the square provided.
-//     *
-//     * @param square the destination square of the move
-//     */
-//    private ArrayList<Pair<Integer, Integer>> getAdjacentSquares(String square) {
-//        ArrayList<Pair<Integer, Integer>> adjacentSquares = new ArrayList<>();
-//        int row = square.charAt(0);
-//        int column = square.charAt(1);
-//
-//        if(row > 0 && column > 0 && row < 6 && column < 6){
-//            for (int i = row-1; i <= row+1; i++){
-//                for (int j = column-1; j <= column+1; j++){
-//                    adjacentSquares.add(new Pair<>(i,j));
-//                }
-//            }
-//        }
-//
-//        return adjacentSquares;
-//    }
 
     /**
      * Displays that the game is over and the username of the winner
