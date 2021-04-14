@@ -123,7 +123,7 @@ public class GameView {
      */
     private void renderPiece(Color color,int row, int col) {
         gc.setFill(color);
-        gc.fillOval(getPosition(col), getPosition(row), actualSIZE-(actualSIZE/10),actualSIZE-(actualSIZE/10));
+        gc.fillOval(getPosition((double) col), getPosition((double) row), actualSIZE-(actualSIZE/10),actualSIZE-(actualSIZE/10));
     }
 
 
@@ -132,7 +132,7 @@ public class GameView {
      *
      * @param x the column or row of the square the piece will be in
      */
-    private double getPosition(int x){
+    private double getPosition(double x){
         return 5 + (actualSIZE/10)/2 + (SIZE) * x;
     }
 
@@ -276,9 +276,6 @@ public class GameView {
         renderBoard(oldBoard);
 
         if (isAdjecent(sourceSquare, destinationSquare)){ // if it's a step
-            // create a circle to move to the destination square
-            gc.setFill(pieceColors[Integer.valueOf(activePlayer)-49]);
-            gc.fillOval(getPosition(sourceColumn), getPosition(sourceRow), actualSIZE-(actualSIZE/10),actualSIZE-(actualSIZE/10));
 
             DoubleProperty x  = new SimpleDoubleProperty(getPosition(destColumn+1));
             DoubleProperty y  = new SimpleDoubleProperty(getPosition(destRow+1));
@@ -306,13 +303,12 @@ public class GameView {
 
             timer.start();
             timeline.play();
-            timeline.setOnFinished(event -> timer.stop());
+            timeline.setOnFinished(event -> {
+                timer.stop();
+                renderBoard(newBoard);
+            });
 
         } else { // else it's a jump
-            // create a circle to move to the destination square
-            gc.setFill(pieceColors[Integer.valueOf(activePlayer)-49]);
-            gc.fillOval(getPosition(sourceColumn), getPosition(sourceRow), actualSIZE-(actualSIZE/10),actualSIZE-(actualSIZE/10));
-
             DoubleProperty x  = new SimpleDoubleProperty(getPosition(destColumn+1));
             DoubleProperty y  = new SimpleDoubleProperty(getPosition(destRow+1));
 
@@ -328,34 +324,24 @@ public class GameView {
             );
             timeline.setCycleCount(1);
 
-            DoubleProperty w  = new SimpleDoubleProperty(actualSIZE-(actualSIZE/2));
-            DoubleProperty h  = new SimpleDoubleProperty(actualSIZE-(actualSIZE/2));
-
-            Timeline timeline2 = new Timeline(
-                    new KeyFrame(Duration.seconds(0),
-                            new KeyValue(w, actualSIZE-(actualSIZE/10)),
-                            new KeyValue(h, actualSIZE-(actualSIZE/10))
-                    ),
-                    new KeyFrame(Duration.seconds(0.5),
-                            new KeyValue(w, actualSIZE-(actualSIZE/2)),
-                            new KeyValue(h, actualSIZE-(actualSIZE/2))
-                    )
-            );
-            timeline2.setCycleCount(1);
-
             AnimationTimer timer = new AnimationTimer() {
-                private int div = 9;
                 @Override
                 public void handle(long now) {
                     renderBoard(oldBoard);
                     gc.setFill(pieceColors[changeColor(activePlayer)]);
-                    gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/w.doubleValue()), actualSIZE-(actualSIZE/h.doubleValue()));
+                    gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
                 }
             };
 
             timer.start();
             timeline.play();
-            timeline.setOnFinished(event -> timer.stop());
+            timeline.setOnFinished(event -> {
+                timer.stop();
+                renderBoard(newBoard);
+            });
+
+
+//            renderPiece(pieceColors[changeColor(activePlayer)], destRow, destColumn);
         }
 
 
