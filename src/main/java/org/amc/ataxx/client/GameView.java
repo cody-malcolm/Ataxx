@@ -257,10 +257,10 @@ public class GameView {
     public void animateMove(String oldBoard, String newBoard, String move, char activePlayer) {
         String sourceSquare = String.valueOf(move.charAt(0)) + String.valueOf(move.charAt(1));
         String destinationSquare = String.valueOf(move.charAt(2)) + String.valueOf(move.charAt(3));
-        int sourceRow = Integer.valueOf(sourceSquare.charAt(0))-49;
-        int sourceColumn = Integer.valueOf(sourceSquare.charAt(1))-49;
-        int destRow = Integer.valueOf(destinationSquare.charAt(0))-49;
-        int destColumn = Integer.valueOf(destinationSquare.charAt(1))-49;
+        int sourceRow = Integer.parseInt(String.valueOf(sourceSquare.charAt(0)));
+        int sourceColumn = Integer.parseInt(String.valueOf(sourceSquare.charAt(1)));
+        int destRow = Integer.valueOf(String.valueOf(destinationSquare.charAt(0)));
+        int destColumn = Integer.valueOf(String.valueOf(destinationSquare.charAt(1)));
         x = sourceColumn;
         // ensure the currently rendered board is as expected
         renderBoard(oldBoard);
@@ -272,12 +272,12 @@ public class GameView {
 
             Timeline timeline = new Timeline(
                     new KeyFrame(Duration.seconds(0),
-                            new KeyValue(x, getPosition(sourceColumn+1)),
-                            new KeyValue(y, getPosition(sourceRow+1))
+                            new KeyValue(x, getPosition(sourceColumn)),
+                            new KeyValue(y, getPosition(sourceRow))
                     ),
                     new KeyFrame(Duration.seconds(0.3),
-                            new KeyValue(x, getPosition(destColumn+1)),
-                            new KeyValue(y, getPosition(destRow+1))
+                            new KeyValue(x, getPosition(destColumn)),
+                            new KeyValue(y, getPosition(destRow))
                     )
             );
             timeline.setCycleCount(1);
@@ -285,6 +285,7 @@ public class GameView {
             AnimationTimer timer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
+                    gc.clearRect(0,0, canvasSIZE,canvasSIZE);
                     renderBoard(oldBoard);
                     gc.setFill(pieceColors[changeColor(activePlayer)]);
                     gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
@@ -304,12 +305,12 @@ public class GameView {
 
             Timeline timeline = new Timeline(
                     new KeyFrame(Duration.seconds(0),
-                            new KeyValue(x, getPosition(sourceColumn+1)),
-                            new KeyValue(y, getPosition(sourceRow+1))
+                            new KeyValue(x, getPosition(sourceColumn)),
+                            new KeyValue(y, getPosition(sourceRow))
                     ),
                     new KeyFrame(Duration.seconds(0.5),
-                            new KeyValue(x, getPosition(destColumn+1)),
-                            new KeyValue(y, getPosition(destRow+1))
+                            new KeyValue(x, getPosition(destColumn)),
+                            new KeyValue(y, getPosition(destRow))
                     )
             );
             timeline.setCycleCount(1);
@@ -331,11 +332,12 @@ public class GameView {
             AnimationTimer timer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
+                    gc.clearRect(0,0, canvasSIZE,canvasSIZE);
                     renderBoard(oldBoard);
                     gc.setFill(pieceColors[changeColor(activePlayer)]);
                     gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
                     gc.setFill(color.getValue());
-                    gc.fillOval(getPosition(sourceColumn+1), getPosition( sourceRow+1), actualSIZE-(actualSIZE/10)+1,actualSIZE-(actualSIZE/10)+1);
+                    gc.fillOval(getPosition(sourceColumn), getPosition( sourceRow),actualSIZE-(actualSIZE/10)+1,actualSIZE-(actualSIZE/10)+1);
                 }
             };
 
@@ -345,34 +347,49 @@ public class GameView {
             timeline.setOnFinished(event -> {
                 timer.stop();
                 renderBoard(oldBoard);
-                renderPiece(pieceColors[changeColor(activePlayer)], destRow+1, destColumn+1);
+                renderPiece(pieceColors[changeColor(activePlayer)], destRow, destColumn);
                 gc.setFill(Color.hsb(0, 0, 0.85));
-                gc.fillOval(getPosition(sourceColumn+1)-1, getPosition( sourceRow+1)-1, actualSIZE-(actualSIZE/10)+2,actualSIZE-(actualSIZE/10)+2);
+                gc.fillOval(getPosition(sourceColumn)-1, getPosition( sourceRow)-1, actualSIZE-(actualSIZE/10)+2,actualSIZE-(actualSIZE/10)+2);
             });
 
         }
-
-
-
 
         // second, animate the converted pieces changing color
 
         // my approach would be:
         // compare each square in old board and each in new and convert them if the color is different
-        // if you use Color.hsb, you can transition the color from one to the other over an interval of time
-        // eg. could have '1' to '2' transition like (but obviously programmatically)
-        //                                     Color.hsb(0, 0.5, 0.5)
-        //                                     Color.hsb(20, 0.5, 0.5)
-        //                                     Color.hsb(40, 0.5, 0.5)
-        //                                     Color.hsb(60, 0.5, 0.5)
-        //                                     Color.hsb(80, 0.5, 0.5)
-        //                                     Color.hsb(100, 0.5, 0.5)
-        //                                     Color.hsb(120, 0.5, 0.5)
-        //                                     Color.hsb(140, 0.5, 0.5)
-        //                                     Color.hsb(160, 0.5, 0.5)
-        //                                     Color.hsb(180, 0.5, 0.5)
+//        ObjectProperty<Color> color = new SimpleObjectProperty<>();
+//
+//        Timeline colorTimeline = new Timeline(
+//                new KeyFrame(Duration.ZERO,
+//                        new KeyValue(color, pieceColors[activePlayer])
+//                ),
+//                new KeyFrame(Duration.seconds(0.5),
+//                        new KeyValue(color, pieceColors[changeColor(activePlayer)])
+//                )
+//        );
+//
+//        colorTimeline.setCycleCount(1);
+//
+//
+//        AnimationTimer timer = new AnimationTimer() {
+//            @Override
+//            public void handle(long now) {
+//                ArrayList<Pair<Integer,Integer>> adjacent = GameLogic.getAdjacent(new Pair<>((int)move.charAt(2), (int) move.charAt(3)));
+//                System.out.println(adjacent);
+////                for (int i = 0; i < adjacent.size(); i++) {
+////                    renderPiece(color.getValue(), adjacent.get(i).getValue0(), adjacent.get(i).getValue1());
+////                }
+//            }
+//        };
+//
+//        timer.start();
+//        colorTimeline.play();
+//        colorTimeline.setOnFinished(event -> {
+//            timer.stop();
+//            renderBoard(newBoard);
+//        });
 
-        // Note: The animation should be quite fast, probably between 200-400ms each but we can adjust it easily if needed.
         // TODO later addition: execute the animation in a separate thread to not block other parts of UI such as chat window
         gc.clearRect(0,0, canvasSIZE,canvasSIZE);
         renderBoard(newBoard);
