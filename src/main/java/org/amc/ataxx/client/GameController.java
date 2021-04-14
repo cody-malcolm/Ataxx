@@ -114,7 +114,6 @@ public class GameController extends Controller {
         if (null != source) {
             ArrayList<Pair<Integer, Integer>> steps = GameLogic.getSteps(board, source);
             ArrayList<Pair<Integer, Integer>> jumps = GameLogic.getJumps(board, source);
-            view.highlightDestinationSquares(steps, jumps);
         }
     }
 

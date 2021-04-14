@@ -2,6 +2,7 @@ package org.amc.ataxx.client;
 
 import javafx.stage.Stage;
 import org.amc.Utils;
+import org.amc.ataxx.GameLogic;
 import org.javatuples.Pair;
 
 import java.io.BufferedReader;
@@ -11,6 +12,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 /**
  * Listens for and manages Server responses
@@ -197,6 +199,13 @@ public class ClientListener extends Thread {
         String move = user.clicked(square);
         if (null != move) {
             sendRequest("MOVE\\" + move);
+        } else {
+            String board = user.getBoard();
+            Pair<Integer, Integer> source = user.getSource();
+            ArrayList<Pair<Integer, Integer>> steps = GameLogic.getSteps(board, source);
+            ArrayList<Pair<Integer, Integer>> jumps = GameLogic.getJumps(board, source);
+            view.renderBoard(board);
+            view.applyHighlighting(source, steps, jumps, user.getKey());
         }
     }
 

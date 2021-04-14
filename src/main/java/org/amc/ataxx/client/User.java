@@ -29,6 +29,11 @@ public class User {
         this.username = username;
         this.key = key;
     }
+
+    public char getKey() {
+        return this.key;
+    }
+    
     /**
      * Handles a mouse click on the Game board and returns the Move associated with the click, if any.
      *
