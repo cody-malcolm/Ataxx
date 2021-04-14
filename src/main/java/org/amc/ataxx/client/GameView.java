@@ -34,7 +34,7 @@ public class GameView {
     /** The size of the canvas, in pixels */
     final private static int canvasSIZE = SIZE*7 + 10;
     /** The controller that manages communication with the rest of the Application */
-    private static ClientListener clientListener;
+    private static GameController gameController;
     /** The GraphicsContext associated with the Canvas */
     private static GraphicsContext gc;
 
@@ -211,7 +211,7 @@ public class GameView {
                 Integer col = Integer.valueOf((int)Math.floor(event.getX()/SIZE));
 
                 Pair<Integer, Integer> square = new Pair<>(row, col);
-                clientListener.processMouseClick(square);
+                gameController.processMouseClick(square);
             }
         };
     }
@@ -219,10 +219,10 @@ public class GameView {
     /**
      * Setter for controller. // TODO rename/reword this
      *
-     * @param clientListener the Controller to use to communicate with the rest of the Application.
+     * @param gameController the Controller to use to communicate with the rest of the Application.
      */
-    public void setClientListener(ClientListener clientListener) {
-        this.clientListener = clientListener;
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
     }
 
     /**

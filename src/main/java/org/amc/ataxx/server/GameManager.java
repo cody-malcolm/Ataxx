@@ -18,14 +18,7 @@ public class GameManager {
         games = new HashMap<>();
     }
 
-    /**
-     * Returns a unique ID for a new Game.
-     *
-     * @return a unique gameID
-     */
-    public synchronized String generateID() {
-        return "0000";
-    }
+
 
     /**
      * Returns the GameManager. If none exists, creates one.
@@ -67,7 +60,6 @@ public class GameManager {
         }
         else{
             Game temp=this.waitingGame;
-            // TODO fix bug with player leaving (needs to be don in controller first)
             this.waitingGame=null;
             return temp;
 
@@ -94,6 +86,10 @@ public class GameManager {
         return games;
     }
 
+    /**
+     * If a 'waiting' game is no longer waiting, sets it to null
+     *
+     */
     public synchronized void removeGame(String id) {
         if (null != this.waitingGame && this.waitingGame.getID() == id) {
             this.waitingGame = null;

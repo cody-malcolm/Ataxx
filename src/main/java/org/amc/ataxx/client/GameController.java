@@ -84,6 +84,7 @@ public class GameController extends Controller {
         disconnectButton.setOnAction(event -> disconnectClick());
         // initialize the Canvas
         view = GameView.getInstance();
+        view.setGameController(this);
         view.createCanvas(borderPane);
 
         this.buffer.setText("\r\n");
@@ -103,7 +104,32 @@ public class GameController extends Controller {
         user.setKey(key);
         user.setActivePlayer(activePlayer);
         view.displayTurn(activePlayer, key, playerLabel, opponentLabel, displayNames);
-        highlightSquares(board);
+        highlightSquares(board); // TODO 1 99% sure this can be deleted
+    }
+
+    /**
+     * Given a square that was clicked on, gives the information to the User.
+     *
+     * @param square the square that was clicked on
+     */
+    public void processMouseClick(Pair<Integer, Integer> square) {
+        String move = user.clicked(square);
+        if (null != move) {
+            sendRequest("MOVE\\" + move);
+        } else {
+            if (user.getGameActive() && user.usersTurn()) {
+                String board = user.getBoard();
+                Pair<Integer, Integer> source = user.getSource();
+                if (null != source) {
+                    ArrayList<Pair<Integer, Integer>> steps = GameLogic.getSteps(board, source);
+                    ArrayList<Pair<Integer, Integer>> jumps = GameLogic.getJumps(board, source);
+                    view.renderBoard(board);
+                    view.applyHighlighting(source, steps, jumps, user.getKey());
+                } else {
+                    view.renderBoard(board);
+                }
+            }
+        }
     }
 
     /**

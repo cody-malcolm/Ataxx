@@ -2,8 +2,6 @@ package org.amc.ataxx.client;
 
 import javafx.stage.Stage;
 import org.amc.Utils;
-import org.amc.ataxx.GameLogic;
-import org.javatuples.Pair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,16 +10,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
 /**
- * Listens for and manages Server responses
+ * Listens for and manages Server responses and user mouse clicks
  */
 public class ClientListener extends Thread {
     /** The User associated with the controller */
     private User user;
-
-    private GameView view;
 
     private boolean showingGameScene = false;
     final private Stage stage;
@@ -45,23 +40,25 @@ public class ClientListener extends Thread {
         }
         this.user = new User(username, '0');
         this.stage = stage;
-        view = GameView.getInstance();
-        view.setClientListener(this);
         this.splashController = splashController;
     }
 
     private boolean establishConnection() {
         boolean connected = false;
         int attempts = 1;
-        while (!connected && attempts < 10 && !this.abortConnectionAttempt) {
+        while (!connected && attempts < 20 && !this.abortConnectionAttempt) {
             try {
                 this.socket = new Socket(HOST, PORT);
                 connected = true;
             } catch (UnknownHostException e) {
-                System.err.println("Attempt " + attempts++ + ": Unknown host: " + HOST);
+                String message = "Attempt " + attempts++ + ": Unknown host: " + HOST;
+                splashController.giveFeedback(message);
+                System.err.println(message);
                 Utils.sleep(1250);
             } catch (IOException e) {
-                System.err.println("Attempt " + attempts++ + ": Error when attempting to connect to " + HOST);
+                String message = "Attempt " + attempts++ + ": Error when attempting to connect to " + HOST;
+                splashController.giveFeedback(message);
+                System.err.println(message);
                 Utils.sleep(1250);
             }
         }
@@ -84,16 +81,22 @@ public class ClientListener extends Thread {
     @Override
     public void run() {
         if (!establishConnection()) {
-            System.err.println("Unable to connect to " + HOST);
+            String message = "Unable to connect to " + HOST;
+            splashController.giveFeedback(message);
+            System.err.println(message);
             return;
         }
 
         if (!performHandshake()) {
-            System.err.println("Error during handshake process");
+            String message = "Error during handshake process";
+            splashController.giveFeedback(message);
+            System.err.println(message);
             return;
         }
+
         this.splashController.disableConnect();
         boolean disconnected = false;
+        splashController.giveFeedback("Successfully connected to " + HOST);
         while (!disconnected) {
             try {
                 disconnected = processResponse(in.readLine());
@@ -106,10 +109,7 @@ public class ClientListener extends Thread {
     }
 
     private boolean processResponse(String response) {
-        // could make this conditional on response if the server later sends information before a game is requested
-        if (!showingGameScene) {
-            showingGameScene = showGameScene();
-        }
+
         if (null == response) {
             return true;
         }
@@ -157,13 +157,26 @@ public class ClientListener extends Thread {
     }
 
     private void handleGameResponse(String response) {
+        // could make this conditional on response if the server later sends information before a game is requested
+
 //        updateScene(); ??
         String[] args = response.split("\\\\");
 
         char activePlayer = args[4].charAt(0);
         char key = args[5].charAt(0);
         this.user.setBoard(args[3]);
+        boolean gameActive = args[7].equals("true");
+        this.user.setGameActive(gameActive);
 
+        if (!gameActive) {
+            splashController.giveFeedback("Waiting for opponent...");
+            splashController.disableButtons();
+            return;
+        }
+
+        if (!showingGameScene) {
+            showingGameScene = showGameScene();
+        }
 
         if (args[2].equals("none")) {
             this.gameController.refreshBoard(args[3], activePlayer, key, this.user.getDisplayNames(), this.user.getGameId());
@@ -177,6 +190,7 @@ public class ClientListener extends Thread {
         if (winner != '-') {
             gameController.winnerDetermined(winner);
         }
+
     }
 
     public void sendRequest(String request) {
@@ -188,27 +202,6 @@ public class ClientListener extends Thread {
 
     public Stage getStage() {
         return this.stage;
-    }
-
-    /**
-     * Given a square that was clicked on, gives the information to the User.
-     *
-     * @param square the square that was clicked on
-     */
-    public void processMouseClick(Pair<Integer, Integer> square) {
-        String move = user.clicked(square);
-        if (null != move) {
-            sendRequest("MOVE\\" + move);
-        } else {
-            if (user.usersTurn()) {
-                String board = user.getBoard();
-                Pair<Integer, Integer> source = user.getSource();
-                ArrayList<Pair<Integer, Integer>> steps = GameLogic.getSteps(board, source);
-                ArrayList<Pair<Integer, Integer>> jumps = GameLogic.getJumps(board, source);
-                view.renderBoard(board);
-                view.applyHighlighting(source, steps, jumps, user.getKey());
-            }
-        }
     }
 
     public void closeSocket() {

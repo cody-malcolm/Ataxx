@@ -24,6 +24,7 @@ public class User {
     /** The ID of the Game being played */
     private String gameId;
     private String[] displayNames = new String[2];
+    private boolean gameActive = false;
 
     public User(String username, char key) {
         this.username = username;
@@ -46,7 +47,7 @@ public class User {
      */
     public String clicked(Pair<Integer, Integer> square) {
         //if it's player's turn
-        if (this.key==this.activePlayer){
+        if (this.key==this.activePlayer && this.gameActive){
 
             // if this.source is null
             if (null == this.source) {
@@ -176,5 +177,13 @@ public class User {
         } else {
             return this.opponentUsername;
         }
+    }
+
+    public void setGameActive(boolean gameActive) {
+        this.gameActive = gameActive;
+    }
+
+    public boolean getGameActive() {
+        return this.gameActive;
     }
 }

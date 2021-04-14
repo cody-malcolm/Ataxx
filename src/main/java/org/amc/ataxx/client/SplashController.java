@@ -1,9 +1,11 @@
 package org.amc.ataxx.client;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -26,6 +28,8 @@ public class SplashController extends Controller {
     private TextField usernameField;
     @FXML
     private TextField hostIPField;
+    @FXML
+    private Label feedback;
 
     private SplashView view;
 
@@ -52,6 +56,18 @@ public class SplashController extends Controller {
         connectButton.setOnAction(event -> connectClick());
         gameButton.setOnAction(event -> gameClick());
         spectateButton.setOnAction(event -> spectateClick());
+
+        usernameField.textProperty().addListener(event -> {
+            if (Utils.verifyUsername(usernameField.getText())) {
+                usernameField.getStyleClass().clear();
+                usernameField.getStyleClass().addAll("text-input", "text-field", "input", "valid");
+                feedback.setText("");
+            } else {
+                usernameField.getStyleClass().clear();
+                usernameField.getStyleClass().addAll("text-input", "text-field", "input", "invalid");
+                feedback.setText("");
+            }
+        });
     }
 
     /**
@@ -65,7 +81,7 @@ public class SplashController extends Controller {
             Main.setListener(this.listener);
             this.listener.start();
         } else {
-            view.promptForNewUsername();
+            view.promptForNewUsername(feedback);
         }
     }
 
@@ -83,4 +99,16 @@ public class SplashController extends Controller {
     public void disableConnect() {
         view.disableConnect(usernameField, connectButton, gameButton, spectateBox, spectateButton);
     }
+
+
+    public void giveFeedback(String message) {
+        Platform.runLater(()-> {
+            this.feedback.setText(message);
+        });
+    };
+
+    public void disableButtons() {
+        view.disableButtons(gameButton, gameIDField, spectateButton);
+    }
+
 }
