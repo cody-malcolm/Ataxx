@@ -153,7 +153,7 @@ public class GameView {
      *
      * @param board the String representation of the board to render
      */
-    public synchronized void renderBoard(String board) {
+    public void renderBoard(String board) {
         drawBoard();
         renderPieces(board);
 
@@ -232,8 +232,7 @@ public class GameView {
      * @param steps squares the selected piece can legally move to without jumping
      * @param jumps squares the selected piece can legally move to by jumping
      */
-
-    public synchronized void applyHighlighting(Pair<Integer, Integer> source, ArrayList<Pair<Integer, Integer>> steps, ArrayList<Pair<Integer, Integer>> jumps, char key) {
+    public void applyHighlighting(Pair<Integer, Integer> source, ArrayList<Pair<Integer, Integer>> steps, ArrayList<Pair<Integer, Integer>> jumps, char key) {
         // render a small circle (probably SIZE/4) on each step and jump, use somewhat darker colour for jumps
         highlightSquares(steps, key);
         highlightSquares(jumps, key);
@@ -247,7 +246,7 @@ public class GameView {
      *
      * @param squares the list of pairs of squares to highlight
      */
-    private synchronized void highlightSquares(ArrayList<Pair<Integer, Integer>> squares, char key) {
+    private void highlightSquares(ArrayList<Pair<Integer, Integer>> squares, char key) {
         int num = squares.size();
         for (int i=0; i < num; i++){
             int row = squares.get(i).getValue0();
@@ -265,7 +264,7 @@ public class GameView {
      * @param move the move being performed to transition from old to new
      */
     private static int x;
-    public synchronized void animateMove(String oldBoard, String newBoard, String move, char activePlayer) {
+    public void animateMove(String oldBoard, String newBoard, String move, char activePlayer) {
         String sourceSquare = String.valueOf(move.charAt(0)) + String.valueOf(move.charAt(1));
         String destinationSquare = String.valueOf(move.charAt(2)) + String.valueOf(move.charAt(3));
         int sourceRow = Integer.valueOf(sourceSquare.charAt(0))-49;
@@ -277,43 +276,89 @@ public class GameView {
         renderBoard(oldBoard);
 
         if (isAdjecent(sourceSquare, destinationSquare)){ // if it's a step
+            // create a circle to move to the destination square
+            gc.setFill(pieceColors[Integer.valueOf(activePlayer)-49]);
+            gc.fillOval(getPosition(sourceColumn), getPosition(sourceRow), actualSIZE-(actualSIZE/10),actualSIZE-(actualSIZE/10));
 
-//
+            DoubleProperty x  = new SimpleDoubleProperty(getPosition(destColumn+1));
+            DoubleProperty y  = new SimpleDoubleProperty(getPosition(destRow+1));
+
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.seconds(0),
+                            new KeyValue(x, getPosition(sourceColumn+1)),
+                            new KeyValue(y, getPosition(sourceRow+1))
+                    ),
+                    new KeyFrame(Duration.seconds(0.5),
+                            new KeyValue(x, getPosition(destColumn+1)),
+                            new KeyValue(y, getPosition(destRow+1))
+                    )
+            );
+            timeline.setCycleCount(1);
+
+            AnimationTimer timer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    renderBoard(oldBoard);
+                    gc.setFill(pieceColors[changeColor(activePlayer)]);
+                    gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
+                }
+            };
+
+            timer.start();
+            timeline.play();
+            timeline.setOnFinished(event -> timer.stop());
 
         } else { // else it's a jump
+            // create a circle to move to the destination square
+            gc.setFill(pieceColors[Integer.valueOf(activePlayer)-49]);
+            gc.fillOval(getPosition(sourceColumn), getPosition(sourceRow), actualSIZE-(actualSIZE/10),actualSIZE-(actualSIZE/10));
 
+            DoubleProperty x  = new SimpleDoubleProperty(getPosition(destColumn+1));
+            DoubleProperty y  = new SimpleDoubleProperty(getPosition(destRow+1));
+
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.seconds(0),
+                            new KeyValue(x, getPosition(sourceColumn+1)),
+                            new KeyValue(y, getPosition(sourceRow+1))
+                    ),
+                    new KeyFrame(Duration.seconds(0.5),
+                            new KeyValue(x, getPosition(destColumn+1)),
+                            new KeyValue(y, getPosition(destRow+1))
+                    )
+            );
+            timeline.setCycleCount(1);
+
+            DoubleProperty w  = new SimpleDoubleProperty(actualSIZE-(actualSIZE/2));
+            DoubleProperty h  = new SimpleDoubleProperty(actualSIZE-(actualSIZE/2));
+
+            Timeline timeline2 = new Timeline(
+                    new KeyFrame(Duration.seconds(0),
+                            new KeyValue(w, actualSIZE-(actualSIZE/10)),
+                            new KeyValue(h, actualSIZE-(actualSIZE/10))
+                    ),
+                    new KeyFrame(Duration.seconds(0.5),
+                            new KeyValue(w, actualSIZE-(actualSIZE/2)),
+                            new KeyValue(h, actualSIZE-(actualSIZE/2))
+                    )
+            );
+            timeline2.setCycleCount(1);
+
+            AnimationTimer timer = new AnimationTimer() {
+                private int div = 9;
+                @Override
+                public void handle(long now) {
+                    renderBoard(oldBoard);
+                    gc.setFill(pieceColors[changeColor(activePlayer)]);
+                    gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/w.doubleValue()), actualSIZE-(actualSIZE/h.doubleValue()));
+                }
+            };
+
+            timer.start();
+            timeline.play();
+            timeline.setOnFinished(event -> timer.stop());
         }
 
-        // create a circle to move to the destination square
-        gc.setFill(pieceColors[Integer.valueOf(activePlayer)-49]);
-        gc.fillOval(getPosition(sourceColumn), getPosition(sourceRow), actualSIZE-(actualSIZE/10),actualSIZE-(actualSIZE/10));
 
-        DoubleProperty x  = new SimpleDoubleProperty(getPosition(destColumn+1));
-        DoubleProperty y  = new SimpleDoubleProperty(getPosition(destRow+1));
-
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.seconds(0),
-                        new KeyValue(x, getPosition(sourceColumn+1)),
-                        new KeyValue(y, getPosition(sourceRow+1))
-                ),
-                new KeyFrame(Duration.seconds(0.5),
-                        new KeyValue(x, getPosition(destColumn+1)),
-                        new KeyValue(y, getPosition(destRow+1))
-                )
-        );
-        timeline.setCycleCount(1);
-
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                renderBoard(oldBoard);
-                gc.setFill(pieceColors[changeColor(activePlayer)]);
-                gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
-            }
-        };
-
-        timer.start();
-        timeline.play();
 
 
         // second, animate the converted pieces changing color
@@ -337,6 +382,7 @@ public class GameView {
         // TODO later addition: execute the animation in a separate thread to not block other parts of UI such as chat window
         gc.clearRect(0,0, canvasSIZE,canvasSIZE);
         renderBoard(newBoard);
+
     }
 
     private int changeColor(char activePlayer){
