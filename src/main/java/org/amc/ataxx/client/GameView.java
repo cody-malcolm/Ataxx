@@ -267,15 +267,15 @@ public class GameView {
 
         if (isAdjecent(sourceSquare, destinationSquare)){ // if it's a step
 
-            DoubleProperty x  = new SimpleDoubleProperty(getPosition(destColumn+1));
-            DoubleProperty y  = new SimpleDoubleProperty(getPosition(destRow+1));
+            DoubleProperty x  = new SimpleDoubleProperty();
+            DoubleProperty y  = new SimpleDoubleProperty();
 
             Timeline timeline = new Timeline(
                     new KeyFrame(Duration.seconds(0),
                             new KeyValue(x, getPosition(sourceColumn+1)),
                             new KeyValue(y, getPosition(sourceRow+1))
                     ),
-                    new KeyFrame(Duration.seconds(0.5),
+                    new KeyFrame(Duration.seconds(0.3),
                             new KeyValue(x, getPosition(destColumn+1)),
                             new KeyValue(y, getPosition(destRow+1))
                     )
@@ -299,8 +299,8 @@ public class GameView {
             });
 
         } else { // else it's a jump
-            DoubleProperty x  = new SimpleDoubleProperty(getPosition(destColumn+1));
-            DoubleProperty y  = new SimpleDoubleProperty(getPosition(destRow+1));
+            DoubleProperty x  = new SimpleDoubleProperty();
+            DoubleProperty y  = new SimpleDoubleProperty();
 
             Timeline timeline = new Timeline(
                     new KeyFrame(Duration.seconds(0),
