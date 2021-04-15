@@ -241,6 +241,10 @@ public class Player extends Thread {
         } else if (type.regionMatches(true, 0, "clse", 0, 4)) {
             handleDisconnection();
             return true;
+        } else if (type.regionMatches(true, 0, "newgame", 0, 7)) {
+            handleNewGameRequest();
+        } else if (type.regionMatches(true, 0, "replay", 0, 6)) {
+            handleReplayRequest();
         } else {
             handleUnknown();
         }
@@ -250,6 +254,22 @@ public class Player extends Thread {
         }
 
         return false;
+    }
+
+    private void handleReplayRequest() {
+        Game game = GameManager.getInstance().getGame(this.gameID);
+        if (game.getReplayRequest()) {
+            game.restart();
+        } else {
+            game.setReplayRequest(true);
+        }
+    }
+
+    private void handleNewGameRequest() {
+        if (this.newGameAllowed) {
+            this.gameID = null;
+            handleGameRequest();
+        }
     }
 
     private void handleDisconnection() {

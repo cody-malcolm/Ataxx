@@ -137,6 +137,9 @@ public class ClientListener extends Thread {
         String[] args = response.split("\\\\");
         user.setDisplayNames(args[0], args[1]);
         user.setGameId(args[2]);
+        if (user.getGameFinished()) {
+            user.prepNewGame();
+        }
     }
 
     private boolean showGameScene() {

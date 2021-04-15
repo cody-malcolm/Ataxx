@@ -234,4 +234,16 @@ public class User {
     public void setGameFinished(boolean gameFinished) {
         this.gameFinished = gameFinished;
     }
+
+    public void prepNewGame() {
+        this.source = null;
+        this.key = '3';
+        this.activePlayer = '0';
+        this.board = null;
+        this.gameFinished = false;
+    }
+
+    public boolean getGameFinished() {
+        return this.gameFinished;
+    }
 }

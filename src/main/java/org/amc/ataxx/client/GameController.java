@@ -51,8 +51,6 @@ public class GameController extends Controller {
 
     /** The User associated with the controller */
     private User user;
-    /** The ClientListener that listens for updates from server */
-    private ClientListener listener;
 
     public GameController(User user, ClientListener listener) { // TODO can probably refactor this to reduce redundancy
         super(listener.getStage(), listener);
@@ -92,6 +90,8 @@ public class GameController extends Controller {
      */
     @FXML
     private void initialize() {
+        replayButton.setOnAction(event -> replayClick());
+        newGameButton.setOnAction(event -> newGameClick());
         resignButton.setOnAction(event -> resignClick());
         disconnectButton.setOnAction(event -> disconnectClick());
         // initialize the Canvas
@@ -100,6 +100,14 @@ public class GameController extends Controller {
         view.createCanvas(canvasContainer);
 
         this.buffer.setText("\r\n");
+    }
+
+    private void replayClick() {
+        sendRequest("REPLAY");
+    }
+
+    private void newGameClick() {
+        sendRequest("NEWGAME");
     }
 
     /**
