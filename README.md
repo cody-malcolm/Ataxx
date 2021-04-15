@@ -8,10 +8,10 @@ Mariya Anashkina 100746854
 
 Cody Malcolm 10075739
 
-##Project information
+## Project information
 This application consists of a Server and at least 2 Clients to facilitate the game Ataxx. 
 
-###Getting familiar with Ataxx
+### Getting familiar with Ataxx
 Ataxx is an abstract strategy board game that involves play by two parties on a 7x7 tiled grid. 
 
 Each player begins with 2 pieces. The game starts with the 4 pieces on the 4 corners of the board.
@@ -26,7 +26,7 @@ The object of the game is for a player to secure a greater number of tiles than 
 To visualize the game, please visit: https://youtu.be/uFyg66dlD2s?t=31
 
 
-##How to run
+## How to run
 After cloning or unzipping the project, navigate to the root directory in a terminal. Then:
 The server can be started with the following command: ```gradle start```. 
 The server takes 6 instructions which are described during startup, when an unsupported instruction is received, and when 
@@ -55,6 +55,7 @@ By clicking 'Find the game' button, the player will either be automatically adde
 ![Alt text](./demos/username.png?raw=true "Invalid username").
 
 * During the game, the GameID and the number of squares occupied by each player is shown
+  ![Alt text](./demos/gameInPlay.png?raw=true "Game in play").
 
 
 

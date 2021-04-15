@@ -279,10 +279,13 @@ public class GameView {
                 AnimationTimer timer = new AnimationTimer() {
                     @Override
                     public void handle(long now) {
-                        gc.clearRect(0,0, canvasSIZE,canvasSIZE);
-                        renderBoard(oldBoard);
-                        gc.setFill(getColor(activePlayer));
-                        gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
+                        Platform.runLater(()-> {
+                            gc.clearRect(0,0, canvasSIZE,canvasSIZE);
+                            renderBoard(oldBoard);
+                            gc.setFill(getColor(activePlayer));
+                            gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
+                        });
+
                     }
                 };
 
@@ -326,12 +329,15 @@ public class GameView {
                 AnimationTimer timer = new AnimationTimer() {
                     @Override
                     public void handle(long now) {
-                        gc.clearRect(0,0, canvasSIZE,canvasSIZE);
-                        renderBoard(oldBoard);
-                        gc.setFill(getColor(activePlayer));
-                        gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
-                        gc.setFill(color.getValue());
-                        gc.fillOval(getPosition(sourceColumn), getPosition( sourceRow),actualSIZE-(actualSIZE/10)+1,actualSIZE-(actualSIZE/10)+1);
+                        Platform.runLater(()-> {
+                            gc.clearRect(0,0, canvasSIZE,canvasSIZE);
+                            renderBoard(oldBoard);
+                            gc.setFill(getColor(activePlayer));
+                            gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
+                            gc.setFill(color.getValue());
+                            gc.fillOval(getPosition(sourceColumn), getPosition( sourceRow),actualSIZE-(actualSIZE/10)+1,actualSIZE-(actualSIZE/10)+1);
+                        });
+
                     }
                 };
 
@@ -340,11 +346,14 @@ public class GameView {
                 colorTimeline.play();
                 timeline.setOnFinished(event -> {
                     timer.stop();
-                    renderBoard(oldBoard);
-                    renderPiece(pieceColors[changeColor(activePlayer)], destRow, destColumn);
-                    gc.setFill(Color.hsb(0, 0, 0.85));
-                    gc.fillOval(getPosition(sourceColumn)-1, getPosition( sourceRow)-1, actualSIZE-(actualSIZE/10)+2,actualSIZE-(actualSIZE/10)+2);
-                    renderBoard(newBoard);
+                    Platform.runLater(()-> {
+                        renderBoard(oldBoard);
+                        renderPiece(pieceColors[changeColor(activePlayer)], destRow, destColumn);
+                        gc.setFill(Color.hsb(0, 0, 0.85));
+                        gc.fillOval(getPosition(sourceColumn)-1, getPosition( sourceRow)-1, actualSIZE-(actualSIZE/10)+2,actualSIZE-(actualSIZE/10)+2);
+                        renderBoard(newBoard);
+                    });
+
                 });
 
             }
@@ -353,9 +362,11 @@ public class GameView {
             captureAnimation(activePlayer, destRow, destColumn, newBoard, oldBoard);
 
 
-            // TODO later addition: execute the animation in a separate thread to not block other parts of UI such as chat window
-            gc.clearRect(0,0, canvasSIZE,canvasSIZE);
-            renderBoard(newBoard);
+            Platform.runLater(()-> {
+                gc.clearRect(0,0, canvasSIZE,canvasSIZE);
+                renderBoard(newBoard);
+            });
+
         }
 
     }
@@ -418,7 +429,10 @@ public class GameView {
                     // iteration of the animation until it is the color of the active player
                     if (GameLogic.getSquare(newBoard, square) == activePlayer && GameLogic.getSquare(oldBoard, square) != '-'
                         && GameLogic.getSquare(oldBoard, square) != activePlayer) {
-                        renderPiece(color2.getValue(), adjacent.get(i).getValue0(), adjacent.get(i).getValue1());
+                        int finalI = i;
+                        Platform.runLater(()-> {
+                            renderPiece(color2.getValue(), adjacent.get(finalI).getValue0(), adjacent.get(finalI).getValue1());
+                        });
                     }
                 }
             }
@@ -430,7 +444,9 @@ public class GameView {
         // stop the timer when the animation is done and make sure to render the new board state.
         colorTimeline2.setOnFinished(event -> {
             timer2.stop();
-            renderBoard(newBoard);
+            Platform.runLater(()-> {
+                renderBoard(newBoard);
+            });
         });
     }
 
@@ -540,7 +556,7 @@ public class GameView {
      */
     public void displayGameId(String gameId, Label gameIDlabel) {
         Platform.runLater(()-> {
-            gameIDlabel.setText("Game ID: " + gameId);            
+            gameIDlabel.setText("Game ID: " + gameId);
         });
     }
 
@@ -568,8 +584,11 @@ public class GameView {
     }
 
     public void handleGameOver(Button replayButton, Button newGameButton, Label gameIDlabel) {
-        gameIDlabel.setVisible(false);
-        replayButton.setVisible(true);
-        newGameButton.setVisible(true);
+        Platform.runLater(()-> {
+            gameIDlabel.setVisible(false);
+            replayButton.setVisible(true);
+            newGameButton.setVisible(true);
+        });
+
     }
 }
