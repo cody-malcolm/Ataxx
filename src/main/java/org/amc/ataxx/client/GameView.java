@@ -171,8 +171,6 @@ public class GameView {
 
         // TODO bet this can be cleaned up now
         if (activePlayer == '1') {
-            // For testing
-//            System.out.println("Testing turn render: Inside activePlayer(" + activePlayer + ") == key(" + key + ")");
             redLabel.setTextFill(pieceColors[0]);
             blueLabel.setTextFill(inactiveColors[1]);
         } else {
@@ -250,7 +248,6 @@ public class GameView {
      * @param newBoard the new state of the board
      * @param move the move being performed to transition from old to new
      */
-    private static int x;
     public void animateMove(String oldBoard, String newBoard, String move, char activePlayer) {
         String sourceSquare = String.valueOf(move.charAt(0)) + String.valueOf(move.charAt(1));
         String destinationSquare = String.valueOf(move.charAt(2)) + String.valueOf(move.charAt(3));
@@ -258,7 +255,6 @@ public class GameView {
         int sourceColumn = Integer.parseInt(String.valueOf(sourceSquare.charAt(1)));
         int destRow = Integer.valueOf(String.valueOf(destinationSquare.charAt(0)));
         int destColumn = Integer.valueOf(String.valueOf(destinationSquare.charAt(1)));
-        x = sourceColumn;
         // ensure the currently rendered board is as expected
         renderBoard(oldBoard);
 
@@ -269,13 +265,11 @@ public class GameView {
 
             Timeline timeline = new Timeline(
                     new KeyFrame(Duration.seconds(0),
-                            new KeyValue(x, getPosition(sourceColumn)),
-                            new KeyValue(y, getPosition(sourceRow))
-                    ),
+                                 new KeyValue(x, getPosition(sourceColumn)),
+                                 new KeyValue(y, getPosition(sourceRow))),
                     new KeyFrame(Duration.seconds(0.3),
-                            new KeyValue(x, getPosition(destColumn)),
-                            new KeyValue(y, getPosition(destRow))
-                    )
+                                 new KeyValue(x, getPosition(destColumn)),
+                                 new KeyValue(y, getPosition(destRow)))
             );
             timeline.setCycleCount(1);
 
@@ -302,13 +296,11 @@ public class GameView {
 
             Timeline timeline = new Timeline(
                     new KeyFrame(Duration.seconds(0),
-                            new KeyValue(x, getPosition(sourceColumn)),
-                            new KeyValue(y, getPosition(sourceRow))
-                    ),
+                                 new KeyValue(x, getPosition(sourceColumn)),
+                                 new KeyValue(y, getPosition(sourceRow))),
                     new KeyFrame(Duration.seconds(0.5),
-                            new KeyValue(x, getPosition(destColumn)),
-                            new KeyValue(y, getPosition(destRow))
-                    )
+                                 new KeyValue(x, getPosition(destColumn)),
+                                 new KeyValue(y, getPosition(destRow)))
             );
             timeline.setCycleCount(1);
 
@@ -316,10 +308,10 @@ public class GameView {
 
             Timeline colorTimeline = new Timeline(
                     new KeyFrame(Duration.ZERO,
-                            new KeyValue(color, pieceColors[changeColor(activePlayer)])
+                                 new KeyValue(color, pieceColors[changeColor(activePlayer)])
                     ),
                     new KeyFrame(Duration.seconds(0.5),
-                            new KeyValue(color, Color.hsb(0, 0, 0.85))
+                                 new KeyValue(color, Color.hsb(0, 0, 0.85))
                     )
             );
 
@@ -353,44 +345,45 @@ public class GameView {
         }
 
         // second, animate the converted pieces changing color
+        captureAnimation(activePlayer, destRow, destColumn, newBoard);
 
-
-//        ObjectProperty<Color> color2 = new SimpleObjectProperty<>();
-//
-//        Timeline colorTimeline2 = new Timeline(
-//                new KeyFrame(Duration.ZERO,
-//                        new KeyValue(color2, pieceColors[activePlayer])
-//                ),
-//                new KeyFrame(Duration.seconds(0.5),
-//                        new KeyValue(color2, pieceColors[changeColor(activePlayer)])
-//                )
-//        );
-//
-//        colorTimeline2.setCycleCount(1);
-//
-//
-//        AnimationTimer timer2 = new AnimationTimer() {
-//            @Override
-//            public void handle(long now) {
-//                ArrayList<Pair<Integer,Integer>> adjacent = GameLogic.getAdjacent(new Pair<>(destRow, destColumn));
-//                System.out.println(adjacent);
-//                for (int i = 0; i < adjacent.size(); i++) {
-//                    renderPiece(color2.getValue(), adjacent.get(i).getValue0(), adjacent.get(i).getValue1());
-//                }
-//            }
-//        };
-//
-//        timer2.start();
-//        colorTimeline2.play();
-//        colorTimeline2.setOnFinished(event -> {
-//            timer2.stop();
-//            renderBoard(newBoard);
-//        });
 
         // TODO later addition: execute the animation in a separate thread to not block other parts of UI such as chat window
         gc.clearRect(0,0, canvasSIZE,canvasSIZE);
         renderBoard(newBoard);
 
+    }
+
+    private synchronized void captureAnimation(char activePlayer, int destRow, int destColumn, String newBoard){
+        ObjectProperty<Color> color2 = new SimpleObjectProperty<>();
+
+        Timeline colorTimeline2 = new Timeline(
+                new KeyFrame(Duration.ZERO,
+                             new KeyValue(color2, pieceColors[activePlayer])),
+                new KeyFrame(Duration.seconds(0.5),
+                             new KeyValue(color2, pieceColors[changeColor(activePlayer)]))
+        );
+
+        colorTimeline2.setCycleCount(1);
+
+
+        AnimationTimer timer2 = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                ArrayList<Pair<Integer,Integer>> adjacent = GameLogic.getAdjacent(new Pair<>(destRow, destColumn));
+                System.out.println(adjacent);
+                for (int i = 0; i < adjacent.size(); i++) {
+                    renderPiece(color2.getValue(), adjacent.get(i).getValue0(), adjacent.get(i).getValue1());
+                }
+            }
+        };
+
+        timer2.start();
+        colorTimeline2.play();
+        colorTimeline2.setOnFinished(event -> {
+            timer2.stop();
+            renderBoard(newBoard);
+        });
     }
 
     /**
@@ -441,7 +434,7 @@ public class GameView {
      * Adds a message to the chat.
      *
      * @param message String
-     * @param container 
+     * @param container
      * @param pane
      */
     public void addChat(String message, VBox container, ScrollPane pane) {
