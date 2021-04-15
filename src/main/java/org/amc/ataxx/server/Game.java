@@ -14,6 +14,7 @@ public class Game {
     private Board board;
     private char winner = '-'; // may be unnecessary
     private boolean finished = false;
+    private boolean replayRequest;
 
     public Game(String id) {
         // set up the board and any other internal stuff you need to do
@@ -240,5 +241,21 @@ public class Game {
      */
     public boolean getFinished() {
         return this.finished;
+    }
+
+    public boolean getReplayRequest() {
+        return this.replayRequest;
+    }
+
+    public void setReplayRequest(boolean request) {
+        this.replayRequest = request;
+    }
+
+    public void restart() {
+        this.finished = false;
+        this.replayRequest = false;
+        this.winner = '-';
+        this.board = new Board();
+        sendGameInfo();
     }
 }
