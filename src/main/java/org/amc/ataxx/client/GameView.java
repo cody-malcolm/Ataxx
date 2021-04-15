@@ -17,7 +17,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -31,7 +31,7 @@ public class GameView {
     private static GameView instance = null;
 
     /** The size of one square of the board, in pixels */
-    final private static int SIZE = 70;
+    final private static int SIZE = 75;
     /** The true size of a drawn square of the board, in pixels */
     final private static int actualSIZE = SIZE-2;
     /** The size of the canvas, in pixels */
@@ -66,16 +66,16 @@ public class GameView {
     /**
      * Creates the Canvas that board will be rendered on
      *
-     * @param borderPane the BorderPane to attach the Canvas to
+     * @param container the BorderPane to attach the Canvas to
      */
-    public void createCanvas(BorderPane borderPane) {
+    public void createCanvas(HBox container) {
         Canvas canvas = new Canvas();
         canvas.setHeight(canvasSIZE);
         canvas.setWidth(canvasSIZE);
         canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, instance.handleMouseClick());
         gc = canvas.getGraphicsContext2D();
 
-        borderPane.setCenter(canvas);
+        container.getChildren().add(canvas);
     }
 
     /**

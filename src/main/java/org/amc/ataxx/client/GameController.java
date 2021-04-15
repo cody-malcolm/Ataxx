@@ -8,6 +8,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.amc.ataxx.GameLogic;
 import org.javatuples.Pair;
@@ -17,7 +19,7 @@ import java.util.ArrayList;
 
 public class GameController extends Controller {
     @FXML
-    private BorderPane borderPane;
+    private HBox canvasContainer;
     @FXML
     private VBox messagesContainer;
     @FXML
@@ -97,7 +99,7 @@ public class GameController extends Controller {
         // initialize the Canvas
         view = GameView.getInstance();
         view.setGameController(this);
-        view.createCanvas(borderPane);
+        view.createCanvas(canvasContainer);
 
         this.buffer.setText("\r\n");
     }
