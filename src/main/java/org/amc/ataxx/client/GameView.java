@@ -249,7 +249,7 @@ public class GameView {
      * @param move the move being performed to transition from old to new
      */
     public void animateMove(String oldBoard, String newBoard, String move, char activePlayer) {
-        if (!newBoard.equals("r") && !newBoard.equals("d")){
+        if (newBoard.length() > 49 && oldBoard.length() > 49){
             String sourceSquare = String.valueOf(move.charAt(0)) + String.valueOf(move.charAt(1));
             String destinationSquare = String.valueOf(move.charAt(2)) + String.valueOf(move.charAt(3));
             int sourceRow = Integer.parseInt(String.valueOf(sourceSquare.charAt(0)));
