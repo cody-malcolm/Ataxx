@@ -261,7 +261,8 @@ public class Player extends Thread {
                 if (!this.newGameAllowed) {
                     game.handleResignation(this.key);
                 }
-                game.sendToAll(this.username + " has disconnected.");
+                game.sendToAll(this.username + " has disconnected");
+                updateClients(game.getBoard(), "none", game);
             }
         }
     }
@@ -351,17 +352,19 @@ public class Player extends Thread {
             char activePlayer = game.getActivePlayer();
             Player opponent = game.getPlayer(this.key == '1' ? 1 : 0);
             char winner = game.getWinner();
+            boolean active = game.getActive();
+            boolean finished = game.getFinished();
 
             // guard against null opponent (during Game setup)
             if (null != opponent) {
-                opponent.sendGameState(oldBoard, move, newBoard, activePlayer, winner);
+                opponent.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active, finished);
             }
-            this.sendGameState(oldBoard, move, newBoard, activePlayer, winner);
+            this.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active, finished);
 
             ArrayList<Player> spectators = game.getSpectators();
 
             for (Player spectator : spectators) {
-                spectator.sendGameState(oldBoard, move, newBoard, activePlayer, winner);
+                spectator.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active, finished);
             }
         }
     }
@@ -375,7 +378,8 @@ public class Player extends Thread {
      * @param activePlayer the key of the player to make the next move
      * @param winner the Username of the player who won, or '-' if the game is ongoing
      */
-    private void sendGameState(String oldBoard, String move, String newBoard, char activePlayer, char winner) {
+    private void sendGameState(String oldBoard, String move, String newBoard, char activePlayer,
+                               char winner, boolean active, boolean finished) {
         StringBuilder response = new StringBuilder();
         response.append("GAME\\")
                 .append(oldBoard).append("\\")
@@ -383,7 +387,9 @@ public class Player extends Thread {
                 .append(newBoard).append("\\")
                 .append(activePlayer).append("\\")
                 .append(this.key).append("\\")
-                .append(winner);
+                .append(winner).append("\\")
+                .append(active).append("\\")
+                .append(finished);
 
         log("Sending response '" + response.toString() + " to " + this.username + this.clientIP);
         responseOutput.println(response.toString());
@@ -418,6 +424,12 @@ public class Player extends Thread {
         return this.username;
     }
 
+    /**
+    * Sends player's names and gameID to the client associated with "this"
+    * @param playerOneUsername
+     * @param playerTwoUsername
+     * id - game ID that was given at the beginning of the game
+    */
     public void sendGameInformation(String playerOneUsername, String playerTwoUsername, String id) {
         StringBuilder gameInfo = new StringBuilder();
         gameInfo.append("INFO\\")
@@ -426,7 +438,9 @@ public class Player extends Thread {
                 .append(id);
         responseOutput.println(gameInfo);
     }
-
+    /**
+     * Finished the current game, allowing a new game to get started
+    */
     public void finishedGame() {
         this.newGameAllowed = true;
     }

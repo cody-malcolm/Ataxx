@@ -1,28 +1,32 @@
 package org.amc.ataxx.server;
 
+import org.amc.Utils;
 import org.amc.ataxx.GameLogic;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
 
 public class Board {
-    // depends on encoding you choose, feel free to change, just a temp for testing controller
-    final protected static String INITIAL_BOARD = "1-----2/-------/-------/-------/-------/-------/2-----1";
+    //board is represented by 7 rows separated by '/' from top to bottom, 0-based indexing
+    //so it consists of rows 0-6 and columns 0-6
+    //'1' means player 1's pieces, '2' means player 2's pieces, '-' means empty square
+    final protected static String INITIAL_BOARD = "2-----1/-------/-------/-------/-------/-------/1-----2";
 
     private String board;
-    private char activePlayer = '1';
+    private char activePlayer;
 
     public Board() {
         // needs to set board to initial state (see tests) and pick '1' or '2' at random
         board = INITIAL_BOARD;
+        this.activePlayer = Character.forDigit(Utils.randInt(1, 2), 10);
     }
 
+    /*
     // only used in tests
-    // TODO remove once testing is complete
     public Board(String board, char c) {
         this.board = board;
         this.activePlayer = c;
-    }
+    }*/
 
     /**
      * Getter for board.
@@ -53,12 +57,18 @@ public class Board {
         this.activePlayer=(getActivePlayer()=='1'? '2': '1');
     }
 
-    // needs to validate the move before applying it (use GameLogic.validateMove)
+    /**
+     * This method applies the current move by changing this.board to the new state
+     * @param source origin square
+     * @param dest destination square
+     * @param key character ('1' or '2') representing an active player making the move
+     */
     public void applyMove(Pair<Integer, Integer> source, Pair<Integer, Integer> dest, char key) {
+        //first, need to check if the move is valid
         if (!GameLogic.validateMove(board, source, dest, key)) {
             return;
         }
-        if (key != activePlayer) {
+        if (key != activePlayer) {//if it's not player's turn, return
             return;
         }
         int sourceRow = source.getValue0();
@@ -95,7 +105,13 @@ public class Board {
         }
     }
 
-
+    /**
+     * This method fills the square with key player's piece
+     * @param board current board
+     * @param square -a square to fill
+     * @param key character ('1' or '2') representing an active player making the move
+     * @return a String representing a new state of the board
+     */
     public String fillSquare(String board, Pair<Integer, Integer> square, char key){
         ArrayList<Pair<Integer, Integer>> adjacent = GameLogic.getAdjacent(square);
 
@@ -133,6 +149,13 @@ public class Board {
         return newBoard.toString();
     }
 
+    /**
+     * This method fills the destination square with key player's piece and removes the pieces from the source square
+     * @param source - origin square
+     * @param dest - destination square
+     * @param key character ('1' or '2') representing an active player doing the jump
+     * @return a String representing a new state of the board
+     */
     public String applyMoveJump(Pair<Integer, Integer> source, Pair<Integer, Integer> dest, char key) {
         //1 step) we need to add a new piece at a dest square
         //for this, we can use applyMoveStep()
@@ -144,6 +167,11 @@ public class Board {
 
     }
 
+    /**
+     * This method fills all the empty squares with a key player's pieces
+     *
+     * @param key character ('1' or '2') representing an active player
+     */
     public void fillAllSquares(char key) {
         ArrayList<Pair<Integer, Integer>> emptySquares = GameLogic.getEmptySquares(this.board);
         StringBuilder newBoard = new StringBuilder();

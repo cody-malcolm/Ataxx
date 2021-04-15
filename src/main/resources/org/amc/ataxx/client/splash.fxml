@@ -2,14 +2,13 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import java.net.URL?>
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            prefHeight="700.0" prefWidth="1200.0" fx:id="borderPane">
+            prefHeight="700.0" minWidth="1100.0" maxWidth="1100" fx:id="borderPane">
 <!--    padding-->
     <padding>
         <Insets top="10" bottom="10" left="10" right="10" />
@@ -28,8 +27,15 @@
                 </children>
             </HBox>
             <HBox alignment="CENTER">
+                <Label fx:id="feedback" />
+            </HBox>
+            <HBox alignment="CENTER">
                 <Label text="Username: "/>
                 <TextField id="username" promptText="Enter your username" fx:id="usernameField" styleClass="input"/>
+            </HBox>
+            <HBox alignment="CENTER">
+                <Label text="Host IP Address: "/>
+                <TextField id="hostIP" promptText="Enter the host IP" fx:id="hostIPField" styleClass="input"/>
             </HBox>
             <Button fx:id="connectButton" styleClass="button">Connect</Button>
             <Button fx:id="gameButton" styleClass="button" visible="false">Find Game</Button>
@@ -40,5 +46,4 @@
             </HBox>
         </VBox>
     </center>
-
 </BorderPane>

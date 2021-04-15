@@ -7,36 +7,13 @@ import java.util.ArrayList;
 
 public class Game {
 
+    private boolean active = false;
     private String id;
     private Player[] players = new Player[2];
     private ArrayList<Player> spectators;
     private Board board;
     private char winner = '-'; // may be unnecessary
-
-    // '1' -> player 1 piece
-    // '2' -> player 2 piece
-    // '-' -> empty space
-
-//    public static void main(String[] args) {
-        // some demo for parsing
-//        String[] temp = board.split("\\,");
-//
-//        for (String s : temp) {
-//            System.out.println(s);
-//        }
-//
-//        String[] b = temp[0].split("\\/");
-//
-//        for (String row : b) {
-//            System.out.println(row);
-//        }
-//        System.out.println(b[3].charAt(3));
-//
-//        // is a space available
-//        if ('-' == b[rowIndex].charAt(colIndex)) {
-//
-//        }
-//    }
+    private boolean finished = false;
 
     public Game(String id) {
         // set up the board and any other internal stuff you need to do
@@ -53,8 +30,6 @@ public class Game {
      * @return '1' if the player is player 1, '2' otherwise
      */
     public char addPlayer(Player player) {
-        // check if game has two players, and set the active player (here or in Board) to '1' or '2' at random if so
-        sendToAll(player.getUsername() + " has joined the game"); // this should get sent before the player is added
         if (null==players[0]){
             players[0] = player;
             return '1';
@@ -73,9 +48,9 @@ public class Game {
      * @return '1' if player 1 is active, '2' otherwise
      */
     public char getActivePlayer() {
-        // up to you where you track the active player, here or in the Board class. Either way, Model should be able to
-        // confirm move is being requested by the active player before applying it. Also, active Player should be '-'
-        // until the Game has two Players.
+        //Model should be able to
+        // confirm move is being requested by the active player before applying it. Also, active
+        // Player should be '-' until the Game has two Players.
         int numPlayers=this.players.length;
         if (numPlayers!=2){
             return '-';
@@ -103,15 +78,21 @@ public class Game {
         return this.players[index]; // will need a guard against null player
     }
 
+    /**
+     * Getter for players
+     *
+     * @return array of PLayers
+     */
     public Player[] getPlayers() {
         return this.players;
     }
 
-    public String getBoard() {
-        // please make sure there are no '\' in how the board is recorded. Up to you where the Board gets converted to String (here or in Board class)
-        // just using the example board from the tests for now
-        return board.getBoard();
-    }
+    /**
+     * Getter for board
+     *
+     * @return the board of the Game
+     */
+    public String getBoard() { return board.getBoard(); }
 
     /**
      * Applies the given move, if it is a legal move, it is the player's turn, and the player controls the piece at the
@@ -130,7 +111,11 @@ public class Game {
         }
     }
 
+    /**
+     * Sets the current game finished and allows for its players & spectators to start/observe a new game
+     */
     private void handleGameOver() {
+        this.finished = false;
         for (Player player : this.players) {
             if (null != player) {
                 player.finishedGame();
@@ -155,7 +140,6 @@ public class Game {
 
     /**
      * Handles a resignation by the player with the associated key.
-     *
      * @param key the key of the player resigning
      */
     public void handleResignation(char key) {
@@ -174,16 +158,24 @@ public class Game {
 
     /**
      * Adds a spectator to the list of spectators.
-     *
      * @param spectator the spectator to add
      * @return the key for the spectator
      */
     public char addSpectator(Player spectator) {
-        sendToAll(spectator.getUsername() + " is now spectating the game");
-        spectators.add(spectator);
+        if (this.active) {
+            sendToAll(spectator.getUsername() + " is now spectating the game");
+            spectators.add(spectator);
+            sendGameInfo();
+        } else {
+            spectators.add(spectator);
+        }
         return '3';
     }
 
+    /**
+     * Sends the message to the clients, associated with "this"
+     * @param message
+     */
     public void sendToAll(String message) {
         for (Player player : this.players) {
             if (null != player) {
@@ -196,12 +188,16 @@ public class Game {
         }
     }
 
-    private void sendGameInfo() {
 
+    /**
+     * Sends player's names and gameID to the clients associated with "this"
+     *
+     */
+    private void sendGameInfo() {
         if (null != this.players[0] && null != this.players[1]) {
             String playerOneUsername = this.players[0].getUsername();
             String playerTwoUsername = this.players[1].getUsername();
-
+            this.active = true;
             for (Player player : this.players) {
                 player.sendGameInformation(playerOneUsername, playerTwoUsername, this.id);
             }
@@ -215,20 +211,34 @@ public class Game {
 
     /**
      * Removes the given spectator from the ArrayList.
-     *
      * @param spectator the spectator to remove
      */
     public void removeSpectator(Player spectator) {
         spectators.remove(spectator);
-        sendToAll(spectator.getUsername() + " has left the game");
+        sendToAll(spectator.getUsername() + " is no longer spectating the game");
     }
 
     /**
      * Returns the list of spectators in the Game.
-     *
      * @return the list of spectators
      */
     public ArrayList<Player> getSpectators() {
         return this.spectators;
+    }
+
+    /**
+    * Returns true if this game is still active, false otherwise
+     *
+     * @return true if the game is active, false otherwise
+    */
+    public boolean getActive() { return this.active; }
+
+    /**
+     * Returns true if the game is finished, false otherwise
+     *
+     * @return true if the game is finished, false otherwise
+     */
+    public boolean getFinished() {
+        return this.finished;
     }
 }
