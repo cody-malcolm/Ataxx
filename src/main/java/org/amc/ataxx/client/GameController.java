@@ -54,6 +54,11 @@ public class GameController extends Controller {
     /** The ClientListener that listens for updates from server */
     private ClientListener listener;
 
+    /**
+     * Controller for the game
+     * @param user game's client
+     * @param listener clientListener for server responses
+     */
     public GameController(User user, ClientListener listener) { // TODO can probably refactor this to reduce redundancy
         super(listener.getStage(), listener);
         this.user = user;
@@ -120,6 +125,9 @@ public class GameController extends Controller {
         highlightSquares(board); // TODO 1 99% sure this can be deleted
     }
 
+    /**
+     * Sends feedback messages if it's user's or his/her opponent's turn
+     */
     private void displayActivePlayer() {
         if (user.usersTurn()) {
             view.feedback("It's your turn!", feedbackLabel);
