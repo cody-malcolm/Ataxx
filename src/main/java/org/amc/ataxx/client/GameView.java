@@ -52,6 +52,7 @@ public class GameView {
      */
     private GameView(){}
 
+
     /**
      * Creates (if necessary) and returns an instance of the class
      */
@@ -62,6 +63,7 @@ public class GameView {
 
         return instance;
     }
+
 
     /**
      * Creates the Canvas that board will be rendered on
@@ -77,6 +79,7 @@ public class GameView {
 
         borderPane.setCenter(canvas);
     }
+
 
     /**
      * Draws the board.
@@ -94,6 +97,7 @@ public class GameView {
             }
         }
     }
+
 
     /**
      * Renders the pieces on the board.
@@ -116,6 +120,7 @@ public class GameView {
             }
         }
     }
+
 
     /**
      * Renders a piece on the board.
@@ -152,17 +157,16 @@ public class GameView {
         // take the given board and immediately render it, overwriting anything there already
     }
 
-//    /**
-//     * Renders the provided board.
-//     *
-//     * @param board the String representation of the board to render
-//     */
-//    public void renderBoard(String board, char activePlayer, char key, Label playerLabel) {
-//        drawBoard();
-//        renderPieces(board);
-//        displayTurn(activePlayer, key, playerLabel);
-//    }
 
+    /**
+     * Renders the display of the user color and turn.
+     *
+     * @param activePlayer char represenattion of the active player
+     * @param key
+     * @param blueLabel
+     * @param redLabel
+     * @param displayNames
+     */
     public void displayTurn(char activePlayer, char key, Label blueLabel, Label redLabel, String[] displayNames) {
 
         // TODO bet this can be cleaned up now
@@ -350,6 +354,7 @@ public class GameView {
 
         // second, animate the converted pieces changing color
 
+
 //        ObjectProperty<Color> color2 = new SimpleObjectProperty<>();
 //
 //        Timeline colorTimeline2 = new Timeline(
@@ -369,9 +374,9 @@ public class GameView {
 //            public void handle(long now) {
 //                ArrayList<Pair<Integer,Integer>> adjacent = GameLogic.getAdjacent(new Pair<>(destRow, destColumn));
 //                System.out.println(adjacent);
-////                for (int i = 0; i < adjacent.size(); i++) {
-////                    renderPiece(color2.getValue(), adjacent.get(i).getValue0(), adjacent.get(i).getValue1());
-////                }
+//                for (int i = 0; i < adjacent.size(); i++) {
+//                    renderPiece(color2.getValue(), adjacent.get(i).getValue0(), adjacent.get(i).getValue1());
+//                }
 //            }
 //        };
 //
@@ -388,6 +393,11 @@ public class GameView {
 
     }
 
+    /**
+     * Changes the active player for rendering purposes.
+     *
+     * @param activePlayer char representation of the active player
+     */
     private int changeColor(char activePlayer){
         int k = Integer.valueOf(activePlayer)-49;
         if (k == 0){
@@ -397,6 +407,14 @@ public class GameView {
         }
     }
 
+    /**
+     * Given two squares, returns whether they are adjacent or not.
+     *
+     * @param sourceRow
+     * @param sourceColumn
+     * @param destRow
+     * @param destColumn
+     */
     private boolean isAdjecent(int sourceRow, int sourceColumn, int destRow, int destColumn){
         ArrayList<Pair<Integer,Integer>> adjacent = GameLogic.getAdjacent(new Pair<>(sourceRow, sourceColumn));
 
@@ -419,18 +437,47 @@ public class GameView {
 
     }
 
+    /**
+     * Adds a message to the chat.
+     *
+     * @param message String
+     * @param container 
+     * @param pane
+     */
     public void addChat(String message, VBox container, ScrollPane pane) {
         insertMessage(message, container, pane, "chatLabel");
     }
 
+    /**
+     * Adds a system notification to the chat.
+     *
+     * @param message String
+     * @param container
+     * @param pane
+     */
     public void addNotification(String message, VBox container, ScrollPane pane) {
         insertMessage(message, container, pane, "notificationLabel");
     }
 
+    /**
+     * Adds an error message to the chat.
+     *
+     * @param message String
+     * @param container
+     * @param pane
+     */
     public void addError(String message, VBox container, ScrollPane pane) {
         insertMessage(message, container, pane, "errorLabel");
     }
 
+    /**
+     * Inserts all messages to the chatBox.
+     *
+     * @param message String
+     * @param container
+     * @param pane
+     * @param styleClass
+     */
     private void insertMessage(String message, VBox container, ScrollPane pane, String styleClass) {
         Platform.runLater(()-> {
             Label label = new Label(message);
@@ -444,10 +491,24 @@ public class GameView {
         });
     }
 
+    /**
+     *
+     *
+     * @param
+     * @param
+     */
     public void displayGameId(String gameId, Label gameIDlabel) {
         gameIDlabel.setText("Game ID:" + gameId);
     }
 
+    /**
+     *
+     *
+     * @param
+     * @param
+     * @param
+     * @param
+     */
     public void displayCounts(Pair<Integer, Integer> counts, Label blueLabel, Label redLabel) {
         blueLabel.setTextFill(pieceColors[1]);
         redLabel.setTextFill(pieceColors[0]);
