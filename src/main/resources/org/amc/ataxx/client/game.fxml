@@ -7,9 +7,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TextArea?>
-<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:id="borderPane"
-            prefHeight="700.0" prefWidth="1200.0" >
+<GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:id="gridPane"
+            minHeight="700.0" maxHeight="700" minWidth="1100.0" maxWidth="1100" hgap="10" vgap="10">
 
     <!--    link stylesheet -->
     <stylesheets>
@@ -22,39 +21,42 @@
     </padding>
 
     <!--    temp buttons-->
-    <top>
-        <GridPane hgap="20">
-            <Label GridPane.columnIndex="0" fx:id="gameIDlabel" styleClass="gameIDlabel" />
-            <HBox GridPane.columnIndex="1">
-                <Label fx:id="blueNameLabel" styleClass="playerLabel" />
-                <Label fx:id="blueScoreLabel" styleClass="playerLabel" />
-                <Label fx:id="redScoreLabel" styleClass="playerLabel" />
-                <Label fx:id="redNameLabel" styleClass="playerLabel" />
+
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="0" alignment="CENTER" minWidth="765" maxWidth="765">
+        <Label fx:id="blueNameLabel" styleClass="playerLabel" />
+        <Label fx:id="blueScoreLabel" styleClass="playerLabel" />
+        <Label fx:id="redScoreLabel" styleClass="playerLabel" />
+        <Label fx:id="redNameLabel" styleClass="playerLabel" />
+    </HBox>
+
+    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.rowSpan="2" alignment="CENTER" spacing="-10"
+          styleClass="leftContainer" minWidth="315" maxWidth="315" minHeight="634" maxHeight="634">
+        <ScrollPane fx:id="messagesScrollpane" minHeight="580" maxHeight="580" styleClass="messagesContainer">
+            <VBox fx:id="messagesContainer" spacing="5">
+                <Label fx:id="buffer"></Label>
+            </VBox>
+        </ScrollPane>
+        <TextField fx:id="chat" promptText="Type to chat. Press Enter to send." onAction="#chat" styleClass="chat">
+
+        </TextField>
+    </VBox>
+
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="1" minWidth="765" maxWidth="765"
+            alignment="CENTER" fx:id="canvasContainer" />
+
+    <HBox GridPane.columnIndex="0" GridPane.rowIndex="2" minWidth="315" maxWidth="315">
+        <GridPane hgap="10">
+            <HBox GridPane.columnIndex="0" GridPane.columnSpan="2" alignment="CENTER">
+                <Label fx:id="gameIDlabel" styleClass="gameIDlabel" />
             </HBox>
-        </GridPane>
-    </top>
-
-    <left>
-        <VBox alignment="CENTER" spacing="-10" styleClass="leftContainer" minWidth="315">
-            <ScrollPane fx:id="messagesScrollpane" minHeight="465" styleClass="messagesContainer">
-                <VBox fx:id="messagesContainer" spacing="5">
-                    <Label fx:id="buffer"></Label>
-                </VBox>
-            </ScrollPane>
-            <TextField fx:id="chat" promptText="Type to chat. Press Enter to send." onAction="#chat" styleClass="chat">
-
-            </TextField>
-        </VBox>
-    </left>
-
-    <bottom>
-        <GridPane hgap="20">
             <Button GridPane.columnIndex="0" fx:id="replayButton" styleClass="button" visible="false">Replay</Button>
             <Button GridPane.columnIndex="1" fx:id="newGameButton" styleClass="button" visible="false">New Game</Button>
-            <Label GridPane.columnIndex="2" prefWidth="10" />
-            <Label GridPane.columnIndex="3" fx:id="feedbackLabel" styleClass="feedbackLabel" />
-            <Button GridPane.columnIndex="4" fx:id="resignButton" styleClass="button">Resign</Button>
-            <Button GridPane.columnIndex="5" fx:id="disconnectButton" styleClass="button">Disconnect</Button>
         </GridPane>
-    </bottom>
-</BorderPane>
+    </HBox>
+
+    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2" hgap="10">
+        <Button GridPane.columnIndex="0" fx:id="resignButton" styleClass="button">Resign</Button>
+        <Label GridPane.columnIndex="1" minWidth="430" maxWidth="430" fx:id="feedbackLabel" styleClass="feedbackLabel" />
+        <Button GridPane.columnIndex="2" fx:id="disconnectButton" styleClass="button">Disconnect</Button>
+    </GridPane>
+</GridPane>

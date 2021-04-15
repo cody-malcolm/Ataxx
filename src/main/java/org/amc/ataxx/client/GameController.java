@@ -7,7 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.amc.ataxx.GameLogic;
 import org.javatuples.Pair;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class GameController extends Controller {
     @FXML
-    private BorderPane borderPane;
+    private HBox canvasContainer;
     @FXML
     private VBox messagesContainer;
     @FXML
@@ -47,14 +47,18 @@ public class GameController extends Controller {
     @FXML
     private Label gameIDlabel;
 
+    /** The view to send UI information to */
     private GameView view;
-
     /** The User associated with the controller */
     private User user;
-    /** The ClientListener that listens for updates from server */
-    private ClientListener listener;
 
-    public GameController(User user, ClientListener listener) { // TODO can probably refactor this to reduce redundancy
+    /**
+     * Controller for the game
+     *
+     * @param user game's client
+     * @param listener clientListener for server responses
+     */
+    public GameController(User user, ClientListener listener) {
         super(listener.getStage(), listener);
         this.user = user;
 
@@ -92,14 +96,26 @@ public class GameController extends Controller {
      */
     @FXML
     private void initialize() {
+        replayButton.setOnAction(event -> replayClick());
+        newGameButton.setOnAction(event -> newGameClick());
         resignButton.setOnAction(event -> resignClick());
         disconnectButton.setOnAction(event -> disconnectClick());
         // initialize the Canvas
         view = GameView.getInstance();
         view.setGameController(this);
-        view.createCanvas(borderPane);
+        view.createCanvas(canvasContainer);
 
         this.buffer.setText("\r\n");
+    }
+
+    /** Sends a request for a replay */
+    private void replayClick() {
+        sendRequest("REPLAY");
+    }
+
+    /** Sends a request for a new game with next available player */
+    private void newGameClick() {
+        sendRequest("NEWGAME");
     }
 
     /**
@@ -108,15 +124,29 @@ public class GameController extends Controller {
      * @param board the board state to render
      * @param activePlayer the active player
      * @param key the User's key
+     * @param displayNames the two usernames to display
+     * @param gameId the game ID
      */
-    public void refreshBoard(String board, char activePlayer, char key, String[] displayNames, String id) {
-        view.displayGameId(id, gameIDlabel);
+    public void refreshBoard(String board, char activePlayer, char key, String[] displayNames, String gameId) {
+        view.displayGameId(gameId, gameIDlabel);
         view.displayCounts(GameLogic.getCounts(board), blueScoreLabel, redScoreLabel);
         view.renderBoard(board);
         user.setKey(key);
         user.setActivePlayer(activePlayer);
+        displayActivePlayer();
         view.displayTurn(activePlayer, key, blueNameLabel, redNameLabel, displayNames);
         highlightSquares(board); // TODO 1 99% sure this can be deleted
+    }
+
+    /**
+     * Sends feedback messages if it's user's or his/her opponent's turn
+     */
+    private void displayActivePlayer() {
+        if (user.usersTurn()) {
+            view.feedback("It's your turn!", feedbackLabel);
+        } else {
+            view.feedback("Opponent's turn...", feedbackLabel);
+        }
     }
 
     /**
@@ -168,6 +198,7 @@ public class GameController extends Controller {
                            char key, String[] displayNames) {
         user.setKey(key);
         user.setActivePlayer(activePlayer);
+        displayActivePlayer();
         view.displayCounts(GameLogic.getCounts(newBoard), blueScoreLabel, redScoreLabel);
         view.displayTurn(activePlayer, key, blueNameLabel, redNameLabel, displayNames);
         view.animateMove(oldBoard, newBoard, move, activePlayer);
@@ -189,9 +220,17 @@ public class GameController extends Controller {
      */
     public void winnerDetermined(char key) {
         String username = user.getName(key);
-        view.displayWinner(username);
+        view.feedback(username + " has won the game!", feedbackLabel);
+        view.handleGameOver(replayButton, newGameButton, gameIDlabel);
+        resignButton.setDisable(true);
     }
 
+    /**
+     * Sorts a message by style and calls the appropriate view renderer
+     *
+     * @param message the message to display
+     * @param style the style to use
+     */
     public void processMessage(String message, char style) {
 //        Views.displayMessage(message, style);
         if (style == 'd') {
@@ -201,16 +240,11 @@ public class GameController extends Controller {
         } else if (style == 'b') {
             this.view.addError(message, this.messagesContainer, this.messagesScrollpane);
         }
-//        Platform.runLater(()-> {
-//            if (messages.getText().equals("")) {
-//                messages.setText(message);
-//            } else {
-//                messages.setText(messages.getText() + "\r\n" + message);
-//            }
-//        });
-
     }
 
+    /**
+     * Handler for chat messages
+     */
     public void chat() {
         String message = chat.getText();
         if (!message.equals("")) {

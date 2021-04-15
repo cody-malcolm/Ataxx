@@ -14,10 +14,11 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -31,7 +32,7 @@ public class GameView {
     private static GameView instance = null;
 
     /** The size of one square of the board, in pixels */
-    final private static int SIZE = 70;
+    final private static int SIZE = 75;
     /** The true size of a drawn square of the board, in pixels */
     final private static int actualSIZE = SIZE-2;
     /** The size of the canvas, in pixels */
@@ -68,16 +69,16 @@ public class GameView {
     /**
      * Creates the Canvas that board will be rendered on
      *
-     * @param borderPane the BorderPane to attach the Canvas to
+     * @param container the BorderPane to attach the Canvas to
      */
-    public void createCanvas(BorderPane borderPane) {
+    public void createCanvas(HBox container) {
         Canvas canvas = new Canvas();
         canvas.setHeight(canvasSIZE);
         canvas.setWidth(canvasSIZE);
         canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, instance.handleMouseClick());
         gc = canvas.getGraphicsContext2D();
 
-        borderPane.setCenter(canvas);
+        container.getChildren().add(canvas);
     }
 
 
@@ -250,6 +251,7 @@ public class GameView {
      */
     public void animateMove(String oldBoard, String newBoard, String move, char activePlayer) {
         if (newBoard.length() > 49 && oldBoard.length() > 49){
+            // get all the information we may need
             String sourceSquare = String.valueOf(move.charAt(0)) + String.valueOf(move.charAt(1));
             String destinationSquare = String.valueOf(move.charAt(2)) + String.valueOf(move.charAt(3));
             int sourceRow = Integer.parseInt(String.valueOf(sourceSquare.charAt(0)));
@@ -263,7 +265,7 @@ public class GameView {
 
                 DoubleProperty x  = new SimpleDoubleProperty();
                 DoubleProperty y  = new SimpleDoubleProperty();
-
+                // set up start and end places for the piece
                 Timeline timeline = new Timeline(
                         new KeyFrame(Duration.seconds(0),
                                 new KeyValue(x, getPosition(sourceColumn)),
@@ -273,19 +275,24 @@ public class GameView {
                                 new KeyValue(y, getPosition(destRow)))
                 );
                 timeline.setCycleCount(1);
-
+                //render the piece as it moves
                 AnimationTimer timer = new AnimationTimer() {
                     @Override
                     public void handle(long now) {
-                        gc.clearRect(0,0, canvasSIZE,canvasSIZE);
-                        renderBoard(oldBoard);
-                        gc.setFill(getColor(activePlayer));
-                        gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
+                        Platform.runLater(()-> {
+                            gc.clearRect(0,0, canvasSIZE,canvasSIZE);
+                            renderBoard(oldBoard);
+                            gc.setFill(getColor(activePlayer));
+                            gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
+                        });
+
                     }
                 };
 
+                //begin the animation
                 timer.start();
                 timeline.play();
+                // stop the timer once it's done, and make sure the newBoard is being displayed
                 timeline.setOnFinished(event -> {
                     timer.stop();
                     renderBoard(newBoard);
@@ -294,7 +301,7 @@ public class GameView {
             } else { // else it's a jump
                 DoubleProperty x  = new SimpleDoubleProperty();
                 DoubleProperty y  = new SimpleDoubleProperty();
-
+                // set up start and end places for the piece
                 Timeline timeline = new Timeline(
                         new KeyFrame(Duration.seconds(0),
                                 new KeyValue(x, getPosition(sourceColumn)),
@@ -306,7 +313,7 @@ public class GameView {
                 timeline.setCycleCount(1);
 
                 ObjectProperty<Color> color = new SimpleObjectProperty<>();
-
+                // set up color gradient for piece disappearance
                 Timeline colorTimeline = new Timeline(
                         new KeyFrame(Duration.ZERO,
                                 new KeyValue(color, getColor(activePlayer))
@@ -318,16 +325,19 @@ public class GameView {
 
                 colorTimeline.setCycleCount(1);
 
-
+                //render the piece as it moves and disappear the one where the source used to be
                 AnimationTimer timer = new AnimationTimer() {
                     @Override
                     public void handle(long now) {
-                        gc.clearRect(0,0, canvasSIZE,canvasSIZE);
-                        renderBoard(oldBoard);
-                        gc.setFill(getColor(activePlayer));
-                        gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
-                        gc.setFill(color.getValue());
-                        gc.fillOval(getPosition(sourceColumn), getPosition( sourceRow),actualSIZE-(actualSIZE/10)+1,actualSIZE-(actualSIZE/10)+1);
+                        Platform.runLater(()-> {
+                            gc.clearRect(0,0, canvasSIZE,canvasSIZE);
+                            renderBoard(oldBoard);
+                            gc.setFill(getColor(activePlayer));
+                            gc.fillOval(x.doubleValue(), y.doubleValue(), actualSIZE-(actualSIZE/10), actualSIZE-(actualSIZE/10));
+                            gc.setFill(color.getValue());
+                            gc.fillOval(getPosition(sourceColumn), getPosition( sourceRow),actualSIZE-(actualSIZE/10)+1,actualSIZE-(actualSIZE/10)+1);
+                        });
+
                     }
                 };
 
@@ -336,11 +346,14 @@ public class GameView {
                 colorTimeline.play();
                 timeline.setOnFinished(event -> {
                     timer.stop();
-                    renderBoard(oldBoard);
-                    renderPiece(pieceColors[changeColor(activePlayer)], destRow, destColumn);
-                    gc.setFill(Color.hsb(0, 0, 0.85));
-                    gc.fillOval(getPosition(sourceColumn)-1, getPosition( sourceRow)-1, actualSIZE-(actualSIZE/10)+2,actualSIZE-(actualSIZE/10)+2);
-                    renderBoard(newBoard);
+                    Platform.runLater(()-> {
+                        renderBoard(oldBoard);
+                        renderPiece(pieceColors[changeColor(activePlayer)], destRow, destColumn);
+                        gc.setFill(Color.hsb(0, 0, 0.85));
+                        gc.fillOval(getPosition(sourceColumn)-1, getPosition( sourceRow)-1, actualSIZE-(actualSIZE/10)+2,actualSIZE-(actualSIZE/10)+2);
+                        renderBoard(newBoard);
+                    });
+
                 });
 
             }
@@ -349,13 +362,20 @@ public class GameView {
             captureAnimation(activePlayer, destRow, destColumn, newBoard, oldBoard);
 
 
-            // TODO later addition: execute the animation in a separate thread to not block other parts of UI such as chat window
-            gc.clearRect(0,0, canvasSIZE,canvasSIZE);
-            renderBoard(newBoard);
+            Platform.runLater(()-> {
+                gc.clearRect(0,0, canvasSIZE,canvasSIZE);
+                renderBoard(newBoard);
+            });
+
         }
 
     }
 
+    /**
+     * Returns the color of the active player.
+     *
+     * @param activePlayer char representation of active Player
+     */
     private Color getColor(char activePlayer) {
         if (activePlayer == '1'){
             return pieceColors[1];
@@ -364,6 +384,11 @@ public class GameView {
         }
     }
 
+    /**
+     * Returns the color of the non-active player.
+     *
+     * @param activePlayer char representation of active Player
+     */
     private Color getOpponentsColor(char activePlayer) {
         if (activePlayer == '2'){
             return pieceColors[1];
@@ -372,9 +397,18 @@ public class GameView {
         }
     }
 
+    /**
+     * Animates the transition from an enemy piece to that of the active player.
+     *
+     * @param activePlayer char representation of active Player
+     * @param destRow row of destination square
+     * @param destColumn column of destination square
+     * @param newBoard the previous state of the board
+     * @param oldBoard the new state of the board
+     */
     private synchronized void captureAnimation(char activePlayer, int destRow, int destColumn, String newBoard, String oldBoard){
         ObjectProperty<Color> color2 = new SimpleObjectProperty<>();
-
+        // set up color gradient for piece color change
         Timeline colorTimeline2 = new Timeline(
                 new KeyFrame(Duration.ZERO,
                              new KeyValue(color2, getColor(activePlayer))),
@@ -391,19 +425,28 @@ public class GameView {
                 ArrayList<Pair<Integer,Integer>> adjacent = GameLogic.getAdjacent(new Pair<>(destRow, destColumn));
                 for (int i = 0; i < adjacent.size(); i++) {
                     Pair<Integer,Integer> square = new Pair<>(adjacent.get(i).getValue0(), adjacent.get(i).getValue1());
+                    // if the square we're looking at used to have an enemy piece, the new piece will be rendered in each
+                    // iteration of the animation until it is the color of the active player
                     if (GameLogic.getSquare(newBoard, square) == activePlayer && GameLogic.getSquare(oldBoard, square) != '-'
                         && GameLogic.getSquare(oldBoard, square) != activePlayer) {
-                        renderPiece(color2.getValue(), adjacent.get(i).getValue0(), adjacent.get(i).getValue1());
+                        int finalI = i;
+                        Platform.runLater(()-> {
+                            renderPiece(color2.getValue(), adjacent.get(finalI).getValue0(), adjacent.get(finalI).getValue1());
+                        });
                     }
                 }
             }
         };
 
+        // begin the animation
         timer2.start();
         colorTimeline2.play();
+        // stop the timer when the animation is done and make sure to render the new board state.
         colorTimeline2.setOnFinished(event -> {
             timer2.stop();
-            renderBoard(newBoard);
+            Platform.runLater(()-> {
+                renderBoard(newBoard);
+            });
         });
     }
 
@@ -512,7 +555,9 @@ public class GameView {
      * @param
      */
     public void displayGameId(String gameId, Label gameIDlabel) {
-        gameIDlabel.setText("Game ID:" + gameId);
+        Platform.runLater(()-> {
+            gameIDlabel.setText("Game ID: " + gameId);
+        });
     }
 
     /**
@@ -530,5 +575,20 @@ public class GameView {
             blueLabel.setText(counts.getValue1().toString());
             redLabel.setText(counts.getValue0().toString());
         });
+    }
+
+    public void feedback(String message, Label feedbackLabel) {
+        Platform.runLater(()-> {
+            feedbackLabel.setText(message);
+        });
+    }
+
+    public void handleGameOver(Button replayButton, Button newGameButton, Label gameIDlabel) {
+        Platform.runLater(()-> {
+            gameIDlabel.setVisible(false);
+            replayButton.setVisible(true);
+            newGameButton.setVisible(true);
+        });
+
     }
 }
