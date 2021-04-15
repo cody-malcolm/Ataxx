@@ -251,6 +251,7 @@ public class GameView {
      */
     public void animateMove(String oldBoard, String newBoard, String move, char activePlayer) {
         if (newBoard.length() > 49 && oldBoard.length() > 49){
+            // get all the information we may need
             String sourceSquare = String.valueOf(move.charAt(0)) + String.valueOf(move.charAt(1));
             String destinationSquare = String.valueOf(move.charAt(2)) + String.valueOf(move.charAt(3));
             int sourceRow = Integer.parseInt(String.valueOf(sourceSquare.charAt(0)));
@@ -264,7 +265,7 @@ public class GameView {
 
                 DoubleProperty x  = new SimpleDoubleProperty();
                 DoubleProperty y  = new SimpleDoubleProperty();
-
+                // set up start and end places for the piece
                 Timeline timeline = new Timeline(
                         new KeyFrame(Duration.seconds(0),
                                 new KeyValue(x, getPosition(sourceColumn)),
@@ -274,7 +275,7 @@ public class GameView {
                                 new KeyValue(y, getPosition(destRow)))
                 );
                 timeline.setCycleCount(1);
-
+                //render the piece as it moves
                 AnimationTimer timer = new AnimationTimer() {
                     @Override
                     public void handle(long now) {
@@ -288,8 +289,10 @@ public class GameView {
                     }
                 };
 
+                //begin the animation
                 timer.start();
                 timeline.play();
+                // stop the timer once it's done, and make sure the newBoard is being displayed
                 timeline.setOnFinished(event -> {
                     timer.stop();
                     renderBoard(newBoard);
@@ -298,7 +301,7 @@ public class GameView {
             } else { // else it's a jump
                 DoubleProperty x  = new SimpleDoubleProperty();
                 DoubleProperty y  = new SimpleDoubleProperty();
-
+                // set up start and end places for the piece
                 Timeline timeline = new Timeline(
                         new KeyFrame(Duration.seconds(0),
                                 new KeyValue(x, getPosition(sourceColumn)),
@@ -310,7 +313,7 @@ public class GameView {
                 timeline.setCycleCount(1);
 
                 ObjectProperty<Color> color = new SimpleObjectProperty<>();
-
+                // set up color gradient for piece disappearance
                 Timeline colorTimeline = new Timeline(
                         new KeyFrame(Duration.ZERO,
                                 new KeyValue(color, getColor(activePlayer))
@@ -322,7 +325,7 @@ public class GameView {
 
                 colorTimeline.setCycleCount(1);
 
-
+                //render the piece as it moves and disappear the one where the source used to be
                 AnimationTimer timer = new AnimationTimer() {
                     @Override
                     public void handle(long now) {
@@ -368,6 +371,11 @@ public class GameView {
 
     }
 
+    /**
+     * Returns the color of the active player.
+     *
+     * @param activePlayer char representation of active Player
+     */
     private Color getColor(char activePlayer) {
         if (activePlayer == '1'){
             return pieceColors[1];
@@ -376,6 +384,11 @@ public class GameView {
         }
     }
 
+    /**
+     * Returns the color of the non-active player.
+     *
+     * @param activePlayer char representation of active Player
+     */
     private Color getOpponentsColor(char activePlayer) {
         if (activePlayer == '2'){
             return pieceColors[1];
@@ -384,9 +397,18 @@ public class GameView {
         }
     }
 
+    /**
+     * Animates the transition from an enemy piece to that of the active player.
+     *
+     * @param activePlayer char representation of active Player
+     * @param destRow row of destination square
+     * @param destColumn column of destination square
+     * @param newBoard the previous state of the board
+     * @param oldBoard the new state of the board
+     */
     private synchronized void captureAnimation(char activePlayer, int destRow, int destColumn, String newBoard, String oldBoard){
         ObjectProperty<Color> color2 = new SimpleObjectProperty<>();
-
+        // set up color gradient for piece color change
         Timeline colorTimeline2 = new Timeline(
                 new KeyFrame(Duration.ZERO,
                              new KeyValue(color2, getColor(activePlayer))),
@@ -403,6 +425,8 @@ public class GameView {
                 ArrayList<Pair<Integer,Integer>> adjacent = GameLogic.getAdjacent(new Pair<>(destRow, destColumn));
                 for (int i = 0; i < adjacent.size(); i++) {
                     Pair<Integer,Integer> square = new Pair<>(adjacent.get(i).getValue0(), adjacent.get(i).getValue1());
+                    // if the square we're looking at used to have an enemy piece, the new piece will be rendered in each
+                    // iteration of the animation until it is the color of the active player
                     if (GameLogic.getSquare(newBoard, square) == activePlayer && GameLogic.getSquare(oldBoard, square) != '-'
                         && GameLogic.getSquare(oldBoard, square) != activePlayer) {
                         int finalI = i;
@@ -414,8 +438,10 @@ public class GameView {
             }
         };
 
+        // begin the animation
         timer2.start();
         colorTimeline2.play();
+        // stop the timer when the animation is done and make sure to render the new board state.
         colorTimeline2.setOnFinished(event -> {
             timer2.stop();
             Platform.runLater(()-> {
