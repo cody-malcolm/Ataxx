@@ -355,35 +355,35 @@ public class GameView {
     }
 
     private synchronized void captureAnimation(char activePlayer, int destRow, int destColumn, String newBoard){
-        ObjectProperty<Color> color2 = new SimpleObjectProperty<>();
-
-        Timeline colorTimeline2 = new Timeline(
-                new KeyFrame(Duration.ZERO,
-                             new KeyValue(color2, pieceColors[activePlayer])),
-                new KeyFrame(Duration.seconds(0.5),
-                             new KeyValue(color2, pieceColors[changeColor(activePlayer)]))
-        );
-
-        colorTimeline2.setCycleCount(1);
-
-
-        AnimationTimer timer2 = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                ArrayList<Pair<Integer,Integer>> adjacent = GameLogic.getAdjacent(new Pair<>(destRow, destColumn));
-                System.out.println(adjacent);
-                for (int i = 0; i < adjacent.size(); i++) {
-                    renderPiece(color2.getValue(), adjacent.get(i).getValue0(), adjacent.get(i).getValue1());
-                }
-            }
-        };
-
-        timer2.start();
-        colorTimeline2.play();
-        colorTimeline2.setOnFinished(event -> {
-            timer2.stop();
-            renderBoard(newBoard);
-        });
+//        ObjectProperty<Color> color2 = new SimpleObjectProperty<>();
+//
+//        Timeline colorTimeline2 = new Timeline(
+//                new KeyFrame(Duration.ZERO,
+//                             new KeyValue(color2, pieceColors[activePlayer])),
+//                new KeyFrame(Duration.seconds(0.5),
+//                             new KeyValue(color2, pieceColors[changeColor(activePlayer)]))
+//        );
+//
+//        colorTimeline2.setCycleCount(1);
+//
+//
+//        AnimationTimer timer2 = new AnimationTimer() {
+//            @Override
+//            public void handle(long now) {
+//                ArrayList<Pair<Integer,Integer>> adjacent = GameLogic.getAdjacent(new Pair<>(destRow, destColumn));
+//                System.out.println(adjacent);
+//                for (int i = 0; i < adjacent.size(); i++) {
+//                    renderPiece(color2.getValue(), adjacent.get(i).getValue0(), adjacent.get(i).getValue1());
+//                }
+//            }
+//        };
+//
+//        timer2.start();
+//        colorTimeline2.play();
+//        colorTimeline2.setOnFinished(event -> {
+//            timer2.stop();
+//            renderBoard(newBoard);
+//        });
     }
 
     /**
