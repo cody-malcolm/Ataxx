@@ -513,7 +513,9 @@ public class GameView {
      * @param
      */
     public void displayGameId(String gameId, Label gameIDlabel) {
-        gameIDlabel.setText("Game ID: " + gameId);
+        Platform.runLater(()-> {
+            gameIDlabel.setText("Game ID: " + gameId);            
+        });
     }
 
     /**
