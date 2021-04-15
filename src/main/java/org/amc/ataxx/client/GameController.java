@@ -7,8 +7,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.amc.ataxx.GameLogic;
@@ -117,8 +115,17 @@ public class GameController extends Controller {
         view.renderBoard(board);
         user.setKey(key);
         user.setActivePlayer(activePlayer);
+        displayActivePlayer();
         view.displayTurn(activePlayer, key, blueNameLabel, redNameLabel, displayNames);
         highlightSquares(board); // TODO 1 99% sure this can be deleted
+    }
+
+    private void displayActivePlayer() {
+        if (user.usersTurn()) {
+            view.feedback("It's your turn!", feedbackLabel);
+        } else {
+            view.feedback("Opponent's turn...", feedbackLabel);
+        }
     }
 
     /**
@@ -170,6 +177,7 @@ public class GameController extends Controller {
                            char key, String[] displayNames) {
         user.setKey(key);
         user.setActivePlayer(activePlayer);
+        displayActivePlayer();
         view.displayCounts(GameLogic.getCounts(newBoard), blueScoreLabel, redScoreLabel);
         view.displayTurn(activePlayer, key, blueNameLabel, redNameLabel, displayNames);
         view.animateMove(oldBoard, newBoard, move, activePlayer);
@@ -191,7 +199,7 @@ public class GameController extends Controller {
      */
     public void winnerDetermined(char key) {
         String username = user.getName(key);
-        view.displayWinner(username);
+        view.feedback(username + " has won the game!", feedbackLabel);
     }
 
     public void processMessage(String message, char style) {

@@ -510,4 +510,10 @@ public class GameView {
             redLabel.setText(counts.getValue0().toString());
         });
     }
+
+    public void feedback(String message, Label feedbackLabel) {
+        Platform.runLater(()-> {
+            feedbackLabel.setText(message);
+        });
+    }
 }

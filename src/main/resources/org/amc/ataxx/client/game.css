@@ -51,3 +51,8 @@
 .gameIDlabel {
     -fx-font-size: 16px;
 }
+
+.feedbackLabel {
+    -fx-alignment: center;
+    -fx-font-size: 16px;
+}
