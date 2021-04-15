@@ -41,10 +41,10 @@ public class GameLogic {
     }
 
     public static boolean isSquareEmpty(String board, Pair<Integer, Integer> square) {
-        if (getSquare(board, square) == '-')
+        if (getSquare(board, square) == '-') {
             return true;
+        }
         return false;
-
     }
     /**
      *Returns all square positions that are adjacent to the current square.
@@ -151,7 +151,7 @@ public class GameLogic {
             }
         }
 
-        return false;
+        return true;
     }
 
 
@@ -213,7 +213,6 @@ public class GameLogic {
         if (boardFull(board)){
             int numSquares1 = 0;
             int numSquares2 = 0;
-            String[] rows = board.split("\\/");
             for (int i = 0; i <= 6; i++) {
                 for (int j = 0; j <= 6; j++) {
                     Pair<Integer, Integer> square = new Pair<>(i, j);

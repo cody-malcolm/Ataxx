@@ -47,14 +47,18 @@ public class GameController extends Controller {
     @FXML
     private Label gameIDlabel;
 
+    /** The view to send UI information to */
     private GameView view;
-
     /** The User associated with the controller */
     private User user;
-    /** The ClientListener that listens for updates from server */
-    private ClientListener listener;
 
-    public GameController(User user, ClientListener listener) { // TODO can probably refactor this to reduce redundancy
+    /**
+     * Controller for the game
+     *
+     * @param user game's client
+     * @param listener clientListener for server responses
+     */
+    public GameController(User user, ClientListener listener) {
         super(listener.getStage(), listener);
         this.user = user;
 
@@ -92,6 +96,8 @@ public class GameController extends Controller {
      */
     @FXML
     private void initialize() {
+        replayButton.setOnAction(event -> replayClick());
+        newGameButton.setOnAction(event -> newGameClick());
         resignButton.setOnAction(event -> resignClick());
         disconnectButton.setOnAction(event -> disconnectClick());
         // initialize the Canvas
@@ -102,15 +108,27 @@ public class GameController extends Controller {
         this.buffer.setText("\r\n");
     }
 
+    /** Sends a request for a replay */
+    private void replayClick() {
+        sendRequest("REPLAY");
+    }
+
+    /** Sends a request for a new game with next available player */
+    private void newGameClick() {
+        sendRequest("NEWGAME");
+    }
+
     /**
      * Re-renders the board with the given game state, and updates the key and activePlayer stored by the User.
      *
      * @param board the board state to render
      * @param activePlayer the active player
      * @param key the User's key
+     * @param displayNames the two usernames to display
+     * @param gameId the game ID
      */
-    public void refreshBoard(String board, char activePlayer, char key, String[] displayNames, String id) {
-        view.displayGameId(id, gameIDlabel);
+    public void refreshBoard(String board, char activePlayer, char key, String[] displayNames, String gameId) {
+        view.displayGameId(gameId, gameIDlabel);
         view.displayCounts(GameLogic.getCounts(board), blueScoreLabel, redScoreLabel);
         view.renderBoard(board);
         user.setKey(key);
@@ -120,6 +138,9 @@ public class GameController extends Controller {
         highlightSquares(board); // TODO 1 99% sure this can be deleted
     }
 
+    /**
+     * Sends feedback messages if it's user's or his/her opponent's turn
+     */
     private void displayActivePlayer() {
         if (user.usersTurn()) {
             view.feedback("It's your turn!", feedbackLabel);
@@ -204,6 +225,12 @@ public class GameController extends Controller {
         resignButton.setDisable(true);
     }
 
+    /**
+     * Sorts a message by style and calls the appropriate view renderer
+     *
+     * @param message the message to display
+     * @param style the style to use
+     */
     public void processMessage(String message, char style) {
 //        Views.displayMessage(message, style);
         if (style == 'd') {
@@ -215,6 +242,9 @@ public class GameController extends Controller {
         }
     }
 
+    /**
+     * Handler for chat messages
+     */
     public void chat() {
         String message = chat.getText();
         if (!message.equals("")) {
