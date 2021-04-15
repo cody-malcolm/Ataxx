@@ -30,7 +30,7 @@
     </HBox>
 
     <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.rowSpan="2" alignment="CENTER" spacing="-10"
-          styleClass="leftContainer" minWidth="315" minHeight="634" maxHeight="634">
+          styleClass="leftContainer" minWidth="315" maxWidth="315" minHeight="634" maxHeight="634">
         <ScrollPane fx:id="messagesScrollpane" minHeight="580" maxHeight="580" styleClass="messagesContainer">
             <VBox fx:id="messagesContainer" spacing="5">
                 <Label fx:id="buffer"></Label>
@@ -43,13 +43,20 @@
 
     <HBox GridPane.columnIndex="1" GridPane.rowIndex="1" minWidth="865" maxWidth="865"
             alignment="CENTER" fx:id="canvasContainer" />
-    <GridPane GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" hgap="20">
-        <Label GridPane.columnIndex="0" GridPane.columnSpan="2" fx:id="gameIDlabel" styleClass="gameIDlabel" />
-        <Button GridPane.columnIndex="0" fx:id="replayButton" styleClass="button" visible="false">Replay</Button>
-        <Button GridPane.columnIndex="1" fx:id="newGameButton" styleClass="button" visible="false">New Game</Button>
-        <Label GridPane.columnIndex="2" prefWidth="10" />
-        <Label GridPane.columnIndex="3" fx:id="feedbackLabel" styleClass="feedbackLabel" />
-        <Button GridPane.columnIndex="4" fx:id="resignButton" styleClass="button">Resign</Button>
-        <Button GridPane.columnIndex="5" fx:id="disconnectButton" styleClass="button">Disconnect</Button>
+
+    <HBox GridPane.columnIndex="0" GridPane.rowIndex="2" minWidth="315" maxWidth="315">
+        <GridPane>
+            <HBox GridPane.columnIndex="0" GridPane.columnSpan="2" alignment="CENTER">
+                <Label fx:id="gameIDlabel" styleClass="gameIDlabel" />
+            </HBox>
+            <Button GridPane.columnIndex="0" fx:id="replayButton" styleClass="button" visible="false">Replay</Button>
+            <Button GridPane.columnIndex="1" fx:id="newGameButton" styleClass="button" visible="false">New Game</Button>
+        </GridPane>
+    </HBox>
+
+    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2" hgap="10">
+        <Button GridPane.columnIndex="0" fx:id="resignButton" styleClass="button">Resign</Button>
+        <Label GridPane.columnIndex="1" minWidth="530" maxWidth="530" fx:id="feedbackLabel" styleClass="feedbackLabel" />
+        <Button GridPane.columnIndex="2" fx:id="disconnectButton" styleClass="button">Disconnect</Button>
     </GridPane>
 </GridPane>

@@ -445,7 +445,7 @@ public class GameView {
     }
 
     public void displayGameId(String gameId, Label gameIDlabel) {
-        gameIDlabel.setText("Game ID:" + gameId);
+        gameIDlabel.setText("Game ID: " + gameId);
     }
 
     public void displayCounts(Pair<Integer, Integer> counts, Label blueLabel, Label redLabel) {
