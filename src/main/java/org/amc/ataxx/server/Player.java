@@ -95,7 +95,6 @@ public class Player extends Thread {
         // initialize variable for input
         String input = null;
 
-        // TODO put authentication and identification in helper methods
         while (!authenticated && attempts < 3) {
             // read in a line of input
             try {
@@ -256,15 +255,21 @@ public class Player extends Thread {
         return false;
     }
 
+    /**
+     * Handler for replay requests
+     */
     private void handleReplayRequest() {
         Game game = GameManager.getInstance().getGame(this.gameID);
-        if (game.getReplayRequest()) {
-            game.restart();
+        if (game.getReplayRequest()) { // if the other user has already requested a replay
+            game.restart(); // restart the game
         } else {
-            game.setReplayRequest(true);
+            game.setReplayRequest(true); // update the replay requested flag
         }
     }
 
+    /**
+     * Handler for new game requests
+     */
     private void handleNewGameRequest() {
         if (this.newGameAllowed) {
             this.gameID = null;
@@ -272,15 +277,22 @@ public class Player extends Thread {
         }
     }
 
+    /**
+     * Handler for disconnection requests
+     */
     private void handleDisconnection() {
-        if (null != this.gameID) {
+        if (null != this.gameID) { // if user is already in a game
+            // get the game
             Game game = GameManager.getInstance().getGame(this.gameID);
+
+            // if the user is a spectator
             if (this.key == '3') {
-                game.removeSpectator(this);
+                game.removeSpectator(this); // call appropriate handler
             } else {
-                if (!this.newGameAllowed) {
-                    game.handleResignation(this.key);
+                if (!this.newGameAllowed) { // if game is ongoing
+                    game.handleResignation(this.key); // resign the player before disconnecting them
                 }
+                // update players and spectators
                 game.sendToAll(this.username + " has disconnected");
                 updateClients(game.getBoard(), "none", game);
             }
@@ -299,39 +311,63 @@ public class Player extends Thread {
         }
     }
 
-
+    /**
+     * Handles a chat request
+     *
+     * @param message the chat message
+     */
     private void handleChatRequest(String message) {
-        if (null == this.gameID) {
+        if (null == this.gameID) { // guard against edge cases
             return;
         }
 
+        // get the game, and the players/spectators of the game
         Game game = GameManager.getInstance().getGame(this.gameID);
         Player[] players = game.getPlayers();
         ArrayList<Player> spectators = game.getSpectators();
+
+        // form the message
         message = this.username + ": " + message;
 
+        // log the request
         log("Sending chat message '" + message + "' to the players of " + this.gameID);
 
+        // send message to all players
         for (Player player : players) {
             if (null != player) {
                 player.sendChatMessage(message);
             }
         }
 
+        // send message to all spectators
         for (Player spectator : spectators) {
             spectator.sendChatMessage(message);
         }
     }
 
+    /**
+     * Sends a chat message to the client
+     *
+     * @param message the message to send
+     */
     private void sendChatMessage(String message) {
         responseOutput.println("CHAT\\" + message);
     }
 
+    /**
+     * Sends a system message to the client
+     *
+     * @param message the message to send
+     */
     public void sendSystemMessage(String message) {
         responseOutput.println("MSG\\" + message);
     }
 
-    // TODO limited cases this is useful right now
+    /**
+     * Sends an error message to the client
+     *
+     * @param message the message to send
+     */
     public void sendErrorMessage(String message) {
         responseOutput.println("ERR\\" + message);
     }
@@ -346,6 +382,11 @@ public class Player extends Thread {
         }
     }
 
+    /**
+     * Handles a spectate request
+     *
+     * @param gameId the id of the game the spectator wants to watch
+     */
     private void handleSpectateRequest(String gameId) {
         if (null == this.gameID) {
             Game game = GameManager.getInstance().getGame(gameId);
@@ -446,9 +487,10 @@ public class Player extends Thread {
 
     /**
     * Sends player's names and gameID to the client associated with "this"
-    * @param playerOneUsername
-     * @param playerTwoUsername
-     * id - game ID that was given at the beginning of the game
+     *
+    * @param playerOneUsername the username for p1
+     * @param playerTwoUsername the username for p2
+     * @param id game ID that was given at the beginning of the game
     */
     public void sendGameInformation(String playerOneUsername, String playerTwoUsername, String id) {
         StringBuilder gameInfo = new StringBuilder();
@@ -458,6 +500,7 @@ public class Player extends Thread {
                 .append(id);
         responseOutput.println(gameInfo);
     }
+
     /**
      * Finished the current game, allowing a new game to get started
     */
