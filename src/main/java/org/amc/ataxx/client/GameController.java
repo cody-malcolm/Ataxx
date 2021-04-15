@@ -200,6 +200,8 @@ public class GameController extends Controller {
     public void winnerDetermined(char key) {
         String username = user.getName(key);
         view.feedback(username + " has won the game!", feedbackLabel);
+        view.handleGameOver(replayButton, newGameButton, gameIDlabel);
+        resignButton.setDisable(true);
     }
 
     public void processMessage(String message, char style) {
@@ -211,14 +213,6 @@ public class GameController extends Controller {
         } else if (style == 'b') {
             this.view.addError(message, this.messagesContainer, this.messagesScrollpane);
         }
-//        Platform.runLater(()-> {
-//            if (messages.getText().equals("")) {
-//                messages.setText(message);
-//            } else {
-//                messages.setText(messages.getText() + "\r\n" + message);
-//            }
-//        });
-
     }
 
     public void chat() {

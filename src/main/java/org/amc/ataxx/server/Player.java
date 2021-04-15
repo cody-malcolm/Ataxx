@@ -262,7 +262,7 @@ public class Player extends Thread {
                     game.handleResignation(this.key);
                 }
                 game.sendToAll(this.username + " has disconnected");
-                updateClients(game.getBoard(), "resn", game);
+                updateClients(game.getBoard(), "none", game);
             }
         }
     }
@@ -353,17 +353,18 @@ public class Player extends Thread {
             Player opponent = game.getPlayer(this.key == '1' ? 1 : 0);
             char winner = game.getWinner();
             boolean active = game.getActive();
+            boolean finished = game.getFinished();
 
             // guard against null opponent (during Game setup)
             if (null != opponent) {
-                opponent.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active);
+                opponent.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active, finished);
             }
-            this.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active);
+            this.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active, finished);
 
             ArrayList<Player> spectators = game.getSpectators();
 
             for (Player spectator : spectators) {
-                spectator.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active);
+                spectator.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active, finished);
             }
         }
     }
@@ -377,7 +378,8 @@ public class Player extends Thread {
      * @param activePlayer the key of the player to make the next move
      * @param winner the Username of the player who won, or '-' if the game is ongoing
      */
-    private void sendGameState(String oldBoard, String move, String newBoard, char activePlayer, char winner, boolean active) {
+    private void sendGameState(String oldBoard, String move, String newBoard, char activePlayer,
+                               char winner, boolean active, boolean finished) {
         StringBuilder response = new StringBuilder();
         response.append("GAME\\")
                 .append(oldBoard).append("\\")
@@ -386,7 +388,8 @@ public class Player extends Thread {
                 .append(activePlayer).append("\\")
                 .append(this.key).append("\\")
                 .append(winner).append("\\")
-                .append(active);
+                .append(active).append("\\")
+                .append(finished);
 
         log("Sending response '" + response.toString() + " to " + this.username + this.clientIP);
         responseOutput.println(response.toString());

@@ -166,7 +166,9 @@ public class ClientListener extends Thread {
         char key = args[5].charAt(0);
         this.user.setBoard(args[3]);
         boolean gameActive = args[7].equals("true");
+        boolean gameFinished = args[8].equals("true");
         this.user.setGameActive(gameActive);
+        this.user.setGameFinished(gameFinished);
 
         if (!gameActive) {
             splashController.giveFeedback("Waiting for opponent...");

@@ -25,6 +25,7 @@ public class User {
     private String gameId;
     private String[] displayNames = new String[2];
     private boolean gameActive = false;
+    private boolean gameFinished = false;
 
     /**
      * Constructor for a User
@@ -164,6 +165,11 @@ public class User {
     public void setDisplayNames(String playerOneUsername, String playerTwoUsername) {
         this.displayNames[0] = playerOneUsername;
         this.displayNames[1] = playerTwoUsername;
+        if (this.username.equals(playerOneUsername)) {
+            this.opponentUsername = playerTwoUsername;
+        } else {
+            this.opponentUsername = playerOneUsername;
+        }
     }
 
     /**
@@ -223,5 +229,9 @@ public class User {
      */
     public boolean getGameActive() {
         return this.gameActive;
+    }
+
+    public void setGameFinished(boolean gameFinished) {
+        this.gameFinished = gameFinished;
     }
 }

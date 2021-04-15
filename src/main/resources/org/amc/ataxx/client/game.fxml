@@ -8,7 +8,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:id="gridPane"
-            minHeight="700.0" maxHeight="700" minWidth="1200.0" maxWidth="1200" hgap="10" vgap="10">
+            minHeight="700.0" maxHeight="700" minWidth="1100.0" maxWidth="1100" hgap="10" vgap="10">
 
     <!--    link stylesheet -->
     <stylesheets>
@@ -22,7 +22,7 @@
 
     <!--    temp buttons-->
 
-    <HBox GridPane.columnIndex="1" GridPane.rowIndex="0" alignment="CENTER" minWidth="865" maxWidth="865">
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="0" alignment="CENTER" minWidth="765" maxWidth="765">
         <Label fx:id="blueNameLabel" styleClass="playerLabel" />
         <Label fx:id="blueScoreLabel" styleClass="playerLabel" />
         <Label fx:id="redScoreLabel" styleClass="playerLabel" />
@@ -41,11 +41,11 @@
         </TextField>
     </VBox>
 
-    <HBox GridPane.columnIndex="1" GridPane.rowIndex="1" minWidth="865" maxWidth="865"
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="1" minWidth="765" maxWidth="765"
             alignment="CENTER" fx:id="canvasContainer" />
 
     <HBox GridPane.columnIndex="0" GridPane.rowIndex="2" minWidth="315" maxWidth="315">
-        <GridPane>
+        <GridPane hgap="10">
             <HBox GridPane.columnIndex="0" GridPane.columnSpan="2" alignment="CENTER">
                 <Label fx:id="gameIDlabel" styleClass="gameIDlabel" />
             </HBox>
@@ -56,7 +56,7 @@
 
     <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2" hgap="10">
         <Button GridPane.columnIndex="0" fx:id="resignButton" styleClass="button">Resign</Button>
-        <Label GridPane.columnIndex="1" minWidth="530" maxWidth="530" fx:id="feedbackLabel" styleClass="feedbackLabel" />
+        <Label GridPane.columnIndex="1" minWidth="430" maxWidth="430" fx:id="feedbackLabel" styleClass="feedbackLabel" />
         <Button GridPane.columnIndex="2" fx:id="disconnectButton" styleClass="button">Disconnect</Button>
     </GridPane>
 </GridPane>

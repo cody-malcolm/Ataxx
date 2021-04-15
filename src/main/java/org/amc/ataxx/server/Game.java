@@ -13,6 +13,7 @@ public class Game {
     private ArrayList<Player> spectators;
     private Board board;
     private char winner = '-'; // may be unnecessary
+    private boolean finished = false;
 
     public Game(String id) {
         // set up the board and any other internal stuff you need to do
@@ -111,10 +112,10 @@ public class Game {
     }
 
     /**
-     * Sets the current game inactive and allows for its players & spectators to start/observe a new game
+     * Sets the current game finished and allows for its players & spectators to start/observe a new game
      */
     private void handleGameOver() {
-        this.active = false;
+        this.finished = false;
         for (Player player : this.players) {
             if (null != player) {
                 player.finishedGame();
@@ -227,6 +228,17 @@ public class Game {
 
     /**
     * Returns true if this game is still active, false otherwise
+     *
+     * @return true if the game is active, false otherwise
     */
     public boolean getActive() { return this.active; }
+
+    /**
+     * Returns true if the game is finished, false otherwise
+     *
+     * @return true if the game is finished, false otherwise
+     */
+    public boolean getFinished() {
+        return this.finished;
+    }
 }

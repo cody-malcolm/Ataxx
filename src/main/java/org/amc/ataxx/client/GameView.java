@@ -14,6 +14,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
@@ -515,5 +516,11 @@ public class GameView {
         Platform.runLater(()-> {
             feedbackLabel.setText(message);
         });
+    }
+
+    public void handleGameOver(Button replayButton, Button newGameButton, Label gameIDlabel) {
+        gameIDlabel.setVisible(false);
+        replayButton.setVisible(true);
+        newGameButton.setVisible(true);
     }
 }
