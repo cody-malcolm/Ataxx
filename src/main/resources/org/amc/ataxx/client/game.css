@@ -47,3 +47,12 @@
     -fx-padding: 10;
     -fx-alignment: center;
 }
+
+.gameIDlabel {
+    -fx-font-size: 16px;
+}
+
+.feedbackLabel {
+    -fx-alignment: center;
+    -fx-font-size: 16px;
+}

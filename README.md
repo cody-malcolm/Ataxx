@@ -39,7 +39,25 @@ If application has been started correctly, the player will see the screen below.
 Hence, if the client is running on the same machine as the server, host IP address can be left empty.
 
 ![Alt text](./demos/welcome_screen.png?raw=true "Welcome screen").
+
+## Functionality
+* The server supports multiple clients. To start the game, both clients should be connected to the same IP address.
+By clicking 'Find the game' button, the player will either be automatically added to the existing game, or he/she will 
+  start a new one, waiting for a second player to connect.
+
 ![Alt text](./demos/findGame.png?raw=true "Finding the game").
+  
+* The server is the sole source of authority of the game state. It's robust against a modified request from the client.
+
+* Each game is assigned to a unique gameID, allowing the client to spectate said game.
+
+* Username validation happens on the first welcome screen (can't be "",  "-" or contain ' \ ' due to the Board string representation)
+![Alt text](./demos/username.png?raw=true "Invalid username").
+
+* During the game, the GameID and the number of squares occupied by each player is shown
+
+
+
 
 ## Credit
 For the layout of the README we took inspiration from Cody's assignment2: https://github.com/cody-malcolm/FileSharer

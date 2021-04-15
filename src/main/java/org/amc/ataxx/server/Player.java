@@ -241,6 +241,10 @@ public class Player extends Thread {
         } else if (type.regionMatches(true, 0, "clse", 0, 4)) {
             handleDisconnection();
             return true;
+        } else if (type.regionMatches(true, 0, "newgame", 0, 7)) {
+            handleNewGameRequest();
+        } else if (type.regionMatches(true, 0, "replay", 0, 6)) {
+            handleReplayRequest();
         } else {
             handleUnknown();
         }
@@ -250,6 +254,22 @@ public class Player extends Thread {
         }
 
         return false;
+    }
+
+    private void handleReplayRequest() {
+        Game game = GameManager.getInstance().getGame(this.gameID);
+        if (game.getReplayRequest()) {
+            game.restart();
+        } else {
+            game.setReplayRequest(true);
+        }
+    }
+
+    private void handleNewGameRequest() {
+        if (this.newGameAllowed) {
+            this.gameID = null;
+            handleGameRequest();
+        }
     }
 
     private void handleDisconnection() {
@@ -262,7 +282,7 @@ public class Player extends Thread {
                     game.handleResignation(this.key);
                 }
                 game.sendToAll(this.username + " has disconnected");
-                updateClients(game.getBoard(), "resn", game);
+                updateClients(game.getBoard(), "none", game);
             }
         }
     }
@@ -353,17 +373,18 @@ public class Player extends Thread {
             Player opponent = game.getPlayer(this.key == '1' ? 1 : 0);
             char winner = game.getWinner();
             boolean active = game.getActive();
+            boolean finished = game.getFinished();
 
             // guard against null opponent (during Game setup)
             if (null != opponent) {
-                opponent.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active);
+                opponent.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active, finished);
             }
-            this.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active);
+            this.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active, finished);
 
             ArrayList<Player> spectators = game.getSpectators();
 
             for (Player spectator : spectators) {
-                spectator.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active);
+                spectator.sendGameState(oldBoard, move, newBoard, activePlayer, winner, active, finished);
             }
         }
     }
@@ -377,7 +398,8 @@ public class Player extends Thread {
      * @param activePlayer the key of the player to make the next move
      * @param winner the Username of the player who won, or '-' if the game is ongoing
      */
-    private void sendGameState(String oldBoard, String move, String newBoard, char activePlayer, char winner, boolean active) {
+    private void sendGameState(String oldBoard, String move, String newBoard, char activePlayer,
+                               char winner, boolean active, boolean finished) {
         StringBuilder response = new StringBuilder();
         response.append("GAME\\")
                 .append(oldBoard).append("\\")
@@ -386,7 +408,8 @@ public class Player extends Thread {
                 .append(activePlayer).append("\\")
                 .append(this.key).append("\\")
                 .append(winner).append("\\")
-                .append(active);
+                .append(active).append("\\")
+                .append(finished);
 
         log("Sending response '" + response.toString() + " to " + this.username + this.clientIP);
         responseOutput.println(response.toString());

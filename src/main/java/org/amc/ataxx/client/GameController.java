@@ -7,7 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.amc.ataxx.GameLogic;
 import org.javatuples.Pair;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class GameController extends Controller {
     @FXML
-    private BorderPane borderPane;
+    private HBox canvasContainer;
     @FXML
     private VBox messagesContainer;
     @FXML
@@ -25,23 +25,38 @@ public class GameController extends Controller {
     @FXML
     private TextField chat;
     @FXML
+    private Button replayButton;
+    @FXML
+    private Button newGameButton;
+    @FXML
     private Button resignButton;
     @FXML
     private Button disconnectButton;
     @FXML
-    private Label playerLabel;
+    private Label blueNameLabel;
     @FXML
-    private Label opponentLabel;
+    private Label redNameLabel;
+    @FXML
+    private Label blueScoreLabel;
+    @FXML
+    private Label redScoreLabel;
+    @FXML
+    private Label feedbackLabel;
     @FXML
     private Label buffer;
+    @FXML
+    private Label gameIDlabel;
 
     private GameView view;
 
     /** The User associated with the controller */
     private User user;
-    /** The ClientListener that listens for updates from server */
-    private ClientListener listener;
 
+    /**
+     * Controller for the game
+     * @param user game's client
+     * @param listener clientListener for server responses
+     */
     public GameController(User user, ClientListener listener) { // TODO can probably refactor this to reduce redundancy
         super(listener.getStage(), listener);
         this.user = user;
@@ -80,14 +95,24 @@ public class GameController extends Controller {
      */
     @FXML
     private void initialize() {
+        replayButton.setOnAction(event -> replayClick());
+        newGameButton.setOnAction(event -> newGameClick());
         resignButton.setOnAction(event -> resignClick());
         disconnectButton.setOnAction(event -> disconnectClick());
         // initialize the Canvas
         view = GameView.getInstance();
         view.setGameController(this);
-        view.createCanvas(borderPane);
+        view.createCanvas(canvasContainer);
 
         this.buffer.setText("\r\n");
+    }
+
+    private void replayClick() {
+        sendRequest("REPLAY");
+    }
+
+    private void newGameClick() {
+        sendRequest("NEWGAME");
     }
 
     /**
@@ -98,13 +123,25 @@ public class GameController extends Controller {
      * @param key the User's key
      */
     public void refreshBoard(String board, char activePlayer, char key, String[] displayNames, String id) {
-        view.displayGameId(id);
-        view.displayCounts(GameLogic.getCounts(board));
+        view.displayGameId(id, gameIDlabel);
+        view.displayCounts(GameLogic.getCounts(board), blueScoreLabel, redScoreLabel);
         view.renderBoard(board);
         user.setKey(key);
         user.setActivePlayer(activePlayer);
-        view.displayTurn(activePlayer, key, playerLabel, opponentLabel, displayNames);
+        displayActivePlayer();
+        view.displayTurn(activePlayer, key, blueNameLabel, redNameLabel, displayNames);
         highlightSquares(board); // TODO 1 99% sure this can be deleted
+    }
+
+    /**
+     * Sends feedback messages if it's user's or his/her opponent's turn
+     */
+    private void displayActivePlayer() {
+        if (user.usersTurn()) {
+            view.feedback("It's your turn!", feedbackLabel);
+        } else {
+            view.feedback("Opponent's turn...", feedbackLabel);
+        }
     }
 
     /**
@@ -156,8 +193,9 @@ public class GameController extends Controller {
                            char key, String[] displayNames) {
         user.setKey(key);
         user.setActivePlayer(activePlayer);
-        view.displayCounts(GameLogic.getCounts(newBoard));
-        view.displayTurn(activePlayer, key, playerLabel, opponentLabel, displayNames);
+        displayActivePlayer();
+        view.displayCounts(GameLogic.getCounts(newBoard), blueScoreLabel, redScoreLabel);
+        view.displayTurn(activePlayer, key, blueNameLabel, redNameLabel, displayNames);
         view.animateMove(oldBoard, newBoard, move, activePlayer);
     }
 
@@ -177,7 +215,9 @@ public class GameController extends Controller {
      */
     public void winnerDetermined(char key) {
         String username = user.getName(key);
-        view.displayWinner(username);
+        view.feedback(username + " has won the game!", feedbackLabel);
+        view.handleGameOver(replayButton, newGameButton, gameIDlabel);
+        resignButton.setDisable(true);
     }
 
     public void processMessage(String message, char style) {
@@ -189,14 +229,6 @@ public class GameController extends Controller {
         } else if (style == 'b') {
             this.view.addError(message, this.messagesContainer, this.messagesScrollpane);
         }
-//        Platform.runLater(()-> {
-//            if (messages.getText().equals("")) {
-//                messages.setText(message);
-//            } else {
-//                messages.setText(messages.getText() + "\r\n" + message);
-//            }
-//        });
-
     }
 
     public void chat() {

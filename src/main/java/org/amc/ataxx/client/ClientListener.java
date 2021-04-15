@@ -34,6 +34,14 @@ public class ClientListener extends Thread {
     final private String ACCESS_CODE = "arstdhneio";
     private boolean abortConnectionAttempt = false;
 
+    /**
+     * Constructor for ClientListener
+     * @param username client's username
+     * @param stage
+     * @param host server's IP
+     * @param splashController
+     */
+
     public ClientListener(String username, Stage stage, String host, SplashController splashController) {
         if (!"".equals(host)) {
             this.HOST = host;
@@ -43,6 +51,10 @@ public class ClientListener extends Thread {
         this.splashController = splashController;
     }
 
+    /**
+     * Method for establishing the connection with the server
+     * @return true if connected to server
+     */
     private boolean establishConnection() {
         boolean connected = false;
         int attempts = 1;
@@ -65,6 +77,10 @@ public class ClientListener extends Thread {
         return connected;
     }
 
+    /**
+     * Method performing something similar to TCP handshake
+     * @return true if successful
+     */
     private boolean performHandshake() {
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -78,6 +94,9 @@ public class ClientListener extends Thread {
         return true;
     }
 
+    /**
+     * This is what is executed by the thread after we call start() in Main
+     */
     @Override
     public void run() {
         if (!establishConnection()) {
@@ -108,6 +127,11 @@ public class ClientListener extends Thread {
         }
     }
 
+    /**
+     * Handling server responses
+     * @param response from the server
+     * @return false if the response was not null
+     */
     private boolean processResponse(String response) {
 
         if (null == response) {
@@ -133,29 +157,56 @@ public class ClientListener extends Thread {
         return false;
     }
 
+    /**
+     * Getting gameInfo from the server
+     * @param response from the server
+     */
     private void handleInfoResponse(String response) {
         String[] args = response.split("\\\\");
         user.setDisplayNames(args[0], args[1]);
         user.setGameId(args[2]);
+        if (user.getGameFinished()) {
+            user.prepNewGame();
+        }
     }
 
+    /**
+     * Initializing GameController
+     * @return true
+     */
     private boolean showGameScene() {
         gameController = new GameController(this.user, this);
         return true;
     }
 
+    /**
+     * Handles a chat message
+     * @param message
+     */
     private void handleChatMessage(String message) {
         gameController.processMessage(message, 'd');
     }
 
+    /**
+     * Handles an error message
+     * @param message
+     */
     private void handleErrorMessage(String message) {
         gameController.processMessage(message, 'b');
     }
 
+    /**
+     * Handles a normal message
+     * @param message
+     */
     private void handleNormalMessage(String message) {
         gameController.processMessage(message, 'i');
     }
 
+    /**
+     * Handles response from the server
+     * @param response
+     */
     private void handleGameResponse(String response) {
         // could make this conditional on response if the server later sends information before a game is requested
 
@@ -166,7 +217,9 @@ public class ClientListener extends Thread {
         char key = args[5].charAt(0);
         this.user.setBoard(args[3]);
         boolean gameActive = args[7].equals("true");
+        boolean gameFinished = args[8].equals("true");
         this.user.setGameActive(gameActive);
+        this.user.setGameFinished(gameFinished);
 
         if (!gameActive) {
             splashController.giveFeedback("Waiting for opponent...");
@@ -193,6 +246,10 @@ public class ClientListener extends Thread {
 
     }
 
+    /**
+     * Sending request to the server
+     * @param request
+     */
     public void sendRequest(String request) {
         // guard to prevent NullPointerException when in process of attempting to connect
         if (null != out) {
@@ -200,10 +257,18 @@ public class ClientListener extends Thread {
         }
     }
 
+    /**
+     * Getter for stage
+     * @return this.stage
+     */
+
     public Stage getStage() {
         return this.stage;
     }
 
+    /**
+     * Closing the socket
+     */
     public void closeSocket() {
         try {
             this.socket.close();
